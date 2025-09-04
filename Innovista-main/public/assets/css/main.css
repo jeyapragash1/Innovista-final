@@ -1,0 +1,576 @@
+/* ===================================================================
+   Innovista Main Stylesheet
+   - Final, Complete, and Fully Responsive -
+   =================================================================== */
+
+/* =========================================
+   1. ROOT & GENERAL STYLES
+   ========================================= */
+
+:root {
+    /* Color Palette */
+    --primary-color: #8B9B93;
+    --secondary-color: #d1d4ba;
+    --dark-color: #576F72;
+    --light-color: #ffffff;
+    --grey-color: #f8f9fa;
+
+    /* Text Colors */
+    --text-dark: #333333;
+    --text-light: #ffffff;
+    --text-muted: #666666;
+
+    /* Fonts */
+    --header-font: 'Montserrat', sans-serif;
+    --body-font: 'Roboto', sans-serif;
+
+    /* Other Variables */
+    --border-radius: 12px;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --box-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
+    --gradient: linear-gradient(90deg, #3A291C 0%, #2A1F15 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--body-font);
+    background: var(--light-color);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem; /* Consistent padding */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--header-font);
+    color: var(--dark-color);
+    font-weight: 700;
+}
+
+/* =========================================
+   2. UTILITY & HELPER CLASSES
+   ========================================= */
+
+.page-section {
+    padding: 5rem 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+    color: var(--dark-color);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: var(--header-font);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background: var(--gradient);
+    color: var(--text-light);
+    border: none;
+    box-shadow: var(--box-shadow);
+}
+
+.btn-primary:hover {
+    background: var(--secondary-color);
+    color: var(--text-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-secondary:hover {
+    background: var(--primary-color);
+    color: var(--text-light);
+}
+
+/* =========================================
+   3. HERO SECTION
+   ========================================= */
+.hero {
+    height: 90vh;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-slider, .hero-slide, .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.hero-slider { z-index: 1; }
+.hero-overlay { background-color: rgba(0, 0, 0, 0.45); z-index: 2; }
+
+.hero-slide {
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+.hero-slide.active { opacity: 1; }
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+    max-width: 90%;
+}
+
+.hero-content h1 {
+    color: var(--text-light);
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.5px;
+    max-width: 650px;
+    margin: 0 auto 2.5rem;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    gap: 12px;
+}
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.dot.active, .dot:hover {
+    background-color: var(--light-color);
+    transform: scale(1.2);
+}
+
+/* =========================================
+   4. HOW IT WORKS SECTION
+   ========================================= */
+.how-it-works {
+    background-color: var(--grey-color);
+    text-align: center;
+}
+.steps {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+.step {
+    flex: 1;
+    min-width: 280px;
+    max-width: 320px;
+    padding: 1rem;
+}
+.step-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.step h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.step p { font-size: 1rem; color: var(--text-muted); }
+
+/* =========================================
+   5. SERVICES & PRODUCTS SECTIONS
+   ========================================= */
+.services-section { background-color: var(--light-color); }
+.products-section { background-color: var(--grey-color); }
+
+.services-grid, .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+/* --- Service Card --- */
+/* Add these new styles to your main.css file, inside the .service-card section */
+
+.service-card {
+    /* Add flexbox to help align content */
+    display: flex;
+    flex-direction: column;
+}
+
+.service-card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* This makes the container fill the available space */
+    text-align: center;
+}
+
+.service-card-content h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.3rem;
+}
+
+.service-card-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 1rem 0;
+    flex-grow: 1; /* This pushes the button to the bottom */
+}
+
+.service-card-content .btn-secondary {
+    width: 100%;
+    margin-top: auto; /* Aligns the button to the bottom */
+}
+
+/* --- Product Card --- */
+.product-card {
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+.product-card:hover { transform: translateY(-10px); box-shadow: var(--box-shadow-hover); }
+.product-card img { width: 100%; height: 220px; object-fit: cover; }
+.product-card .product-info {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.product-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.product-card .product-category {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.product-card .product-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    margin-top: auto;
+}
+.product-card .btn-secondary { width: 100%; }
+
+/* =========================================
+   6. WHY CHOOSE US SECTION
+   ========================================= */
+.why-choose-us { background-color: var(--grey-color); }
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2.5rem;
+    text-align: center;
+}
+.feature-item i { font-size: 3rem; color: var(--primary-color); margin-bottom: 1.5rem; }
+.feature-item h3 { font-size: 1.3rem; margin-bottom: 0.75rem; }
+.feature-item p { color: var(--text-muted); padding: 0 1rem; }
+
+/* =========================================
+   7. ACHIEVEMENTS SECTION
+   ========================================= */
+.achievements {
+    background-color: var(--dark-color);
+    color: var(--text-light);
+    padding: 4rem 0;
+}
+.achievements-grid {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+.achievement-item { flex: 1; min-width: 200px; }
+.achievement-item h3 { font-size: 3rem; font-weight: 700; color: var(--secondary-color); }
+.achievement-item p { font-size: 1.1rem; color: rgba(255, 255, 255, 0.8); }
+
+/* =========================================
+   8. FEATURED PROVIDERS SECTION
+   ========================================= */
+.featured-providers { background-color: var(--light-color); }
+.provider-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+.provider-card {
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all 0.3s ease;
+    width: 300px;
+}
+.provider-card:hover { transform: translateY(-10px); box-shadow: var(--box-shadow-hover); }
+.provider-card img { width: 100%; height: 280px; object-fit: cover; }
+.provider-info { padding: 1.5rem; }
+.provider-info h4 { font-size: 1.2rem; margin-bottom: 0.25rem; }
+.provider-info p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* =========================================
+   9. TESTIMONIALS SECTION
+   ========================================= */
+.testimonials { background-color: var(--primary-color); color: var(--text-light); }
+.testimonials .section-title { color: var(--text-light); }
+.testimonial-slider {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+.testimonial-cards { display: flex; gap: 2rem; padding-bottom: 1rem; }
+.testimonial-card {
+    background: var(--light-color);
+    color: var(--text-dark);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    flex: 0 0 90%;
+    max-width: 400px;
+    position: relative;
+    border-left: 5px solid var(--secondary-color);
+    scroll-snap-align: center;
+}
+.testimonial-card::before {
+    content: '“';
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    font-size: 5rem;
+    color: var(--primary-color);
+    opacity: 0.1;
+    font-family: 'Times New Roman', serif;
+}
+.testimonial-card .author { display: block; margin-top: 1.2rem; font-weight: 700; color: var(--dark-color); text-align: right; }
+
+/* =========================================
+   10. PORTFOLIO SECTION (For Homepage)
+   ========================================= */
+.portfolio-section {
+    background-color: var(--grey-color);
+}
+
+/* Base grid layout for mobile */
+.portfolio-grid.homepage-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 1.5rem;
+}
+
+/* Grid for tablets and larger */
+@media (min-width: 768px) {
+    .portfolio-grid.homepage-grid {
+        /* A more complex grid for a dynamic masonry layout */
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: 250px; /* Give rows a consistent height */
+    }
+}
+
+.portfolio-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.portfolio-item:hover {
+    transform: scale(1.03);
+    box-shadow: var(--box-shadow-hover);
+}
+
+/* Spanning rules for larger screens */
+@media (min-width: 768px) {
+    .portfolio-item.wide {
+        grid-column: span 2; /* Make wide items take up two columns */
+    }
+}
+
+.portfolio-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.portfolio-item:hover img {
+    transform: scale(1.1);
+}
+
+.portfolio-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+    padding: 3rem 1.5rem 1.5rem;
+    display: flex;
+    align-items: flex-end;
+}
+
+.portfolio-content {
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.portfolio-item:hover .portfolio-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.portfolio-content h3 {
+    color: var(--text-light);
+    font-size: 1.3rem;
+    margin-bottom: 0.25rem;
+}
+
+.portfolio-content p {
+    font-family: var(--body-font);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+/* =========================================
+   11. FAQ SECTION
+   ========================================= */
+.faq-section { background-color: var(--light-color); }
+.faq-accordion { max-width: 800px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: var(--border-radius); overflow: hidden; }
+.faq-item { border-bottom: 1px solid #e0e0e0; }
+.faq-item:last-child { border-bottom: none; }
+.faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: var(--header-font);
+    color: var(--dark-color);
+    cursor: pointer;
+    text-align: left;
+}
+.faq-question i { font-size: 1rem; transition: transform 0.3s ease; }
+.faq-question.active i { transform: rotate(180deg); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; }
+.faq-answer p { padding: 0 1.5rem 1.5rem; color: var(--text-muted); }
+
+/* =========================================
+   12. CALL TO ACTION (CTA) SECTION
+   ========================================= */
+.cta-section { padding: 5rem 0; background: var(--gradient); color: var(--text-light); text-align: center; }
+.cta-content h2 { color: var(--text-light); font-size: 2.5rem; margin-bottom: 1rem; }
+.cta-content p { max-width: 700px; margin: 0 auto 2.5rem; opacity: 0.9; }
+.cta-buttons { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+.cta-buttons .btn-secondary { background-color: transparent; border-color: var(--secondary-color); color: var(--secondary-color); }
+.cta-buttons .btn-secondary:hover { background-color: var(--secondary-color); color: var(--text-dark); }
+
+/* =========================================
+   13. JAVASCRIPT-RELATED STYLES
+   ========================================= */
+.fade-in-element { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+.fade-in-element.visible { opacity: 1; transform: translateY(0); }
+
+/* =========================================
+   14. RESPONSIVE MEDIA QUERIES
+   ========================================= */
+
+/* --- TABLET --- */
+@media (min-width: 768px) and (max-width: 991px) {
+    .testimonial-card { flex-basis: calc(50% - 1rem); }
+    .portfolio-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* --- DESKTOP --- */
+@media (min-width: 992px) {
+    .testimonial-card { flex-basis: calc(33.333% - 1.34rem); }
+    .portfolio-grid { grid-template-columns: repeat(4, 1fr); }
+    .portfolio-item.wide { grid-column: span 2; }
+}
+
+/* --- MOBILE --- */
+@media (max-width: 767px) {
+    .page-section { padding: 3rem 0; }
+    .section-title, .section-header h2, .cta-content h2 { font-size: 2rem; }
+    .hero-content h1 { font-size: 2.2rem; }
+    .hero-content p { font-size: 1rem; max-width: 100%; }
+    .hero { height: 80vh; }
+    .steps, .achievements-grid { flex-direction: column; align-items: center; gap: 3rem; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+}

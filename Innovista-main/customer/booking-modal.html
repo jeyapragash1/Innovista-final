@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Form Modal</title>
+    <link rel="stylesheet" href="../public/assets/css/booking-form.css">
+</head>
+<body>
+    <!-- Booking Modal HTML -->
+    <div id="bookingModal" class="booking-modal active">
+        <div class="booking-modal-content">
+            <span class="close-modal-btn">×</span>
+            <form id="bookingForm" class="booking-form">
+                <h3 class="form-title">Booking Form</h3>
+                <div class="form-section">
+                    <label class="section-label">Account</label>
+                    <div class="form-row">
+                        <div class="input-icon">
+                            <span class="icon-user"></span>
+                            <input type="text" id="customerName" name="customerName" required placeholder="Full Name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-icon">
+                            <span class="icon-email"></span>
+                            <input type="email" id="customerEmail" name="customerEmail" required placeholder="Email Address">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <label class="section-label">Service Details</label>
+                    <div class="form-row">
+                        <input type="text" id="serviceName" name="serviceName" required placeholder="Service" readonly>
+                        <input type="text" id="amount" name="amount" required placeholder="Amount">
+                    </div>
+                </div>
+                <div class="form-section">
+                    <label class="section-label">Payment Method</label>
+                    <div class="form-row">
+                        <select id="paymentMethod" name="paymentMethod" required style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e5e7eb;">
+                            <option value="">Select Payment Method</option>
+                            <option value="visa">Visa Card</option>
+                            <option value="mastercard">MasterCard</option>
+                            <option value="rupay">RuPay</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <label class="section-label">Card Details</label>
+                    <div class="form-row">
+                        <input type="text" id="cardNumber" name="cardNumber" required placeholder="Card Number" maxlength="16">
+                        <input type="text" id="cardCVC" name="cardCVC" required placeholder="CVC" maxlength="4" style="width:80px;">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="cardExpiry" name="cardExpiry" required placeholder="MM/YY" style="width:100px;">
+                    </div>
+                </div>
+                <button type="submit" class="btn-book">Pay Now</button>
+            </form>
+            <div id="otpSection" class="otp-section">
+                <label for="otpInput">Enter OTP</label>
+                <input type="text" id="otpInput" maxlength="6" placeholder="OTP">
+                <button type="button" id="submitOtpBtn" class="btn-book">Verify OTP</button>
+            </div>
+            <div id="bookingConfirmedMsg" class="booking-confirmed" style="display:none;">Booking Confirmed!</div>
+        </div>
+    </div>
+    <script>
+    // Autofill service field from query parameter
+    document.addEventListener('DOMContentLoaded', function() {
+        var serviceInput = document.getElementById('serviceName');
+        var params = new URLSearchParams(window.location.search);
+        var serviceValue = params.get('service');
+        console.log('Autofill service:', serviceValue);
+        if (serviceInput && serviceValue) {
+            serviceInput.value = decodeURIComponent(serviceValue);
+            console.log('Service field set to:', serviceInput.value);
+        }
+    });
+    </script>
+    <script src="../public/assets/js/booking-modal.js"></script>
+</body>
+</html>

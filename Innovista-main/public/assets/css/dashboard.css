@@ -1,0 +1,474 @@
+/* Modern calendar navigation styles */
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    background: #f6fbf6;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 16px 24px;
+}
+.calendar-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 12px;
+    color: #222;
+    letter-spacing: 0.5px;
+}
+.calendar-arrow {
+    background: #e6f9d7;
+    border: 1.5px solid #bbf7d0;
+    border-radius: 8px;
+    font-size: 1.15rem;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    color: #059669;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(34,197,94,0.08);
+}
+.calendar-arrow:hover {
+    background: #bbf7d0;
+    box-shadow: 0 2px 8px rgba(34,197,94,0.18);
+    color: #065f46;
+}
+/* Selected dates (including weekends) always red */
+.calendar-day.calendar-range, .calendar-day.calendar-range-edge {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(239,68,68,0.12), 0 0 0 2px #fecaca;
+    border: 2px solid #ef4444 !important;
+    font-weight: bold;
+}
+.calendar-selected {
+    background: #2563eb !important;
+    color: #fff !important;
+    border: 3px solid #1e40af !important;
+    font-weight: bold;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+}
+/* Available date highlight */
+/* Range selection highlight */
+/* Google Calendar unified styles */
+.calendar-day {
+    aspect-ratio: 1 / 1;
+    min-width: 56px;
+    min-height: 56px;
+    max-width: 72px;
+    max-height: 72px;
+    background: #f6fbf6;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    color: #222;
+    cursor: pointer;
+    margin: 2px;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+    border: 1px solid #e0e7e0;
+}
+.calendar-available {
+    background: #34d399 !important;
+    color: #fff !important;
+    border: 2px solid #059669 !important;
+    font-weight: bold;
+    box-shadow: 0 4px 16px rgba(52,211,153,0.15);
+}
+
+.calendar-day:hover {
+    background: #e0f7e9;
+    color: #059669;
+    box-shadow: 0 2px 8px rgba(34,197,94,0.10);
+    border: 1.5px solid #059669;
+}
+.calendar-today {
+    background: #2563eb !important;
+    color: #fff !important;
+    font-weight: bold;
+    border: 2px solid #2563eb;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+}
+.calendar-weekend {
+    background: #fff7e6 !important;
+    color: #b45309 !important;
+    font-weight: 600;
+}
+.calendar-available {
+    background: #34d399 !important;
+    color: #fff !important;
+    border: 2px solid #059669 !important;
+    font-weight: bold;
+    box-shadow: 0 4px 16px rgba(52,211,153,0.15);
+}
+.calendar-day.not-current-month {
+    color: #ccc;
+    background: #f8fafc;
+
+    transition: background 0.2s;
+}
+.calendar-arrow:hover {
+    background: #e3e7f7;
+}
+/* Calendar Container */
+#calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 40px auto;
+    width: 500px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+}
+/* Calendar Header (Days of Week) */
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-align: center;
+    width: 100%;
+    font-size: 1rem;
+    color: #333;
+    background: none;
+}
+
+.calendar-day.not-current-month {
+    color: #ccc;
+    background: #f8fafc;
+}
+.calendar-header {
+    font-weight: 600;
+    color: var(--text-light);
+    text-align: center;
+    padding-bottom: 0.5rem;
+    font-size: 1rem;
+}
+/* Calendar Days Grid */
+/* Calendar Days Grid */
+/* Calendar Days Grid - FORCE GRID AND DEBUG BORDER */
+#calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+/* Calendar Day Cell */
+/* Calendar Day Cell */
+/* Calendar Day Cell - Google Calendar Style */
+.calendar-day {
+    aspect-ratio: 1 / 1;
+    min-width: 60px;
+    min-height: 60px;
+    max-width: 70px;
+    max-height: 70px;
+    background: #f7f8fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+    margin: 2px;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+}
+.calendar-day:hover {
+    background: #e3e7f7;
+    color: #0d9488;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+.calendar-today {
+    background: #2563eb !important;
+    color: #fff !important;
+    font-weight: bold;
+    border: 2px solid #2563eb;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+}
+.calendar-weekend {
+    background: #fff7e6 !important;
+    color: #b45309 !important;
+    font-weight: 600;
+}
+.calendar-day.not-current-month {
+    color: #ccc;
+    background: #f8fafc;
+}
+.calendar-day:hover {
+    background: #e3e7f7;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+/* ===================================================================
+   Innovista UNIFIED Dashboard Stylesheet (Admin, Customer, Provider)
+   =================================================================== */
+
+/* --- ROOT VARIABLES (Copied from newer designs for consistency) --- */
+:root {
+    --dashboard-bg: #f0f2f5;
+    --sidebar-bg: #1e293b;
+    --sidebar-text: #cbd5e1;
+    --sidebar-text-hover: #ffffff;
+    --sidebar-active-bg: #334155;
+    --sidebar-active-border: #5eead4;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --text-light: #64748b;
+    --border-color: #e2e8f0;
+    --primary-color: #0d9488;
+    --status-approved: #27ae60;
+    --status-pending: #f39c12;
+    --status-rejected: #e74c3c;
+}
+
+/* --- Base Layout & Sidebar --- */
+body.dashboard-body { font-family: 'Poppins', sans-serif; background-color: var(--dashboard-bg); }
+.dashboard-container { display: flex; position: relative; }
+.dashboard-sidebar { width: 260px; min-width: 260px; height: 100vh; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 1000; transition: transform 0.3s ease-in-out; }
+.sidebar-header { padding: 1.5rem; border-bottom: 1px solid #334155; }
+.sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--sidebar-text-hover); }
+.sidebar-logo img { height: 35px; }
+.sidebar-logo span { font-size: 1.4rem; font-weight: 600; }
+.sidebar-nav { flex-grow: 1; padding: 1rem 0; }
+.nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.5rem; color: var(--sidebar-text); text-decoration: none; transition: all 0.2s; font-size: 0.95rem; font-weight: 500; border-left: 4px solid transparent; }
+.nav-link:hover { background-color: var(--sidebar-active-bg); color: var(--sidebar-text-hover); }
+.nav-link.active { background-color: var(--sidebar-active-bg); color: var(--sidebar-text-hover); font-weight: 600; border-left-color: var(--sidebar-active-border); }
+.nav-link i { width: 20px; text-align: center; font-size: 1.1rem; }
+.sidebar-footer { padding: 1rem 0; margin-top: auto; border-top: 1px solid #334155; }
+
+/* --- Main Content Area --- */
+.content-wrapper { flex-grow: 1; margin-left: 260px; transition: margin-left 0.3s ease-in-out; }
+.main-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 999; }
+.menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-dark); }
+.user-profile-widget { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+.user-profile-widget i { font-size: 1.8rem; color: var(--primary-color); }
+.main-content { padding: 2rem; }
+.main-content h2 { font-size: 2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.5rem; }
+.main-content > p { color: var(--text-light); margin-bottom: 2rem; font-size: 1rem; }
+
+/* 
+==================================================
+--- YOUR ORIGINAL .dashboard.css CODE STARTS HERE ---
+==================================================
+*/
+
+/* --- General Layout (FROM YOUR CODE) --- */
+.dashboard-content {
+    padding: 2rem;
+}
+
+.dashboard-content h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-content > p {
+    color: #6B7280;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* --- OLD Stat Cards (FROM YOUR CODE) --- */
+/* Note: The new design uses different classes, but this is kept as requested */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid var(--primary-color);
+}
+
+.stat-card-info h4 {
+    font-size: 1rem;
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card-info p {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.stat-card-icon {
+    font-size: 2.5rem;
+    opacity: 0.7;
+}
+
+/* --- OLD Quick Actions Grid (FROM YOUR CODE) --- */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.action-card {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    text-decoration: none;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    border-color: var(--primary-color);
+}
+
+.action-card .icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    background-color: #f0f2f5;
+    height: 60px;
+    width: 60px;
+    min-width: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-card h4 {
+    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+}
+
+.action-card p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.4;
+}
+
+/* --- Content Cards & Tables (FROM YOUR CODE, slightly enhanced) --- */
+.content-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 2.5rem;
+}
+
+.content-card h3 {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table thead th {
+    text-align: left;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- Charts (FROM YOUR CODE) --- */
+.charts-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+/* 
+==================================================
+--- MY SUGGESTED NEW CODE STARTS HERE ---
+==================================================
+*/
+
+/* --- UNIVERSAL MODERN Stat Cards --- */
+/* Use these classes for the new look: .stats-container-modern & .stat-card-modern */
+.stats-container-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+.stat-card-modern {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+.stat-icon-modern { font-size: 1.8rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.stat-info-modern h4 { font-size: 0.85rem; color: var(--text-light); font-weight: 500; margin-bottom: 0.1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-info-modern p { font-size: 2rem; font-weight: 600; color: var(--text-dark); }
+.stat-icon-modern.yellow { background-color: rgba(243, 156, 18, 0.1); color: #f39c12; }
+.stat-icon-modern.blue { background-color: rgba(52, 152, 219, 0.1); color: #3498db; }
+.stat-icon-modern.red { background-color: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+.stat-icon-modern.green { background-color: rgba(39, 174, 96, 0.1); color: #27ae60; }
+.stat-icon-modern.purple { background-color: rgba(142, 68, 173, 0.1); color: #8e44ad; }
+
+/* --- UNIVERSAL MODERN Quick Access Grid --- */
+/* Use these classes for the new look: .quick-access-grid & .access-card */
+.dashboard-section { margin-top: 2.5rem; }
+.dashboard-section h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-dark); }
+.quick-access-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+.access-card { background: var(--card-bg); padding: 2rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-decoration: none; color: var(--text-dark); text-align: center; transition: all 0.3s ease; border: 1px solid var(--border-color); }
+.access-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--primary-color); color: var(--primary-color); }
+.access-card i { font-size: 2.5rem; margin-bottom: 1rem; display: block; color: var(--primary-color); }
+.access-card span { font-size: 1rem; font-weight: 600; }
+
+/* --- Additional Component Styles --- */
+.table-wrapper { overflow-x: auto; }
+.btn-view { text-decoration: none; color: var(--primary-color); font-weight: 600; padding: 0.3rem 0.8rem; border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; transition: all 0.2s; }
+.btn-view:hover { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 992px) {
+    .dashboard-sidebar { transform: translateX(-260px); }
+    .dashboard-sidebar.active { transform: translateX(0); }
+    .content-wrapper { margin-left: 0; }
+    .menu-toggle { display: block; }
+    .charts-container { grid-template-columns: 1fr; }
+}

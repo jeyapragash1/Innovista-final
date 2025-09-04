@@ -1,0 +1,280 @@
+/* =========================================
+   STYLES FOR HEADER & NAVIGATION
+   ========================================= */
+
+.main-header {
+    background: transparent;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.main-header.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--header-font);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+
+.navbar-logo img {
+    height: 45px;
+    width: auto;
+    border-radius: 8px;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    list-style: none;
+}
+
+.navbar-menu li {
+    padding: 0;
+    margin: 0;
+}
+
+.navbar-menu a {
+    color: var(--dark-color);
+    font-weight: 600;
+    font-family: var(--header-font);
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 6px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.navbar-menu a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 2px;
+    width: 0;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.navbar-menu li.active > a,
+.navbar-menu a:hover {
+    color: var(--primary-color);
+}
+
+.navbar-menu li.active > a::after,
+.navbar-menu a:hover::after {
+    width: 100%;
+}
+
+.navbar-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* =========================================
+   STYLES FOR LOGIN/SIGNUP BUTTONS
+   ========================================= */
+.btn-earthy {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: var(--header-font);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-earthy:hover {
+    background-color: var(--dark-color);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow);
+}
+
+
+/* --- Mobile Navigation Toggle (Hamburger) --- */
+.navbar-toggle {
+    display: none;
+    width: 30px;
+    height: 22px;
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1002;
+}
+
+.navbar-toggle-icon {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: var(--dark-color);
+    border-radius: 3px;
+    opacity: 1;
+    left: 0;
+    transition: all 0.35s ease-in-out;
+}
+
+.navbar-toggle-icon::before,
+.navbar-toggle-icon::after {
+    content: '';
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: var(--dark-color);
+    border-radius: 3px;
+    opacity: 1;
+    left: 0;
+    transition: all 0.35s ease-in-out;
+}
+
+.navbar-toggle-icon::before { top: -9px; }
+.navbar-toggle-icon::after { top: 9px; }
+
+/* Hamburger to "X" Animation */
+.navbar-toggle.active .navbar-toggle-icon {
+    background: transparent; /* Middle bar disappears */
+}
+.navbar-toggle.active .navbar-toggle-icon::before {
+    top: 0;
+    transform: rotate(135deg);
+}
+.navbar-toggle.active .navbar-toggle-icon::after {
+    top: 0;
+    transform: rotate(-135deg);
+}
+
+
+/* --- MOBILE RESPONSIVE STYLES FOR HEADER --- */
+@media (max-width: 992px) { /* Changed breakpoint for better tablet support */
+    .navbar-actions {
+        display: none; /* Hide login/signup on mobile */
+    }
+
+    .navbar-toggle {
+        display: block; /* Show the hamburger button */
+    }
+
+    .navbar-menu {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Start off-screen */
+        width: 80%;
+        max-width: 320px;
+        height: 100vh;
+        background: var(--light-color);
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        gap: 2rem;
+        padding: 2rem;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .navbar-menu.active {
+        right: 0; /* Slide the menu into view */
+    }
+    
+    .navbar-menu a {
+        font-size: 1.2rem;
+        display: block;
+    }
+}
+
+/* =========================================
+   NEW: STYLES FOR USER PROFILE ICON & DROPDOWN
+   (Added without changing any existing code)
+   ========================================= */
+
+.navbar-actions {
+    align-items: center; /* Vertically align items in the container */
+}
+
+.user-profile {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-icon-link {
+    display: block;
+    font-size: 2rem; /* Make the icon larger */
+    color: var(--dark-color);
+    transition: color 0.3s ease;
+    padding: 0 5px; /* Add a little space around the icon */
+}
+
+.user-icon-link:hover {
+    color: var(--primary-color);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--light-color);
+    border: 1px solid #eee;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-hover);
+    width: 200px;
+    padding: 0.5rem 0;
+    z-index: 1001;
+
+    /* Hidden by default with a nice transition */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show the dropdown menu when hovering over the .user-profile container */
+.user-profile:hover .profile-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.8rem 1.5rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--grey-color);
+}
+
+.dropdown-item.logout {
+    color: #d9534f; /* A red color for logout */
+    border-top: 1px solid #eee;
+    margin-top: 0.5rem;
+    padding-top: 0.8rem;
+}

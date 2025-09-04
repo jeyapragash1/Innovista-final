@@ -1,0 +1,88 @@
+/* Quotation Creation Form Styles */
+.quotation-container {
+    max-width: 650px;
+    margin: 40px auto;
+   background: url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80') center center/cover no-repeat;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    padding: 32px 36px 24px 36px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.quotation-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 28px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+.quotation-details {
+    margin-bottom: 24px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-size: 1rem;
+}
+.quotation-details div {
+    margin-bottom: 10px;
+}
+.quotation-details strong {
+    color: #34495e;
+}
+.quotation-images {
+    margin-bottom: 16px;
+}
+.quotation-images img {
+    max-width: 100px;
+    border-radius: 6px;
+    margin: 4px 8px 4px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.styled-form label {
+    display: block;
+    margin-bottom: 6px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+.styled-form input[type="number"],
+.styled-form input[type="date"],
+.styled-form textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 1rem;
+    background: #f4f6f8;
+    transition: border-color 0.2s;
+}
+.styled-form input[type="number"]:focus,
+.styled-form input[type="date"]:focus,
+.styled-form textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+.styled-form button {
+    width: 100%;
+    background: linear-gradient(90deg, #5b646a 0%, #718898 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(52,152,219,0.10);
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+.styled-form button:hover {
+    background: linear-gradient(90deg, #2980b9 0%, #3498db 100%);
+}
+.timeline-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.timeline-row > div {
+    flex: 1;
+}
