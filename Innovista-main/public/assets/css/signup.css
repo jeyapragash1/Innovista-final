@@ -1,0 +1,139 @@
+/* =========================================
+   STYLES FOR THE STANDALONE SIGN UP PAGE
+   ========================================= */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--body-font);
+    background: var(--grey-color);
+}
+.signup-page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80') center center/cover no-repeat;
+}
+
+.signup-container {
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-hover);
+    overflow: hidden;
+    width: 100%;
+    max-width: 950px;
+    min-height: 650px;
+    display: flex;
+    animation: fadeIn 0.6s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+/* --- Welcome Side (Image) --- */
+.signup-welcome-side {
+    background: url('assets/images/images/service/sign.jpg') center center/cover no-repeat;
+    flex-basis: 45%;
+    position: relative;
+    display: flex;
+}
+.welcome-overlay {
+    background: rgba(0, 0, 0, 0.55);
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    color: var(--text-light);
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.welcome-title { font-size: 2.5rem; color: var(--text-light); margin-bottom: 1rem; }
+.welcome-subtitle { font-size: 1.1rem; max-width: 350px; opacity: 0.9; }
+.welcome-login-link { margin-top: 2rem; font-size: 1rem; }
+.welcome-login-link a { color: var(--secondary-color); font-weight: 700; text-decoration: none; }
+.welcome-login-link a:hover { text-decoration: underline; }
+
+/* --- Form Side --- */
+.signup-form-side {
+    flex-basis: 55%;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow-y: auto;
+}
+.home-link {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.home-link:hover { color: var(--primary-color); }
+.form-title { font-size: 1.8rem; margin-bottom: 1.5rem; text-align: center; }
+
+.user-type-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.user-type-btn {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.user-type-btn.active {
+    background: var(--primary-color);
+    color: var(--text-light);
+    border-color: var(--primary-color);
+}
+
+.form-fields { display: none; }
+.form-fields.active { display: block; animation: slideIn 0.5s ease-out; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: var(--grey-color);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(139, 155, 147, 0.2);
+}
+.signup-btn { width: 100%; margin-top: 1rem; }
+.terms-text { font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 1.5rem; }
+.terms-text a { color: var(--primary-color); text-decoration: none; }
+.terms-text a:hover { text-decoration: underline; }
+.error { color: #d9534f; font-size: 0.85rem; margin-top: 0.5rem; }
+
+/* --- Responsive Design --- */
+@media (max-width: 900px) {
+    .signup-welcome-side { display: none; /* Hide image on smaller screens */ }
+    .signup-form-side { flex-basis: 100%; }
+    .signup-container { max-width: 480px; min-height: auto; }
+}
+@media (max-width: 480px) {
+    .signup-page-wrapper { padding: 0; }
+    .signup-container { border-radius: 0; box-shadow: none; min-height: 100vh; }
+    .signup-form-side { padding: 2rem 1.5rem; justify-content: flex-start; }
+    .form-title { font-size: 1.5rem; }
+    .user-type-group { grid-template-columns: 1fr; }
+}
