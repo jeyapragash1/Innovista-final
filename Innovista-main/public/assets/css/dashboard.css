@@ -94,9 +94,10 @@
     box-shadow: 0 4px 16px rgba(37,99,235,0.15);
 }
 .calendar-weekend {
-    background: #fff7e6 !important;
-    color: #b45309 !important;
+    background: #fff7e6;
+    color: #b45309;
     font-weight: 600;
+    /* Remove !important to allow .not-current-month and other states to override */
 }
 .calendar-available {
     background: #34d399 !important;
@@ -142,8 +143,10 @@
 }
 
 .calendar-day.not-current-month {
-    color: #ccc;
-    background: #f8fafc;
+    color: #ccc !important;
+    background: #f8fafc !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 .calendar-header {
     font-weight: 600;

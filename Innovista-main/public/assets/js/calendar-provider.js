@@ -24,155 +24,72 @@ function fetchAvailability() {
 }
 
 function renderSelectedDates() {
-    const rangeDiv = document.getElementById('selected-range');
-    // Show selected dates for current session
-    let selectedHtml = '';
-    if (selectedDates.length > 0) {
-        selectedHtml = selectedDates.map((d, i) => {
-            const dateStr = `${d.year}-${String(d.month+1).padStart(2,'0')}-${String(d.day).padStart(2,'0')}`;
-            return `<span style="margin-right:8px;">${dateStr} <button class='delete-date-btn' data-idx='${i}' data-date='${dateStr}' style='background:#ef4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;'>Delete</button></span>`;
-        }).join('');
-    }
-    // Show all available dates from database WITH delete button
-    let availableHtml = '';
-    let allDates = [];
-    Object.keys(availableDates).forEach(key => {
-        availableDates[key].forEach(day => {
-            const [year, month] = key.split('-');
-            const dateStr = `${year}-${String(Number(month)+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-            allDates.push(dateStr);
-        });
-    });
-    if (allDates.length > 0) {
-        availableHtml = '<div style="margin-top:10px;color:#2563eb;font-weight:600;">Available Dates:</div>' +
-            allDates.map(dateStr => `<span style="margin-right:8px;background:#e0f2fe;color:#2563eb;padding:2px 8px;border-radius:4px;">${dateStr} <button class='delete-available-date-btn' data-date='${dateStr}' style='background:#ef4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;'>Delete</button></span>`).join('');
-    }
-    rangeDiv.innerHTML = selectedHtml + availableHtml;
-    // Add event listeners for delete buttons (selected session dates)
-    document.querySelectorAll('.delete-date-btn').forEach(btn => {
-        btn.onclick = function() {
-            const idx = parseInt(btn.getAttribute('data-idx'));
-            const date = btn.getAttribute('data-date');
-            fetch('delete_availability.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ date })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Availability deleted successfully!');
-                    selectedDates.splice(idx, 1);
-                    renderSelectedDates();
-                    fetchAvailability();
-                } else {
-                    alert('Error deleting date.');
-                }
-            })
-            .catch(() => alert('Error deleting date.'));
-        };
-    });
-    // Add event listeners for delete buttons (available dates from DB)
-    document.querySelectorAll('.delete-available-date-btn').forEach(btn => {
-        btn.onclick = function() {
-            const date = btn.getAttribute('data-date');
-            fetch('delete_availability.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ date })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Availability deleted successfully!');
-                    fetchAvailability();
-                } else {
-                    alert('Error deleting date.');
-                }
-            })
-            .catch(() => alert('Error deleting date.'));
-        };
-    });
+    // No-op: removed selected-range display for this UI
 }
 
 function renderCalendar(year, month) {
     renderSelectedDates();
-    // Update year dropdown
-    if (document.getElementById('calendar-year')) {
-        const yearSelect = document.getElementById('calendar-year');
-        yearSelect.innerHTML = '';
-        for (let y = currentYear - 5; y <= currentYear + 5; y++) {
-            const opt = document.createElement('option');
-            opt.value = y;
-            opt.textContent = y;
-            if (y === year) opt.selected = true;
-            yearSelect.appendChild(opt);
-        }
-    }
-    // Update year dropdown
-    const yearSelect = document.getElementById('calendar-year');
-    if (yearSelect) {
-        yearSelect.innerHTML = '';
-        for (let y = currentYear - 5; y <= currentYear + 5; y++) {
-            const opt = document.createElement('option');
-            opt.value = y;
-            opt.textContent = y;
-            if (y === year) opt.selected = true;
-            yearSelect.appendChild(opt);
-        }
-    }
+    // No-op: removed calendar-year dropdown for this UI
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calendar-title').textContent = monthNames[month] + ' ' + year;
 
     const today = new Date();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    // Use Sunday as first day (real-time calendar)
+    // Use Monday as first day (real-time calendar)
     let startDay = firstDay.getDay(); // 0=Sunday, 1=Monday, ...
+    startDay = (startDay === 0) ? 6 : startDay - 1; // 0=Monday, 6=Sunday
     const daysInMonth = lastDay.getDate();
     const prevMonthLastDay = new Date(year, month, 0).getDate();
 
     let html = '';
-    // Fill previous month's overflow days
-    for (let i = 0; i < startDay; i++) {
-        const prevMonth = month === 0 ? 11 : month - 1;
-        const prevYear = month === 0 ? year - 1 : year;
-        const prevMonthLastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
-        html += `<div class='calendar-day not-current-month'>${prevMonthLastDay - startDay + i + 1}</div>`;
-    }
     const key = `${year}-${month}`;
     if (!availableDates[key]) availableDates[key] = [];
-    for (let d = 1; d <= daysInMonth; d++) {
+    // Always render 6 rows of 7 days (42 cells)
+    for (let i = 0; i < 42; i++) {
+        const cellDate = i - startDay + 1;
+        let cellMonth = month;
+        let cellYear = year;
         let classes = 'calendar-day';
-        // Highlight today
-        if (
-            year === today.getFullYear() &&
-            month === today.getMonth() &&
-            d === today.getDate()
-        ) {
-            classes += ' calendar-today';
+        let displayNum = cellDate;
+        // Previous month
+        if (cellDate <= 0) {
+            cellMonth = month === 0 ? 11 : month - 1;
+            cellYear = month === 0 ? year - 1 : year;
+            const prevMonthLastDay = new Date(cellYear, cellMonth + 1, 0).getDate();
+            displayNum = prevMonthLastDay + cellDate;
+            classes += ' not-current-month';
         }
-        // Highlight selected individual dates
-        if (selectedDates.some(dt => dt.year === year && dt.month === month && dt.day === d)) {
-            classes += ' calendar-range calendar-range-edge';
-        }
-        // Highlight available dates from database
-        const key = `${year}-${month}`;
-        if (availableDates[key] && availableDates[key].includes(d)) {
-            classes += ' calendar-available';
+        // Next month
+        else if (cellDate > daysInMonth) {
+            cellMonth = month === 11 ? 0 : month + 1;
+            cellYear = month === 11 ? year + 1 : year;
+            displayNum = cellDate - daysInMonth;
+            classes += ' not-current-month';
+        } else {
+            // Highlight today
+            if (
+                year === today.getFullYear() &&
+                month === today.getMonth() &&
+                cellDate === today.getDate()
+            ) {
+                classes += ' calendar-today';
+            }
+            // Highlight selected individual dates
+            if (selectedDates.some(dt => dt.year === year && dt.month === month && dt.day === cellDate)) {
+                classes += ' calendar-range calendar-range-edge';
+            }
+            // Highlight available dates from database
+            if (availableDates[key] && availableDates[key].includes(cellDate)) {
+                classes += ' calendar-available';
+            }
         }
         // Style weekends
-        let weekDay = (startDay + d - 1) % 7;
+        let weekDay = i % 7;
         if (weekDay === 0 || weekDay === 6) {
             classes += ' calendar-weekend';
         }
-        html += `<div class='${classes}' data-day='${d}'>${d}</div>`;
-    }
-    const totalCells = startDay + daysInMonth;
-    const nextDays = (7 - (totalCells % 7)) % 7;
-    // Fill next month's overflow days
-    for (let i = 1; i <= nextDays; i++) {
-        html += `<div class='calendar-day not-current-month'>${i}</div>`;
+        html += `<div class='${classes}' data-day='${displayNum}'>${displayNum}</div>`;
     }
     document.getElementById('calendar-days').innerHTML = html;
     // Add click event for selecting a range
@@ -208,10 +125,7 @@ document.getElementById('next-month').onclick = function() {
     }
     renderCalendar(currentYear, currentMonth);
 };
-document.getElementById('calendar-year').onchange = function() {
-    currentYear = parseInt(this.value);
-    renderCalendar(currentYear, currentMonth);
-};
+// Removed calendar-year dropdown event for this UI
 renderCalendar(currentYear, currentMonth);
 document.addEventListener('DOMContentLoaded', function() {
     fetchAvailability();
