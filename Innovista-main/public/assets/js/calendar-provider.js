@@ -24,111 +24,21 @@ function fetchAvailability() {
 }
 
 function renderSelectedDates() {
-    const rangeDiv = document.getElementById('selected-range');
-    // Show selected dates for current session
-    let selectedHtml = '';
-    if (selectedDates.length > 0) {
-        selectedHtml = selectedDates.map((d, i) => {
-            const dateStr = `${d.year}-${String(d.month+1).padStart(2,'0')}-${String(d.day).padStart(2,'0')}`;
-            return `<span style="margin-right:8px;">${dateStr} <button class='delete-date-btn' data-idx='${i}' data-date='${dateStr}' style='background:#ef4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;'>Delete</button></span>`;
-        }).join('');
-    }
-    // Show all available dates from database WITH delete button
-    let availableHtml = '';
-    let allDates = [];
-    Object.keys(availableDates).forEach(key => {
-        availableDates[key].forEach(day => {
-            const [year, month] = key.split('-');
-            const dateStr = `${year}-${String(Number(month)+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-            allDates.push(dateStr);
-        });
-    });
-    if (allDates.length > 0) {
-        availableHtml = '<div style="margin-top:10px;color:#2563eb;font-weight:600;">Available Dates:</div>' +
-            allDates.map(dateStr => `<span style="margin-right:8px;background:#e0f2fe;color:#2563eb;padding:2px 8px;border-radius:4px;">${dateStr} <button class='delete-available-date-btn' data-date='${dateStr}' style='background:#ef4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;'>Delete</button></span>`).join('');
-    }
-    rangeDiv.innerHTML = selectedHtml + availableHtml;
-    // Add event listeners for delete buttons (selected session dates)
-    document.querySelectorAll('.delete-date-btn').forEach(btn => {
-        btn.onclick = function() {
-            const idx = parseInt(btn.getAttribute('data-idx'));
-            const date = btn.getAttribute('data-date');
-            fetch('delete_availability.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ date })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Availability deleted successfully!');
-                    selectedDates.splice(idx, 1);
-                    renderSelectedDates();
-                    fetchAvailability();
-                } else {
-                    alert('Error deleting date.');
-                }
-            })
-            .catch(() => alert('Error deleting date.'));
-        };
-    });
-    // Add event listeners for delete buttons (available dates from DB)
-    document.querySelectorAll('.delete-available-date-btn').forEach(btn => {
-        btn.onclick = function() {
-            const date = btn.getAttribute('data-date');
-            fetch('delete_availability.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ date })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Availability deleted successfully!');
-                    fetchAvailability();
-                } else {
-                    alert('Error deleting date.');
-                }
-            })
-            .catch(() => alert('Error deleting date.'));
-        };
-    });
+    // No-op: removed selected-range display for this UI
 }
 
 function renderCalendar(year, month) {
     renderSelectedDates();
-    // Update year dropdown
-    if (document.getElementById('calendar-year')) {
-        const yearSelect = document.getElementById('calendar-year');
-        yearSelect.innerHTML = '';
-        for (let y = currentYear - 5; y <= currentYear + 5; y++) {
-            const opt = document.createElement('option');
-            opt.value = y;
-            opt.textContent = y;
-            if (y === year) opt.selected = true;
-            yearSelect.appendChild(opt);
-        }
-    }
-    // Update year dropdown
-    const yearSelect = document.getElementById('calendar-year');
-    if (yearSelect) {
-        yearSelect.innerHTML = '';
-        for (let y = currentYear - 5; y <= currentYear + 5; y++) {
-            const opt = document.createElement('option');
-            opt.value = y;
-            opt.textContent = y;
-            if (y === year) opt.selected = true;
-            yearSelect.appendChild(opt);
-        }
-    }
+    // No-op: removed calendar-year dropdown for this UI
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calendar-title').textContent = monthNames[month] + ' ' + year;
 
     const today = new Date();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    // Use Sunday as first day (real-time calendar)
+    // Use Monday as first day (real-time calendar)
     let startDay = firstDay.getDay(); // 0=Sunday, 1=Monday, ...
+    startDay = (startDay === 0) ? 6 : startDay - 1; // 0=Monday, 6=Sunday
     const daysInMonth = lastDay.getDate();
     const prevMonthLastDay = new Date(year, month, 0).getDate();
 
@@ -208,10 +118,7 @@ document.getElementById('next-month').onclick = function() {
     }
     renderCalendar(currentYear, currentMonth);
 };
-document.getElementById('calendar-year').onchange = function() {
-    currentYear = parseInt(this.value);
-    renderCalendar(currentYear, currentMonth);
-};
+// Removed calendar-year dropdown event for this UI
 renderCalendar(currentYear, currentMonth);
 document.addEventListener('DOMContentLoaded', function() {
     fetchAvailability();
