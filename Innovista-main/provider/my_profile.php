@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 $pageTitle = 'My Profile';
-require_once '../includes/user_dashboard_header.php'; 
+require_once '../provider/provider_header.php'; 
 
 require_once '../config/Database.php';
 $provider_id = (isset($_SESSION) && isset($_SESSION['user_id'])) ? $_SESSION['user_id'] : 0;
