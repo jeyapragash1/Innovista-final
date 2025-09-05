@@ -1,4 +1,30 @@
-<?php require_once 'admin_header.php'; ?>
+<?php 
+require_once 'admin_header.php'; 
+require_once '../config/Database.php';
+
+session_start();
+
+// DB connection
+$db = (new Database())->getConnection();
+
+// Fetch all disputes with customer + provider names
+$query = "
+    SELECT d.id, d.reason, d.status, d.created_at,
+           c.name AS customer_name,
+           p.name AS provider_name
+    FROM disputes d
+    JOIN users c ON d.reported_by_id = c.id
+    JOIN users p ON d.reported_against_id = p.id
+    ORDER BY d.created_at DESC
+";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$disputes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Separate into open and resolved
+$openDisputes = array_filter($disputes, fn($d) => strtolower($d['status']) !== 'resolved');
+$resolvedDisputes = array_filter($disputes, fn($d) => strtolower($d['status']) === 'resolved');
+?>
 
 <h2>Resolve Disputes</h2>
 <p>Review and resolve issues reported between users to maintain platform integrity.</p>
@@ -6,51 +32,50 @@
 <div class="content-card">
     <h3>Open Disputes</h3>
     <ul class="disputes-list">
-        <li class="dispute-item">
-            <div class="dispute-icon"><i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i></div>
-            <div class="dispute-details">
-                <p>Dispute #D-001: Project Completion Delay</p>
-                <span>Customer: <strong>Alice Johnson</strong> vs. Provider: <strong>Modern Living</strong></span>
-            </div>
-            <div class="dispute-status">
-                <span class="status-badge status-pending">Under Review</span>
-            </div>
-            <div class="action-buttons">
-                <a href="#" class="btn-link">View Details</a>
-            </div>
-        </li>
-        <li class="dispute-item">
-            <div class="dispute-icon"><i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i></div>
-            <div class="dispute-details">
-                <p>Dispute #D-002: Payment Discrepancy</p>
-                <span>Customer: <strong>Bob Williams</strong> vs. Provider: <strong>Urban Crafters</strong></span>
-            </div>
-            <div class="dispute-status">
-                <span class="status-badge status-pending">Open</span>
-            </div>
-            <div class="action-buttons">
-                <a href="#" class="btn-link">View Details</a>
-            </div>
-        </li>
+        <?php if (!empty($openDisputes)): ?>
+            <?php foreach ($openDisputes as $dispute): ?>
+            <li class="dispute-item">
+                <div class="dispute-icon"><i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i></div>
+                <div class="dispute-details">
+                    <p>Dispute #D-<?php echo str_pad($dispute['id'], 3, '0', STR_PAD_LEFT); ?>: <?php echo htmlspecialchars($dispute['reason']); ?></p>
+                    <span>Customer: <strong><?php echo htmlspecialchars($dispute['customer_name']); ?></strong> vs. Provider: <strong><?php echo htmlspecialchars($dispute['provider_name']); ?></strong></span>
+                </div>
+                <div class="dispute-status">
+                    <span class="status-badge status-pending"><?php echo htmlspecialchars($dispute['status']); ?></span>
+                </div>
+                <div class="action-buttons">
+                    <a href="view_dispute.php?id=<?php echo $dispute['id']; ?>" class="btn-link">View Details</a>
+                </div>
+            </li>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <li style="text-align:center;">No open disputes.</li>
+        <?php endif; ?>
     </ul>
 </div>
 
 <div class="content-card">
     <h3>Resolved Disputes</h3>
     <ul class="disputes-list">
-         <li class="dispute-item">
-            <div class="dispute-icon"><i class="fas fa-check-circle" style="color: #27ae60;"></i></div>
-            <div class="dispute-details">
-                <p>Dispute #D-000: Material Quality Issue</p>
-                <span>Customer: <strong>Eve Davis</strong> vs. Provider: <strong>Classic Restorations</strong></span>
-            </div>
-            <div class="dispute-status">
-                <span class="status-badge status-approved">Resolved</span>
-            </div>
-            <div class="action-buttons">
-                <a href="#" class="btn-link">View Details</a>
-            </div>
-        </li>
+        <?php if (!empty($resolvedDisputes)): ?>
+            <?php foreach ($resolvedDisputes as $dispute): ?>
+            <li class="dispute-item">
+                <div class="dispute-icon"><i class="fas fa-check-circle" style="color: #27ae60;"></i></div>
+                <div class="dispute-details">
+                    <p>Dispute #D-<?php echo str_pad($dispute['id'], 3, '0', STR_PAD_LEFT); ?>: <?php echo htmlspecialchars($dispute['reason']); ?></p>
+                    <span>Customer: <strong><?php echo htmlspecialchars($dispute['customer_name']); ?></strong> vs. Provider: <strong><?php echo htmlspecialchars($dispute['provider_name']); ?></strong></span>
+                </div>
+                <div class="dispute-status">
+                    <span class="status-badge status-approved"><?php echo htmlspecialchars($dispute['status']); ?></span>
+                </div>
+                <div class="action-buttons">
+                    <a href="view_dispute.php?id=<?php echo $dispute['id']; ?>" class="btn-link">View Details</a>
+                </div>
+            </li>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <li style="text-align:center;">No resolved disputes.</li>
+        <?php endif; ?>
     </ul>
 </div>
 

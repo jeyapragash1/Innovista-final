@@ -1,12 +1,13 @@
-
 <?php 
 $pageTitle = 'Manage Calendar';
 require_once 'provider_header.php'; 
 ?>
+
 <div class="booking-layout">
     <div class="booking-card">
         <div class="booking-header">Confirm Date & Time</div>
         <div class="booking-content">
+            <!-- Calendar Panel -->
             <div class="calendar-panel">
                 <div class="calendar-header">
                     <button id="prev-month" class="calendar-arrow">&#8592;</button>
@@ -14,83 +15,72 @@ require_once 'provider_header.php';
                     <button id="next-month" class="calendar-arrow">&#8594;</button>
                 </div>
                 <div class="calendar-card">
-                                <div class="calendar-grid-header">
-                                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                                </div>
-                                <div id="calendar-days" class="calendar-days"></div>
+                    <div class="calendar-grid-header">
+                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span>
+                        <span>Fri</span><span>Sat</span><span>Sun</span>
+                    </div>
+                    <div id="calendar-days" class="calendar-days"></div>
                 </div>
             </div>
+
+            <!-- Time Panel -->
             <div class="time-panel">
-                <div class="time-header">Confirm Time</div>
-                <div class="time-slots" id="time-slots">
-                    <!-- Time slots will be generated here -->
-                </div>
-                <button class="save-btn" id="save-btn">Save</button>
+                <div class="time-header">Select Time</div>
+                <div class="selected-time-display" id="selected-time-display">Selected Time: None</div>
+                <div class="time-slots" id="time-slots"></div>
+                <button class="save-btn" id="save-btn">Confirm</button>
             </div>
         </div>
     </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
 <style>
 .booking-layout {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: #f5f6fa;
-        color: #8a97ad !important;
-        background: #e9eef6 !important;
-        opacity: 1 !important;
-        font-weight: 600;
-        border-radius: 8px;
-        border: none;
-        box-shadow: none;
-        filter: none;
+    background: #e9eef6;
+    font-weight: 600;
+    color: #8a97ad;
 }
 .booking-card {
     background: #fff;
     border-radius: 18px;
     box-shadow: 0 2px 16px #e0e7ff;
-    padding: 0;
-    min-width: 700px;
-    max-width: 900px;
     width: 900px;
+    max-width: 95%;
 }
 .booking-header {
     background: #1eb6e9;
     color: #fff;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 700;
     padding: 18px 32px;
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
-    letter-spacing: 0.5px;
 }
 .booking-content {
-        display: flex;
-        flex-direction: row;
-        padding: 32px 32px 24px 32px;
-        gap: 48px;
+    display: flex;
+    gap: 48px;
+    padding: 32px;
 }
 .calendar-panel {
-    min-width: 520px;
-    max-width: 560px;
-    width: 560px;
-    overflow: visible;
+    flex: 1 1 560px;
 }
 .calendar-header {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     gap: 18px;
     margin-bottom: 18px;
 }
 .calendar-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #222;
     min-width: 140px;
     text-align: center;
+    color: #222;
 }
 .calendar-arrow {
     background: #e0e7ff;
@@ -106,12 +96,7 @@ require_once 'provider_header.php';
     background: #f5f6fa;
     border-radius: 12px;
     padding: 24px 16px 32px 16px;
-    box-shadow: 0 2px 8px #e0e7ff;
     min-height: 420px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: visible;
 }
 .calendar-grid-header {
     display: grid;
@@ -121,7 +106,6 @@ require_once 'provider_header.php';
     font-weight: 600;
     color: #1eb6e9;
     text-align: center;
-    font-size: 0.98rem;
 }
 .calendar-days {
     display: grid;
@@ -132,138 +116,143 @@ require_once 'provider_header.php';
     text-align: center;
 }
 .calendar-day {
-    background: transparent;
-    border-radius: 0;
-    width: 56px;
-    height: 56px;
-    justify-self: center;
-    align-self: center;
     display: flex;
-    align-items: center;
     justify-content: center;
-    text-align: center;
-    font-size: 1.25rem;
-    color: #222;
+    align-items: center;
     font-weight: 600;
-    position: relative;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    margin: 0 auto;
-    box-shadow: none;
-    border: none;
-}
-.calendar-day.selected {
-        background: #1eb6e9;
-        color: #fff;
-        font-weight: 700;
-        border-radius: 50%;
-        box-shadow: 0 1px 4px rgba(30,182,233,0.10);
-        width: 36px;
-        height: 36px;
-        margin: auto;
-}
-.calendar-day.today {
-    border: none;
-    font-weight: normal;
-    color: #222;
-    background: transparent;
-}
-.calendar-day:hover {
-    background: #e0e7ff;
-    color: #1eb6e9;
     border-radius: 50%;
+    transition: 0.2s;
 }
+.calendar-day.today { border: 1px solid #1eb6e9; }
+.calendar-day.selected { background: #1eb6e9; color: #fff; }
+.calendar-day:hover { background: #e0e7ff; color: #1eb6e9; }
+
 .time-panel {
-    min-width: 220px;
+    flex: 0 0 220px;
     background: #fafbfc;
     border-radius: 12px;
-    padding: 18px 12px 24px 12px;
+    padding: 18px;
     min-height: 400px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
 }
 .time-header {
     font-size: 1.05rem;
     font-weight: 600;
-    color: #222;
     margin-bottom: 12px;
 }
+.selected-time-display {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1eb6e9;
+}
 .time-slots {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     margin-bottom: 18px;
-    width: 100%;
+    max-height: 300px; /* scrollable */
+    overflow-y: auto;
 }
 .time-slot {
     background: #fff;
     border: 1px solid #e0e7ff;
     border-radius: 8px;
-    padding: 8px 0;
     text-align: center;
-    font-size: 1rem;
-    color: #1eb6e9;
+    padding: 10px 0;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, border 0.2s;
+    color: #1eb6e9;
+    transition: 0.2s;
 }
-.time-slot.selected, .time-slot:hover {
+.time-slot.selected {
     background: #1eb6e9;
     color: #fff;
-    border: 1px solid #1eb6e9;
+    font-weight: 700;
 }
+.time-slot:hover { background: #e0e7ff; }
 .save-btn {
     background: #1eb6e9;
     color: #fff;
     border: none;
     border-radius: 8px;
     padding: 10px 32px;
-    font-size: 1.05rem;
     font-weight: 600;
     cursor: pointer;
-    align-self: center;
-    margin-top: 8px;
-    box-shadow: 0 2px 8px #e0e7ff;
-    transition: background 0.2s;
+    margin-top: auto;
 }
-.save-btn:hover {
-    background: #159ac2;
-}
+.save-btn:hover { background: #159ac2; }
 </style>
-<script src="../public/assets/js/calendar-provider.js"></script>
+
 <script>
-// Time slots for PM (example)
 const timeSlots = [
-    "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM",
-    "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM",
-    "04:00 PM", "04:30 PM"
+    "09:00 AM","09:30 AM","10:00 AM","10:30 AM",
+    "11:00 AM","11:30 AM","12:00 PM","12:30 PM",
+    "01:00 PM","01:30 PM","02:00 PM","02:30 PM",
+    "03:00 PM","03:30 PM","04:00 PM","04:30 PM",
+    "05:00 PM","05:30 PM","06:00 PM"
 ];
 
 function renderTimeSlots() {
     const container = document.getElementById('time-slots');
-    if (!container) return;
-    let html = '';
+    const selectedDisplay = document.getElementById('selected-time-display');
+    container.innerHTML = '';
     timeSlots.forEach(slot => {
-        html += `<div class="time-slot">${slot}</div>`;
-    });
-    container.innerHTML = html;
-    // Add selection logic
-    document.querySelectorAll('.time-slot').forEach(slot => {
-        slot.addEventListener('click', function() {
+        const div = document.createElement('div');
+        div.classList.add('time-slot');
+        div.textContent = slot;
+        div.addEventListener('click', () => {
             document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-            this.classList.add('selected');
+            div.classList.add('selected');
+            selectedDisplay.textContent = `Selected Time: ${slot}`;
         });
+        container.appendChild(div);
     });
 }
 
-// Render time slots and calendar on page load
-document.addEventListener('DOMContentLoaded', function() {
-    renderTimeSlots();
-    // Render the calendar with the current year and month
-    const today = new Date();
-    if (typeof renderCalendar === 'function') {
-        renderCalendar(today.getFullYear(), today.getMonth());
+function renderCalendar(year, month) {
+    const calendarDays = document.getElementById('calendar-days');
+    const calendarTitle = document.getElementById('calendar-title');
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDay = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = lastDay.getDate();
+
+    calendarTitle.textContent = firstDay.toLocaleString('default', { month: 'long', year: 'numeric' });
+    calendarDays.innerHTML = '';
+
+    for(let i=0;i<startDay;i++){ calendarDays.innerHTML += '<div></div>'; }
+    for(let i=1;i<=daysInMonth;i++){
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day');
+        dayDiv.textContent = i;
+        const today = new Date();
+        if(i===today.getDate() && month===today.getMonth() && year===today.getFullYear()){
+            dayDiv.classList.add('today');
+        }
+        dayDiv.addEventListener('click', () => {
+            document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+            dayDiv.classList.add('selected');
+        });
+        calendarDays.appendChild(dayDiv);
     }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderTimeSlots();
+    const today = new Date();
+    renderCalendar(today.getFullYear(), today.getMonth());
+
+    document.getElementById('prev-month').addEventListener('click', () => {
+        today.setMonth(today.getMonth() - 1);
+        renderCalendar(today.getFullYear(), today.getMonth());
+    });
+    document.getElementById('next-month').addEventListener('click', () => {
+        today.setMonth(today.getMonth() + 1);
+        renderCalendar(today.getFullYear(), today.getMonth());
+    });
 });
 </script>
+
 <?php require_once 'provider_footer.php'; ?>

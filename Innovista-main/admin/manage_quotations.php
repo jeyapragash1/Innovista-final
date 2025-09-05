@@ -1,4 +1,26 @@
-<?php require_once 'admin_header.php'; ?>
+<?php 
+require_once 'admin_header.php'; 
+require_once '../config/Database.php';
+
+session_start();
+
+// DB connection
+$db = (new Database())->getConnection();
+
+// Fetch all quotations with customer + provider names
+$query = "
+    SELECT q.id, q.project_description, q.status, q.price, q.created_at,
+           c.name AS customer_name, 
+           p.name AS provider_name
+    FROM quotations q
+    JOIN users c ON q.customer_id = c.id
+    JOIN users p ON q.provider_id = p.id
+    ORDER BY q.created_at DESC
+";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$quotations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 
 <h2>Manage Quotations</h2>
 <p>Review all quotations submitted on the platform.</p>
@@ -11,36 +33,40 @@
                     <th>Quote ID</th>
                     <th>Customer</th>
                     <th>Provider</th>
-                    <th>Amount</th>
+                    <th>Project Summary</th>
+                    <th>Price</th>
                     <th>Status</th>
+                    <th>Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>#INV-0078</td>
-                    <td>Alice Johnson</td>
-                    <td>Modern Living</td>
-                    <td>$7,500.00</td>
-                    <td><span class="status-badge status-approved">Approved</span></td>
-                    <td><a href="#" class="btn-link">View Details</a></td>
-                </tr>
-                <tr>
-                    <td>#INV-0077</td>
-                    <td>Bob Williams</td>
-                    <td>Elegant Interiors</td>
-                    <td>$1,200.00</td>
-                    <td><span class="status-badge status-pending">Pending</span></td>
-                    <td><a href="#" class="btn-link">View Details</a></td>
-                </tr>
-                 <tr>
-                    <td>#INV-0076</td>
-                    <td>Eve Davis</td>
-                    <td>Classic Restorations Inc.</td>
-                    <td>$2,200.00</td>
-                    <td><span class="status-badge status-rejected">Declined</span></td>
-                    <td><a href="#" class="btn-link">View Details</a></td>
-                </tr>
+                <?php if (!empty($quotations)): ?>
+                    <?php foreach ($quotations as $quote): ?>
+                        <tr>
+                            <td>#INV-<?php echo str_pad($quote['id'], 4, '0', STR_PAD_LEFT); ?></td>
+                            <td><?php echo htmlspecialchars($quote['customer_name']); ?></td>
+                            <td><?php echo htmlspecialchars($quote['provider_name']); ?></td>
+                            <td><?php echo htmlspecialchars($quote['project_description']); ?></td>
+                            <td>Rs <?php echo number_format($quote['price'], 2); ?></td>
+                            <td>
+                                <span class="status-badge 
+                                    <?php 
+                                        echo strtolower($quote['status']) == 'approved' ? 'status-approved' : 
+                                             (strtolower($quote['status']) == 'awaiting quote' ? 'status-pending' : 'status-rejected'); 
+                                    ?>">
+                                    <?php echo htmlspecialchars($quote['status']); ?>
+                                </span>
+                            </td>
+                            <td><?php echo date('d M Y', strtotime($quote['created_at'])); ?></td>
+                            <td><a href="view_quotation.php?id=<?php echo $quote['id']; ?>" class="btn-link">View Details</a></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="8" style="text-align:center;">No quotations found.</td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
