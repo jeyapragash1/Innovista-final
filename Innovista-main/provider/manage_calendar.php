@@ -38,6 +38,14 @@ require_once 'provider_header.php';
     align-items: center;
     min-height: 100vh;
     background: #f5f6fa;
+        color: #8a97ad !important;
+        background: #e9eef6 !important;
+        opacity: 1 !important;
+        font-weight: 600;
+        border-radius: 8px;
+        border: none;
+        box-shadow: none;
+        filter: none;
 }
 .booking-card {
     background: #fff;
@@ -59,14 +67,16 @@ require_once 'provider_header.php';
     letter-spacing: 0.5px;
 }
 .booking-content {
-    display: flex;
-    flex-direction: row;
-    padding: 32px 32px 24px 32px;
-    gap: 32px;
+        display: flex;
+        flex-direction: row;
+        padding: 32px 32px 24px 32px;
+        gap: 48px;
 }
 .calendar-panel {
-    min-width: 320px;
-    max-width: 340px;
+    min-width: 520px;
+    max-width: 560px;
+    width: 560px;
+    overflow: visible;
 }
 .calendar-header {
     display: flex;
@@ -93,15 +103,15 @@ require_once 'provider_header.php';
     cursor: pointer;
 }
 .calendar-card {
-        background: #f5f6fa;
-        border-radius: 12px;
-        padding: 12px 8px 18px 8px;
-        box-shadow: 0 2px 8px #e0e7ff;
-            min-height: 320px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow: hidden;
+    background: #f5f6fa;
+    border-radius: 12px;
+    padding: 24px 16px 32px 16px;
+    box-shadow: 0 2px 8px #e0e7ff;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: visible;
 }
 .calendar-grid-header {
     display: grid;
@@ -114,33 +124,33 @@ require_once 'provider_header.php';
     font-size: 0.98rem;
 }
 .calendar-days {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-            grid-template-rows: repeat(6, 44px);
-        gap: 0;
-        min-height: 240px;
-        text-align: center;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 60px);
+    gap: 8px;
+    min-height: 360px;
+    text-align: center;
 }
 .calendar-day {
-        background: transparent;
-        border-radius: 0;
-            width: 38px;
-            height: 38px;
-            justify-self: center;
-            align-self: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        font-size: 1.1rem;
-        color: #222;
-        font-weight: 600;
-        position: relative;
-        cursor: pointer;
-        transition: background 0.2s, color 0.2s;
-        margin: 0 auto;
-        box-shadow: none;
-        border: none;
+    background: transparent;
+    border-radius: 0;
+    width: 56px;
+    height: 56px;
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.25rem;
+    color: #222;
+    font-weight: 600;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    margin: 0 auto;
+    box-shadow: none;
+    border: none;
 }
 .calendar-day.selected {
         background: #1eb6e9;
@@ -167,8 +177,8 @@ require_once 'provider_header.php';
     min-width: 220px;
     background: #fafbfc;
     border-radius: 12px;
-    padding: 18px 18px 24px 18px;
-    box-shadow: 0 2px 8px #e0e7ff;
+    padding: 18px 12px 24px 12px;
+    min-height: 400px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;

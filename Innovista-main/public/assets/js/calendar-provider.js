@@ -43,46 +43,53 @@ function renderCalendar(year, month) {
     const prevMonthLastDay = new Date(year, month, 0).getDate();
 
     let html = '';
-    // Fill previous month's overflow days
-    for (let i = 0; i < startDay; i++) {
-        const prevMonth = month === 0 ? 11 : month - 1;
-        const prevYear = month === 0 ? year - 1 : year;
-        const prevMonthLastDay = new Date(prevYear, prevMonth + 1, 0).getDate();
-        html += `<div class='calendar-day not-current-month'>${prevMonthLastDay - startDay + i + 1}</div>`;
-    }
     const key = `${year}-${month}`;
     if (!availableDates[key]) availableDates[key] = [];
-    for (let d = 1; d <= daysInMonth; d++) {
+    // Always render 6 rows of 7 days (42 cells)
+    for (let i = 0; i < 42; i++) {
+        const cellDate = i - startDay + 1;
+        let cellMonth = month;
+        let cellYear = year;
         let classes = 'calendar-day';
-        // Highlight today
-        if (
-            year === today.getFullYear() &&
-            month === today.getMonth() &&
-            d === today.getDate()
-        ) {
-            classes += ' calendar-today';
+        let displayNum = cellDate;
+        // Previous month
+        if (cellDate <= 0) {
+            cellMonth = month === 0 ? 11 : month - 1;
+            cellYear = month === 0 ? year - 1 : year;
+            const prevMonthLastDay = new Date(cellYear, cellMonth + 1, 0).getDate();
+            displayNum = prevMonthLastDay + cellDate;
+            classes += ' not-current-month';
         }
-        // Highlight selected individual dates
-        if (selectedDates.some(dt => dt.year === year && dt.month === month && dt.day === d)) {
-            classes += ' calendar-range calendar-range-edge';
-        }
-        // Highlight available dates from database
-        const key = `${year}-${month}`;
-        if (availableDates[key] && availableDates[key].includes(d)) {
-            classes += ' calendar-available';
+        // Next month
+        else if (cellDate > daysInMonth) {
+            cellMonth = month === 11 ? 0 : month + 1;
+            cellYear = month === 11 ? year + 1 : year;
+            displayNum = cellDate - daysInMonth;
+            classes += ' not-current-month';
+        } else {
+            // Highlight today
+            if (
+                year === today.getFullYear() &&
+                month === today.getMonth() &&
+                cellDate === today.getDate()
+            ) {
+                classes += ' calendar-today';
+            }
+            // Highlight selected individual dates
+            if (selectedDates.some(dt => dt.year === year && dt.month === month && dt.day === cellDate)) {
+                classes += ' calendar-range calendar-range-edge';
+            }
+            // Highlight available dates from database
+            if (availableDates[key] && availableDates[key].includes(cellDate)) {
+                classes += ' calendar-available';
+            }
         }
         // Style weekends
-        let weekDay = (startDay + d - 1) % 7;
+        let weekDay = i % 7;
         if (weekDay === 0 || weekDay === 6) {
             classes += ' calendar-weekend';
         }
-        html += `<div class='${classes}' data-day='${d}'>${d}</div>`;
-    }
-    const totalCells = startDay + daysInMonth;
-    const nextDays = (7 - (totalCells % 7)) % 7;
-    // Fill next month's overflow days
-    for (let i = 1; i <= nextDays; i++) {
-        html += `<div class='calendar-day not-current-month'>${i}</div>`;
+        html += `<div class='${classes}' data-day='${displayNum}'>${displayNum}</div>`;
     }
     document.getElementById('calendar-days').innerHTML = html;
     // Add click event for selecting a range
