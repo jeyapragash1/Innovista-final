@@ -1,3 +1,204 @@
+.color-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 210px;
+    padding: 1rem 1rem 1.5rem 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border: 1px solid #eee;
+}
+.color-card .color-info {
+    flex: 1 1 auto;
+    margin-bottom: 0.5rem;
+}
+.color-card .btn-add-cart {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #179b96;
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 2px 8px rgba(23,155,150,0.12);
+    cursor: pointer;
+    transition: box-shadow 0.2s, background 0.2s;
+    z-index: 2;
+}
+.color-card .btn-add-cart:hover {
+    background: #127a76;
+    box-shadow: 0 4px 16px rgba(23,155,150,0.18);
+}
+.color-card .color-liters {
+    margin-bottom: 0.5rem;
+}
+/* Small circular purchase button for color cards */
+.color-card {
+    position: relative;
+}
+/* Floating Action Purchase Button */
+.fab-purchase-btn {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #179b96;
+    box-shadow: 0 4px 16px rgba(23,155,150,0.15);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3001;
+    transition: box-shadow 0.2s, background 0.2s;
+}
+.fab-purchase-btn:hover {
+    background: #127a76;
+    box-shadow: 0 8px 24px rgba(23,155,150,0.25);
+}
+.fab-purchase-btn svg {
+    display: block;
+}
+.custom-color-name {
+    width: 110px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.95rem;
+    background: #f8fafc;
+    color: #333;
+}
+.custom-color-info {
+    padding: 0.5rem 0;
+}
+.custom-color-label {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+}
+.custom-color-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0.5rem;
+}
+.custom-color-hex {
+    width: 70px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 0.95rem;
+    background: #f8fafc;
+    color: #333;
+}
+.custom-color-hex {
+    width: 90px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.95rem;
+    background: #f8fafc;
+    color: #333;
+}
+.custom-color-price {
+    width: 80px;
+    background: #fff;
+    cursor: pointer;
+    padding: 3px 8px;
+}
+.custom-color-name, .custom-color-price {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 0.95rem;
+    margin-right: 4px;
+}
+/* --- Painting Brand Grid & Color Panel --- */
+.brand-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+.brand-card {
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 1px solid #eee;
+}
+.brand-card:hover {
+    box-shadow: var(--box-shadow-hover);
+    transform: translateY(-4px) scale(1.03);
+}
+.brand-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #eee;
+}
+.brand-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+.color-panel {
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+}
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+}
+.color-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border: 1px solid #eee;
+}
+.color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.color-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.color-name {
+    font-weight: 600;
+    color: #333;
+}
+.color-price {
+    color: var(--primary-color);
+    font-weight: 700;
+}
 /* ===================================================================
    STYLES FOR THE PRODUCTS PAGE
    =================================================================== */

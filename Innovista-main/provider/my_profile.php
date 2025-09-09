@@ -42,14 +42,14 @@ if (!$provider) {
                 <label for="email">Contact Email</label>
                 <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($provider['provider_email'] ?? ''); ?>" required>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="phone">Contact Phone</label>
-            <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($provider['provider_phone'] ?? ''); ?>">
-        </div>
-        <div class="form-group">
-            <label for="bio">Company Bio / Description</label>
-            <textarea id="bio" name="bio" rows="4"><?php echo htmlspecialchars($provider['provider_address'] ?? ''); ?></textarea>
+            <div class="form-group">
+                <label for="phone">Contact Phone</label>
+                <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($provider['provider_phone'] ?? ''); ?>">
+            </div>
+            <div class="form-group full-width">
+                <label for="bio">Company Bio / Description</label>
+                <textarea id="bio" name="bio" rows="4"><?php echo htmlspecialchars($provider['provider_address'] ?? ''); ?></textarea>
+            </div>
         </div>
         <button type="submit" name="update_details" class="btn-submit">Save Business Info</button>
     </form>
@@ -78,13 +78,40 @@ if (!$provider) {
     </form>
     <div class="portfolio-gallery">
         <?php 
-        $portfolio = isset($provider['portfolio']) ? (is_array($provider['portfolio']) ? $provider['portfolio'] : explode(',', $provider['portfolio'])) : [];
-        foreach($portfolio as $photo): ?>
-            <div class="portfolio-image-card">
-                <img src="../assets/images/<?php echo htmlspecialchars($photo); ?>" alt="Portfolio work">
-                <button class="delete-photo-btn" title="Delete Photo"><i class="fas fa-trash"></i></button>
-            </div>
-        <?php endforeach; ?>
+        $portfolio = isset($provider['portfolio']) && $provider['portfolio'] ? (is_array($provider['portfolio']) ? $provider['portfolio'] : explode(',', $provider['portfolio'])) : [];
+        if (count($portfolio) > 0 && $portfolio[0] !== ''): 
+            foreach($portfolio as $photo): ?>
+                <div class="portfolio-image-card">
+                    <img src="/INNOVISTA/Innovista-final/Innovista-main/public/assets/images/<?php echo htmlspecialchars($photo); ?>" alt="Portfolio work" style="width:160px;height:160px;min-width:160px;min-height:160px;max-width:160px;max-height:160px;object-fit:cover;border-radius:10px;display:block;cursor:pointer;" onclick="showPortfolioModal(this.src)" />
+                    <button class="delete-photo-btn" title="Delete Photo"><i class="fas fa-trash"></i></button>
+                </div>
+            <?php endforeach; 
+        else: ?>
+            <p style="color: #888; font-size: 1rem;">No portfolio images uploaded yet.</p>
+        <?php endif; ?>
+        <!-- Modal for big image -->
+        <div id="portfolioModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+            <span onclick="closePortfolioModal()" style="position:absolute;top:30px;right:50px;font-size:2.5rem;color:#fff;cursor:pointer;font-weight:bold;z-index:10001;">&times;</span>
+            <img id="portfolioModalImg" src="" alt="Portfolio Large" style="max-width:90vw;max-height:90vh;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.25);background:#fff;z-index:10000;" />
+        </div>
+        <script>
+        function showPortfolioModal(src) {
+            document.getElementById('portfolioModalImg').src = src;
+            document.getElementById('portfolioModal').style.display = 'flex';
+        }
+        function closePortfolioModal() {
+            document.getElementById('portfolioModal').style.display = 'none';
+        }
+        // Optional: close modal on background click
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = document.getElementById('portfolioModal');
+            if(modal) {
+                modal.addEventListener('click', function(e) {
+                    if(e.target === modal) closePortfolioModal();
+                });
+            }
+        });
+        </script>
     </div>
 </div>
 

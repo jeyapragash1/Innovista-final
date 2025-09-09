@@ -76,10 +76,10 @@ $pending_quotes = $pending_quotes_query->fetchAll(PDO::FETCH_ASSOC);
 <div class="dashboard-section">
     <h3>What would you like to do?</h3>
     <div class="quick-access-grid">
-        <a href="request_quotation.php" class="access-card"><i class="fas fa-file-signature"></i><span>Request a New Quote</span></a>
-        <a href="../public/services.php" class="access-card"><i class="fas fa-search"></i><span>Search for Services</span></a>
-        <a href="../public/products.php" class="access-card"><i class="fas fa-shopping-cart"></i><span>Purchase Products</span></a>
-        <a href="my_profile.php" class="access-card"><i class="fas fa-user-edit"></i><span>Manage My Profile</span></a>
+    <a href="request_quotation.php" class="access-card"><i class="fas fa-file-signature"></i><span>Request a New Quote</span></a>
+    <a href="../public/services.php" class="access-card"><i class="fas fa-search"></i><span>Search for Services</span></a>
+    <a href="../public/product.php" class="access-card"><i class="fas fa-shopping-cart"></i><span>Purchase Products</span></a>
+    <a href="my_profile.php" class="access-card"><i class="fas fa-user-edit"></i><span>Manage My Profile</span></a>
     </div>
 </div>
 
