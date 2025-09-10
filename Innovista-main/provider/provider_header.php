@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../public/assets/css/dashboard.css"> <!-- Link to the new unified CSS -->
+
     <style>
     /* Fallback flash message style for guaranteed visibility */
     .flash-message-container {
@@ -72,6 +73,7 @@
         100% { opacity: 1; transform: scale(1) translateY(0); }
     }
     </style>
+
 </head>
 <body class="dashboard-body"> <!-- Add class to body -->
     <!-- Flash message for profile update (guaranteed visibility) -->
@@ -122,10 +124,16 @@
         
         <div class="content-wrapper">
             <header class="main-header-bar">
-                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
-                <div class="user-profile-widget">
-                    <span>Welcome, <?php echo $_SESSION['user_name'] ?? 'Provider'; ?></span>
-                    <i class="fas fa-user-circle"></i>
+                <div class="header-left">
+                    <button class="menu-toggle" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="user-welcome">
+                        <span>Welcome, <?php echo $_SESSION['user_name'] ?? 'Provider'; ?></span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+               
                 </div>
             </header>
             <main class="main-content">
