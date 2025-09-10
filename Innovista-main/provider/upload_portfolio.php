@@ -45,10 +45,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['portfolio_photos']))
     $stmt3->execute();
 
     set_flash_message('success', 'Portfolio updated successfully!');
-    header('Location: manage_portfolio.php');
+    // Redirect back to the page where the upload was triggered
+    $referer = $_SERVER['HTTP_REFERER'] ?? '';
+    if (strpos($referer, 'my_profile.php') !== false) {
+        header('Location: my_profile.php');
+    } else {
+        header('Location: manage_portfolio.php');
+    }
     exit();
 } else {
     set_flash_message('error', 'No files uploaded.');
-    header('Location: manage_portfolio.php');
+    $referer = $_SERVER['HTTP_REFERER'] ?? '';
+    if (strpos($referer, 'my_profile.php') !== false) {
+        header('Location: my_profile.php');
+    } else {
+        header('Location: manage_portfolio.php');
+    }
     exit();
 }

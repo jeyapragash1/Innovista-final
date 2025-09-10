@@ -10,8 +10,94 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../public/assets/css/dashboard.css"> <!-- Link to the new unified CSS -->
+    <style>
+    /* Fallback flash message style for guaranteed visibility */
+    .flash-message-container {
+        position: fixed;
+        top: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+        pointer-events: none;
+    }
+    .flash-message {
+        padding: 1rem 1.5rem 1rem 1.5rem;
+        border-radius: 10px;
+        font-size: 1.13rem;
+        font-weight: 600;
+        margin: 0 auto 0.7rem auto;
+        display: inline-block;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+        letter-spacing: 0.5px;
+        animation: fadeInScale 0.7s cubic-bezier(.4,2,.6,1) both;
+        position: relative;
+        pointer-events: auto;
+        transition: opacity 0.5s;
+        background: #e6f9ed;
+        color: #1a7f4f;
+        border: 1.5px solid #1a7f4f;
+    }
+    .flash-message.error {
+        background: #ffeaea;
+        color: #c0392b;
+        border: 1.5px solid #c0392b;
+    }
+    .flash-message .flash-close-btn {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 1.2rem;
+        cursor: pointer;
+        font-weight: bold;
+        transition: color 0.2s;
+        z-index: 2;
+        padding: 0;
+    }
+    .flash-message .flash-close-btn:hover {
+        color: #c0392b;
+    }
+    .flash-message.hide {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s;
+    }
+    @keyframes fadeInScale {
+        0% { opacity: 0; transform: scale(0.95) translateY(-10px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    </style>
 </head>
 <body class="dashboard-body"> <!-- Add class to body -->
+    <!-- Flash message for profile update (guaranteed visibility) -->
+    <?php if (function_exists('display_flash_message')): ?>
+    <div class="flash-message-container" id="flashMessageContainer">
+        <?php ob_start(); display_flash_message(); $msg = ob_get_clean();
+        if (trim($msg)) {
+            // Add close button if message exists
+            $msg = preg_replace('/(<div class=\'flash-message [^\']+\'>)/', '$1<button class=\"flash-close-btn\" onclick=\"closeFlashMessage(event)\">&times;</button>', $msg);
+            echo $msg;
+        }
+        ?>
+    </div>
+    <script>
+    function closeFlashMessage(e) {
+        var msg = e.target.closest('.flash-message');
+        if(msg) { msg.classList.add('hide'); setTimeout(function(){ msg.remove(); }, 500); }
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+        var msg = document.querySelector('.flash-message');
+        if(msg) {
+            setTimeout(function(){ msg.classList.add('hide'); setTimeout(function(){ msg.remove(); }, 500); }, 3500);
+        }
+    });
+    </script>
+    <?php endif; ?>
     <div class="dashboard-container">
         <aside class="dashboard-sidebar" id="sidebar">
             <div class="sidebar-header">
