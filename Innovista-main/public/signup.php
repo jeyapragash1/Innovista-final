@@ -42,6 +42,14 @@
                             <label for="email">Email Address</label>
                             <input type="email" id="email" name="email" placeholder="you@example.com" required>
                         </div>
+                        <div class="form-group">
+                            <label for="customerPhone">Phone Number</label>
+                            <input type="tel" id="customerPhone" name="customerPhone" placeholder="Enter phone number" pattern="^[0-9]{10,15}$" maxlength="15">
+                        </div>
+                        <div class="form-group">
+                            <label for="customerAddress">Address</label>
+                            <input type="text" id="customerAddress" name="customerAddress" placeholder="Enter address">
+                        </div>
                     </div>
 
                     <!-- Provider Fields -->

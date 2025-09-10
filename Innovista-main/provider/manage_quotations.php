@@ -1,9 +1,8 @@
-<?php 
-$pageTitle = 'Manage Quotations';
-require_once '../provider/provider_header.php'; 
-
-require_once '../config/Database.php';
+<?php
 session_start();
+$pageTitle = 'Manage Quotations';
+require_once '../provider/provider_header.php';
+require_once '../config/Database.php';
 $provider_id = $_SESSION['user_id'];
 $db = (new Database())->getConnection();
 $stmt = $db->prepare('SELECT q.*, u.name as customer_name FROM quotations q JOIN users u ON q.customer_id = u.id WHERE q.provider_id = :provider_id ORDER BY q.created_at DESC');
