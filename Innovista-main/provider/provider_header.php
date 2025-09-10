@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../public/assets/css/dashboard.css"> <!-- Link to the new unified CSS -->
+    <link rel="stylesheet" href="../public/assets/css/notifications.css">
+    <script defer src="../public/assets/js/notifications.js"></script>
 </head>
 <body class="dashboard-body"> <!-- Add class to body -->
     <div class="dashboard-container">
@@ -36,10 +38,31 @@
         
         <div class="content-wrapper">
             <header class="main-header-bar">
-                <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
-                <div class="user-profile-widget">
-                    <span>Welcome, <?php echo $_SESSION['user_name'] ?? 'Provider'; ?></span>
-                    <i class="fas fa-user-circle"></i>
+                <div class="header-left">
+                    <button class="menu-toggle" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="user-welcome">
+                        <span>Welcome, <?php echo $_SESSION['user_name'] ?? 'Provider'; ?></span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="notifications-wrapper">
+                        <div class="notifications-icon" id="notificationsToggle">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count" id="notificationCount">0</span>
+                        </div>
+                        <div class="notifications-dropdown" id="notificationsDropdown">
+                            <div class="notifications-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-all-read">Mark all as read</button>
+                            </div>
+                            <div class="notifications-list" id="notificationsList">
+                                <!-- Notifications will be loaded here dynamically -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </header>
             <main class="main-content">
