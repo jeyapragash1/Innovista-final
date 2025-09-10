@@ -1,7 +1,7 @@
 <?php
 class Database {
-    private $host = '127.0.0.1';       // better than 'localhost' in XAMPP
-    private $port = '3307';            // change if your MySQL uses 3307
+    private $host = '127.0.0.1';  
+    private $port = '3307';          
     private $db_name = 'innovista';
     private $username = 'root';
     private $password = '';
