@@ -66,9 +66,9 @@
     $joinProviderLink = 'signup.php';
     if ($userLoggedIn) {
         if ($userRole === 'provider') {
-            $joinProviderLink = 'provider_dashboard.php';
+            $joinProviderLink = '../provider/provider_dashboard.php';
         } elseif ($userRole === 'customer') {
-            $joinProviderLink = 'signup.php?role=provider'; 
+            $joinProviderLink = '../customer/customer_dashboard.php';
         } elseif ($userRole === 'admin') {
             $joinProviderLink = '../admin/admin_dashboard.php'; 
         }
