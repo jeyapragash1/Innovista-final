@@ -15,8 +15,8 @@ if (!$user_id || !is_numeric($user_id)) {
     exit();
 }
 
-// Fetch user data
-$stmt = $conn->prepare("SELECT id, name, email, role, status, provider_status, phone, address, bio, portfolio, profile_image_path FROM users WHERE id = :id");
+// Fetch user data - ensure to select all potentially used columns
+$stmt = $conn->prepare("SELECT id, name, email, role, status, provider_status, credentials_verified, phone, address, bio, portfolio, profile_image_path FROM users WHERE id = :id");
 $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
 $stmt->execute();
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -43,8 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $bio = filter_input(INPUT_POST, 'bio', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $provider_status = filter_input(INPUT_POST, 'provider_status', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $credentials_verified = filter_input(INPUT_POST, 'credentials_verified', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    
+    // Only attempt to get provider-specific POST data if the role is provider
+    $provider_status = ($role === 'provider') ? (filter_input(INPUT_POST, 'provider_status', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? null) : null;
+    $credentials_verified = ($role === 'provider') ? (filter_input(INPUT_POST, 'credentials_verified', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'no') : 'no';
+
 
     // Image Upload Handling (for profile_image_path)
     $new_profile_image_path = $user['profile_image_path']; // Default to current image
@@ -99,7 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $params[':provider_status'] = $provider_status;
                 $params[':credentials_verified'] = $credentials_verified;
             } else {
-                // If role changes from provider to customer/admin, unset provider-specific statuses
+                // If role changes from provider to customer/admin, or if it was never provider,
+                // ensure provider-specific statuses are NULL/default.
                 $update_query .= ", provider_status = NULL, credentials_verified = 'no'";
             }
 
@@ -115,13 +119,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $status_type = "info";
             }
             // Re-fetch user data to display updated info
-            $stmt = $conn->prepare("SELECT id, name, email, role, status, provider_status, phone, address, bio, portfolio, profile_image_path FROM users WHERE id = :id");
+            $stmt = $conn->prepare("SELECT id, name, email, role, status, provider_status, credentials_verified, phone, address, bio, portfolio, profile_image_path FROM users WHERE id = :id");
             $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
-            $message = "Database error: " . $e->getMessage();
+            // Check for duplicate email error specifically
+            if ($e->getCode() == '23000' && str_contains($e->getMessage(), 'email')) {
+                $message = "This email is already registered.";
+            } else {
+                $message = "Database error: " . $e->getMessage();
+            }
             $status_type = "error";
             error_log("Edit User Error: " . $e->getMessage());
         }
@@ -168,16 +177,18 @@ if (isset($message) && $message !== '') {
                 <div class="form-group">
                     <label for="provider_status">Provider Approval Status</label>
                     <select id="provider_status" name="provider_status">
-                        <option value="pending" <?php echo ($user['provider_status'] === 'pending') ? 'selected' : ''; ?>>Pending</option>
-                        <option value="approved" <?php echo ($user['provider_status'] === 'approved') ? 'selected' : ''; ?>>Approved</option>
-                        <option value="rejected" <?php echo ($user['provider_status'] === 'rejected') ? 'selected' : ''; ?>>Rejected</option>
+                        <!-- Use null coalescing operator to safely access provider_status -->
+                        <option value="pending" <?php echo (($user['provider_status'] ?? '') === 'pending') ? 'selected' : ''; ?>>Pending</option>
+                        <option value="approved" <?php echo (($user['provider_status'] ?? '') === 'approved') ? 'selected' : ''; ?>>Approved</option>
+                        <option value="rejected" <?php echo (($user['provider_status'] ?? '') === 'rejected') ? 'selected' : ''; ?>>Rejected</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="credentials_verified">Credentials Verified?</label>
                     <select id="credentials_verified" name="credentials_verified">
-                        <option value="no" <?php echo ($user['credentials_verified'] === 'no') ? 'selected' : ''; ?>>No</option>
-                        <option value="yes" <?php echo ($user['credentials_verified'] === 'yes') ? 'selected' : ''; ?>>Yes</option>
+                        <!-- Use null coalescing operator to safely access credentials_verified -->
+                        <option value="no" <?php echo (($user['credentials_verified'] ?? '') === 'no') ? 'selected' : ''; ?>>No</option>
+                        <option value="yes" <?php echo (($user['credentials_verified'] ?? '') === 'yes') ? 'selected' : ''; ?>>Yes</option>
                     </select>
                 </div>
             </div>
