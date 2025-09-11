@@ -1,9 +1,7 @@
-<?php if (!empty($provider['provider_bio'])): ?>
-                        <div class="provider-bio" style="margin-top:1rem;">
-                            <strong>Bio / Description:</strong> <?php echo htmlspecialchars($provider['provider_bio']); ?>
-                        </div>
-                    <?php endif; ?>
-<?php 
+
+
+
+<?php
 $pageTitle = 'Find a Professional';
 include 'header.php'; 
 require_once __DIR__ . '/../config/Database.php';
@@ -16,23 +14,56 @@ $database = new Database();
 $db = $database->getConnection();
 
 $providers = [];
+$debug = [];
 if ($selectedService && $selectedSubcategory) {
-    // Filter by main_service and subcategory
-    $stmt = $db->prepare('SELECT * FROM service WHERE main_service = :service AND subcategories LIKE :subcategory');
-    $stmt->bindParam(':service', $selectedService);
-    $likeSubcat = "%" . $selectedSubcategory . "%";
-    $stmt->bindParam(':subcategory', $likeSubcat);
+    // Remove spaces and make lower case for matching in both filter and DB values
+    $selectedServiceNoSpace = strtolower(str_replace([' ', '-', '_'], '', $selectedService));
+    $selectedSubcategoryNoSpace = strtolower(str_replace([' ', '-', '_'], '', $selectedSubcategory));
+    // Get all providers with the selected main service
+    $stmt = $db->prepare('SELECT * FROM service WHERE FIND_IN_SET(:service, LOWER(REPLACE(main_service, " ", "")))');
+    $stmt->bindParam(':service', $selectedServiceNoSpace);
     $stmt->execute();
-    $providers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $allProviders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Filter providers to only those who have a subcategory matching both main service and subcategory
+    $providers = [];
+    foreach ($allProviders as $prov) {
+        $subcats = explode(',', $prov['subcategories']);
+        foreach ($subcats as $subcat) {
+            $subcatNoSpace = strtolower(str_replace([' ', '-', '_'], '', $subcat));
+            if (strpos($subcatNoSpace, $selectedServiceNoSpace) !== false && strpos($subcatNoSpace, $selectedSubcategoryNoSpace) !== false) {
+                $providers[] = $prov;
+                break;
+            }
+        }
+    }
 } elseif ($selectedService) {
-    // Filter by main_service only
-    $stmt = $db->prepare('SELECT * FROM service WHERE main_service = :service');
-    $stmt->bindParam(':service', $selectedService);
+    $selectedServiceNoSpace = strtolower(str_replace([' ', '-', '_'], '', $selectedService));
+    $stmt = $db->prepare('SELECT * FROM service WHERE FIND_IN_SET(:service, LOWER(REPLACE(main_service, " ", "")))');
+    $stmt->bindParam(':service', $selectedServiceNoSpace);
     $stmt->execute();
     $providers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
     // If no service selected, show nothing
     $providers = [];
+}
+
+// Debug: Show processed filter values
+if ($selectedService) {
+    $debug[] = 'Selected Service (raw): ' . htmlspecialchars($selectedService);
+    $debug[] = 'Selected Service (processed): ' . htmlspecialchars($selectedServiceNoSpace ?? '');
+}
+if ($selectedSubcategory) {
+    $debug[] = 'Selected Subcategory (raw): ' . htmlspecialchars($selectedSubcategory);
+    $debug[] = 'Selected Subcategory (processed): ' . htmlspecialchars($selectedSubcategoryNoSpace ?? '');
+}
+
+// Debug: Show all main_service and subcategories in DB
+$allRows = $db->query('SELECT provider_id, provider_name, main_service, subcategories FROM service')->fetchAll(PDO::FETCH_ASSOC);
+if ($allRows) {
+    $debug[] = '<strong>All Providers in DB:</strong>';
+    foreach ($allRows as $row) {
+        $debug[] = 'ID: ' . $row['provider_id'] . ' | Name: ' . htmlspecialchars($row['provider_name']) . ' | main_service: ' . htmlspecialchars($row['main_service']) . ' | subcategories: ' . htmlspecialchars($row['subcategories']);
+    }
 }
 ?>
 
@@ -66,6 +97,7 @@ if (isset($_SESSION['flash_message'])) {
     </aside>
 
     <!-- Provider List -->
+    <!-- Debug info removed -->
     <section class="provider-list-container">
         <?php if (empty($providers)): ?>
             <div style="padding:2rem; text-align:center; color:#888; font-size:1.2rem;">No providers found for this service.</div>
@@ -78,12 +110,34 @@ if (isset($_SESSION['flash_message'])) {
                         <i class="fas fa-check-circle verified-badge" title="Verified Provider"></i>
                     </h3>
                     <div class="service-tags-list">
-                        <span class="service-tag-item"><?php echo htmlspecialchars($provider['main_service']); ?></span>
-                        <?php 
-                        $subcats = explode(',', $provider['subcategories']);
-                        foreach ($subcats as $subcat): ?>
-                            <span class="service-tag-item"><?php echo htmlspecialchars(trim($subcat)); ?></span>
-                        <?php endforeach; ?>
+                        <?php
+                        // Show all main services for this provider
+                        $mainServices = array_map('trim', explode(',', $provider['main_service']));
+                        foreach ($mainServices as $ms) {
+                            // Highlight if matches selected service
+                            $isSelected = ($selectedService && strtolower(str_replace(' ', '', $ms)) === strtolower(str_replace(' ', '', $selectedService)));
+                            echo '<span class="service-tag-item" style="'.($isSelected ? 'background:#e0f7fa;color:#00796b;font-weight:600;' : '').'">'.htmlspecialchars($ms).'</span>';
+                        }
+
+                        // Show relevant subcategories for the selected service
+                        $subcats = array_map('trim', explode(',', $provider['subcategories']));
+                        foreach ($subcats as $subcat) {
+                            // If a service is selected, only show subcategories that start with or contain the selected service
+                            if ($selectedService) {
+                                // Remove spaces and compare lowercased
+                                $msNoSpace = strtolower(str_replace(' ', '', $selectedService));
+                                $subcatNoSpace = strtolower(str_replace(' ', '', $subcat));
+                                if (strpos($subcatNoSpace, $msNoSpace) === false) continue;
+                            }
+                            // If a subcategory is selected, only show matching subcategory
+                            if ($selectedSubcategory) {
+                                $subcatNameOnly = strtolower(str_replace(' ', '', $subcat));
+                                $selectedSubcatNoSpace = strtolower(str_replace(' ', '', $selectedSubcategory));
+                                if (strpos($subcatNameOnly, $selectedSubcatNoSpace) === false) continue;
+                            }
+                            echo '<span class="service-tag-item" style="background:#fffde7;color:#b45309;">'.htmlspecialchars($subcat).'</span>';
+                        }
+                        ?>
                     </div>
                     <div class="provider-contact-details" style="margin-top:1rem;">
                         <strong>Email:</strong> <?php echo htmlspecialchars($provider['provider_email']); ?><br>
@@ -113,7 +167,7 @@ if (isset($_SESSION['flash_message'])) {
     </section>
 
 <!-- Quote Request Modal -->
-<div id="quoteRequestModal" class="booking-modal">
+<div id="quoteRequestModal" class="booking-modal" style="display:none;">
     <div class="booking-modal-content" style="max-width:500px;">
         <span class="close-modal-btn">×</span>
         <h2 style="margin-bottom:1rem;">Request a Quotation</h2>
@@ -135,7 +189,9 @@ if (isset($_SESSION['flash_message'])) {
 
 
 
-<div id="bookingModal" class="booking-modal">
+<!-- Move booking modal to end of body to avoid nesting/overlap issues -->
+<?php ob_start(); ?>
+<div id="bookingModal" class="booking-modal" style="display:none;">
     <div class="booking-modal-content">
         <span class="close-modal-btn">×</span>
         <div id="calendarStep">
@@ -145,6 +201,10 @@ if (isset($_SESSION['flash_message'])) {
                 <button id="nextMonthBtn" style="background:#e5e7eb;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-weight:600;">&#8594;</button>
             </div>
             <div id="calendar-container"></div>
+            <div id="time-slots-section" class="time-slots-section" style="display:none;">
+                <div class="times-label">Available Times</div>
+                <div id="time-slots-list" class="time-slots-list"></div>
+            </div>
         </div>
         <div id="paymentStep" style="display:none;">
             <h3>Confirm & Pay Consultation Fee</h3>
@@ -178,8 +238,115 @@ if (isset($_SESSION['flash_message'])) {
         </div>
     </div>
 </div>
+<?php $bookingModalHtml = ob_get_clean(); ?>
+<style>
+.booking-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.18);
+}
+.booking-modal-content {
+    padding: 2rem 2.5rem 2rem 2.5rem;
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 4px 32px rgba(30,182,233,0.08);
+    min-width: 340px;
+    max-width: 540px;
+    margin: 0 auto;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.calendar-date-cell.selected {
+    box-shadow: 0 0 0 2px #1eb6e9;
+    background: #1eb6e9 !important;
+    color: #fff !important;
+}
+.time-slots-section {
+    margin-top: 1.5rem;
+    padding: 1rem 0 0 0;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    background: #fff;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    overflow: visible;
+}
+.times-label {
+    font-weight: 700;
+    color: #1eb6e9;
+    margin-bottom: 0.75rem;
+    font-size: 1.08rem;
+    letter-spacing: 0.5px;
+}
+.time-slots-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 18px 24px;
+    padding-bottom: 1.2rem;
+    margin-top: 1.2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+.time-slot-btn {
+    min-width: 150px;
+    height: 54px;
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 1.18rem;
+    font-weight: 700;
+    border: 2.5px solid #1eb6e9;
+    background: #f0faff;
+    color: #1eb6e9;
+    border-radius: 10px;
+    transition: all 0.18s;
+    box-shadow: 0 2px 8px #e0e7ff33;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 18px;
+    margin-bottom: 0;
+}
+.time-slot-btn {
+    background: #f5f6fa;
+    color: #1eb6e9;
+    border: 1.5px solid #1eb6e9;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    outline: none;
+    box-shadow: 0 2px 8px #e0e7ff33;
+}
+.time-slot-btn.selected,
+.time-slot-btn:active {
+    background: #1eb6e9;
+    color: #fff;
+    border-color: #1eb6e9;
+}
+.time-slot-btn:hover {
+    background: #e0f7ff;
+    color: #1eb6e9;
+}
+@media (max-width: 500px) {
+    .booking-modal-content { min-width: 0; max-width: 98vw; padding: 1rem 0.5rem; }
+    .time-slot-btn { padding: 8px 10px; font-size: 0.98rem; }
+    .time-slots-list { gap: 8px; }
+}
+</style>
 <script src="assets/js/serviceprovider.js"></script>
 <?php 
+// Output the booking modal at the end of the body
+echo $bookingModalHtml;
 // Include the footer, which now should also link to our new script
 include 'footer.php'; 
 ?>
