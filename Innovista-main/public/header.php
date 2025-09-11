@@ -21,11 +21,11 @@
                 break;
             case 'provider':
                 // Assuming provider_dashboard.php is within the 'public' directory
-                $dashboardUrl = 'provider_dashboard.php'; 
+                $dashboardUrl = '../provider/provider_dashboard.php'; ///C:\xampp1\htdocs\Innovista-final\Innovista-main\provider\provider_dashboard.php
                 break;
             case 'customer':
                 // Assuming customer_dashboard.php is within the 'public' directory
-                $dashboardUrl = 'customer_dashboard.php'; 
+                $dashboardUrl = '../customer/customer_dashboard.php'; 
                 break;
             default:
                 // Fallback for logged-in users with an unrecognized role, directs them home
