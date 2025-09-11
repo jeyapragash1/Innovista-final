@@ -25,7 +25,7 @@ if ($userType === 'provider') {
     $subcategories_str = implode(',', $subcategories);
     $providerPhone = $_POST['providerPhone'] ?? '';
     $providerAddress = $_POST['providerAddress'] ?? '';
-    $providerDetails = $_POST['providerDetails'] ?? '';
+    $providerDetails = $_POST['provider_bio'] ?? '';
     $portfolioFile = '';
     if (isset($_FILES['providerCV']) && $_FILES['providerCV']['error'] === UPLOAD_ERR_OK) {
         $portfolioTmp = $_FILES['providerCV']['tmp_name'];
@@ -39,6 +39,8 @@ if ($userType === 'provider') {
     $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
     $service = '';
+    $customerPhone = $_POST['customerPhone'] ?? '';
+    $customerAddress = $_POST['customerAddress'] ?? '';
 }
 
 $password = $_POST['password'] ?? '';
@@ -82,7 +84,13 @@ $db = $database->getConnection();
 $user = new User($db);
 
 
-$result = $user->register($name, $email, $password, $userType, $service, $subcategories_str);
+
+// Pass phone and address for customer
+if ($userType === 'customer') {
+    $result = $user->register($name, $email, $password, $userType, '', '', $customerPhone, $customerAddress);
+} else {
+    $result = $user->register($name, $email, $password, $userType, $service, $subcategories_str, $providerPhone, $providerAddress, $portfolioFile, $providerDetails);
+}
 
 if ($result === true) {
     // Registration was successful
@@ -95,7 +103,7 @@ if ($result === true) {
         $provider = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($provider) {
             $provider_id = $provider['id'];
-            $service_stmt = $db->prepare('INSERT INTO service (provider_id, provider_name, provider_email, main_service, subcategories, provider_phone, provider_address, portfolio) VALUES (:provider_id, :provider_name, :provider_email, :main_service, :subcategories, :provider_phone, :provider_address, :portfolio)');
+            $service_stmt = $db->prepare('INSERT INTO service (provider_id, provider_name, provider_email, main_service, subcategories, provider_phone, provider_address, portfolio, provider_bio) VALUES (:provider_id, :provider_name, :provider_email, :main_service, :subcategories, :provider_phone, :provider_address, :portfolio, :provider_bio)');
             $service_stmt->bindParam(':provider_id', $provider_id);
             $service_stmt->bindParam(':provider_name', $name);
             $service_stmt->bindParam(':provider_email', $email);
@@ -104,6 +112,7 @@ if ($result === true) {
             $service_stmt->bindParam(':provider_phone', $providerPhone);
             $service_stmt->bindParam(':provider_address', $providerAddress);
             $service_stmt->bindParam(':portfolio', $portfolioFile);
+            $service_stmt->bindParam(':provider_bio', $providerDetails);
             $service_stmt->execute();
         }
     }

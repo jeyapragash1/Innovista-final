@@ -8,7 +8,7 @@ class User {
     }
 
     // Register a new user
-    public function register($name, $email, $password, $role = 'customer', $service = '') {
+    public function register($name, $email, $password, $role = 'customer', $service = '', $subcategories = '', $phone = '', $address = '', $portfolio = '', $bio = '') {
         // Check if email already exists
         if ($this->findByEmail($email)) {
             return "Email already exists.";
@@ -25,21 +25,32 @@ class User {
         }
         $service = htmlspecialchars(strip_tags($service));
 
-    // Accept subcategories as an optional argument, but do not store in users table
-    // Only store name, email, password, role in users table
-    $query = "INSERT INTO " . $this->table_name . " (name, email, password, role) VALUES (:name, :email, :password, :role)";
-    $stmt = $this->conn->prepare($query);
-
-    // Bind parameters
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':password', $password_hash);
-    $stmt->bindParam(':role', $role);
-
-        if ($stmt->execute()) {
-            return true;
+        // Insert all relevant fields for both customer and provider
+        if ($role === 'customer') {
+            $query = "INSERT INTO " . $this->table_name . " (name, email, password, role, phone, address) VALUES (:name, :email, :password, :role, :phone, :address)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $password_hash);
+            $stmt->bindParam(':role', $role);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':address', $address);
+        } else {
+            $query = "INSERT INTO " . $this->table_name . " (name, email, password, role, phone, address, portfolio, bio) VALUES (:name, :email, :password, :role, :phone, :address, :portfolio, :bio)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $password_hash);
+            $stmt->bindParam(':role', $role);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':address', $address);
+            $stmt->bindParam(':portfolio', $portfolio);
+            $stmt->bindParam(':bio', $bio);
         }
-        return "Error: Unable to register.";
+    if ($stmt->execute()) {
+        return true;
+    }
+    return "Error: Unable to register.";
     }
 
     // Login a user

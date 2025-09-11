@@ -1,8 +1,9 @@
-<?php 
+<?php
+require_once '../config/session.php';
 $pageTitle = './Provider Dashboard';
 require_once './provider_header.php';
 require_once '../config/Database.php';
-session_start();
+protectPage('provider');
 $provider_id = $_SESSION['user_id'];
 $db = (new Database())->getConnection();
 $count_stmt = $db->prepare('SELECT COUNT(*) FROM quotations WHERE provider_id = :provider_id AND (status = "Awaiting Quote" OR status = "Awaiting Your Quote")');
