@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: Sep 11, 2025 at 07:51 AM
+-- Host: 127.0.0.1:3308
+-- Generation Time: Sep 11, 2025 at 03:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -43,13 +43,10 @@ CREATE TABLE `contacts` (
 
 INSERT INTO `contacts` (`id`, `name`, `email`, `subject`, `message`, `created_at`, `is_read`) VALUES
 (1, 'Michael Smith', 'msmith@email.com', 'Question about services', 'Do you offer services in the Kilinochchi area? I am looking to renovate my office space.', '2025-09-09 13:21:51', 0),
-(2, 'Laura Wilson', 'laura.w@email.com', 'Urgent: Water Damage Restoration', 'I have urgent water damage in my home. Do you offer emergency services? Please contact me ASAP.', '2025-09-10 08:30:00', 0),
 (3, 'James Taylor', 'jtaylor@email.com', 'Request for a specific material', 'Can your providers source Italian marble for a kitchen countertop? I am looking for a specific type.', '2025-09-08 16:00:00', 1),
 (5, 'Chris Green', 'chris.g@email.com', 'Quotation follow-up', 'I submitted a quotation request a few days ago and haven\'t heard back yet. My reference is #INV-0005.', '2025-09-11 02:00:00', 0),
 (6, 'Anna Johnson', 'anna.j@mail.com', 'Partnership Inquiry', 'We are a local furniture workshop interested in collaborating with your platform. Who should I speak to?', '2025-09-11 04:30:00', 0),
-(7, 'Peter Jones', 'peter.j@mail.com', 'Feedback on recent project', 'The interior design service was excellent! Very happy with the outcome. Kudos to David Lee Designs.', '2025-09-11 08:00:00', 0),
-(8, 'Sophia Brown', 'sophia.b@mail.com', 'Technical issue', 'I am having trouble uploading images to my portfolio. The upload seems to fail every time. Can you help?', '2025-09-11 09:15:00', 0),
-(9, 'Liam Davis', 'liam.d@mail.com', 'Query about pricing', 'Could you provide more details on the pricing structure for restoration services?', '2025-09-11 10:30:00', 1);
+(7, 'Peter Jones', 'peter.j@mail.com', 'Feedback on recent project', 'The interior design service was excellent! Very happy with the outcome. Kudos to David Lee Designs.', '2025-09-11 08:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -107,7 +104,7 @@ CREATE TABLE `disputes` (
 
 INSERT INTO `disputes` (`id`, `quotation_id`, `reported_by_id`, `reported_against_id`, `reason`, `status`, `admin_notes`, `created_at`, `updated_at`) VALUES
 (2, 2, 8, 7, 'Minor miscommunication regarding paint color shade, but resolved quickly after admin intervention.', 'resolved', 'Admin facilitated a quick color correction with the provider. Customer satisfied with outcome.', '2025-10-01 09:00:00', '2025-10-03 14:00:00'),
-(3, 3, 9, 5, 'The new shower head installation has a slow leak. I\'ve contacted the provider but haven\'t received a response.', 'open', NULL, '2025-10-28 15:00:00', '2025-10-28 15:00:00');
+(3, 3, 9, 5, 'The new shower head installation has a slow leak. I\'ve contacted the provider but haven\'t received a response.', 'resolved', 'done by jp', '2025-10-28 15:00:00', '2025-09-11 08:20:30');
 
 -- --------------------------------------------------------
 
@@ -159,8 +156,7 @@ INSERT INTO `portfolio_items` (`id`, `provider_id`, `title`, `description`, `ima
 (5, 6, 'Luxury Hotel Lobby Design', 'Created a welcoming and luxurious space using marble, brass, and custom upholstery.', 'uploads/portfolio/portfolio_5_68c25aa07b1f8.jpg', '2025-09-06 13:10:00'),
 (6, 5, 'Urban Loft Conversion', 'Transformed an industrial space into a chic, two-bedroom loft apartment.', 'uploads/portfolio/portfolio_6_68c25a8cd8f82.jpg', '2025-09-06 13:15:00'),
 (8, 6, 'Modern Farmhouse Kitchen', 'Blends rustic charm with modern amenities, featuring custom cabinetry and a large island.', 'uploads/portfolio/portfolio_8_68c25a6bcf0be.jpg', '2025-09-08 11:00:00'),
-(9, 5, 'Luxury Bathroom Remodel', 'Spa-like atmosphere with marble finishes, freestanding tub, and smart lighting.', 'uploads/portfolio/portfolio_9_68c25a5751e4d.jpg', '2025-09-09 14:00:00'),
-(10, 5, 'hello', 'hi hello', 'uploads/portfolio/portfolio_68c25a48451a3.jpg', '2025-09-11 05:12:40');
+(9, 5, 'Luxury Bathroom Remodel', 'Spa-like atmosphere with marble finishes, freestanding tub, and smart lighting.', 'uploads/portfolio/portfolio_9_68c25a5751e4d.jpg', '2025-09-09 14:00:00');
 
 -- --------------------------------------------------------
 
@@ -315,7 +311,8 @@ CREATE TABLE `service` (
 INSERT INTO `service` (`id`, `provider_id`, `provider_name`, `provider_email`, `main_service`, `subcategories`, `created_at`, `provider_phone`, `provider_address`, `portfolio`, `provider_bio`) VALUES
 (1, 5, 'David Lee Designs', 'david.lee@innovista.com', 'Interior Design', 'Ceiling & Lighting, Space Planning, Bathroom Design, Carpentry & Woodwork', '2025-09-04 03:35:00', '0774567890', '404 Art Gallery St, Jaffna', 'Minimalist Scandinavian Living Room, Modern Kitchen Remodel', 'Specializing in modern and minimalist interior transformations.'),
 (2, 6, 'Maria G. Restorations', 'maria.g@innovista.com', 'Restoration', 'Furniture Restoration, Floor Restoration, Door & Window Repairs, Art & Sculpture Repair', '2025-09-05 05:05:00', '0775678901', '505 Heritage Lane, Mannar', '19th Century Oak Wardrobe Restoration, Victorian Terrace Facade Repair', 'Expert in antique furniture and architectural restoration, bringing old pieces back to life with care.'),
-(3, 7, 'Robert J. Paints', 'robert.j@innovista.com', 'Painting', 'Interior Painting, Exterior Painting, Water & Damp Proofing, Murals & Decorative Finishes', '2025-09-06 07:35:00', '0776789012', '606 Colourful Rd, Trincomalee', 'Luxury Hotel Lobby Design, Urban Loft Conversion', 'Professional painting services for homes and commercial spaces, ensuring a flawless finish every time.');
+(3, 7, 'Robert J. Paints', 'robert.j@innovista.com', 'Painting', 'Interior Painting, Exterior Painting, Water & Damp Proofing, Murals & Decorative Finishes', '2025-09-06 07:35:00', '0776789012', '606 Colourful Rd, Trincomalee', 'Luxury Hotel Lobby Design, Urban Loft Conversion', 'Professional painting services for homes and commercial spaces, ensuring a flawless finish every time.'),
+(5, 15, 'kj', 'j@gmail.com', 'Interior Design', 'Interior Design - Ceiling &amp; Lighting,Interior Design - Space Planning,Interior Design - Modular Kitchen,Interior Design - Furniture Design', '2025-09-11 15:56:10', '0773186706', 'batticaloa', '', 'ggjh');
 
 -- --------------------------------------------------------
 
@@ -382,14 +379,15 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `status`, `provider_status`, `credentials_verified`, `created_at`, `phone`, `address`, `bio`, `portfolio`, `profile_image_path`) VALUES
-(1, 'Admin Innovista', 'admin@innovista.com', '$2y$10$LipEXPQ5kCgVaMywQ1kfGOXRIilNA3YDHmuroUAcKKYYEUYHZirHu', 'admin', 'active', NULL, 'no', '2025-07-20 07:51:51', '', '', '', NULL, 'uploads/profiles/user_1_68c25f69195d9.jpg'),
+(1, 'Admin Innovista', 'admin@innovista.com', '$2y$10$LipEXPQ5kCgVaMywQ1kfGOXRIilNA3YDHmuroUAcKKYYEUYHZirHu', 'admin', 'active', NULL, 'no', '2025-07-20 07:51:51', '', '', 'Lead Administrator for Innovista platform.', NULL, 'uploads/profiles/user_1_68c25f69195d9.jpg'),
 (4, 'Denu Jesunesan', 'denujesunesan09@gmail.com', '$2y$10$q9.r1.s3.t5.u7.v0.w2.x4.y6.z8.a0.b2.c4.d6.', 'admin', 'active', NULL, 'no', '2025-09-03 08:45:00', '0773456789', '303 Hilltop Rd, Kilinochchi', '', NULL, 'uploads/profiles/user_4_68c25b6a73ab4.jpg'),
 (5, 'David Lee Designs', 'david.lee@innovista.com', '$2y$10$c7.d9.e1.f3.g5.h8.i0.j2.k4.l6.m8.n0.o3.p5.', 'provider', 'active', 'approved', 'yes', '2025-09-04 03:30:00', '0774567890', '404 Art Gallery St, Jaffna', 'Specializing in modern and minimalist interior transformations.', '[]', 'uploads/profiles/provider_5_68c25d7463da1.jpg'),
 (6, 'Maria G. Restorations', 'maria.g@innovista.com', '$2y$10$f0.g2.h4.i6.j8.k1.l3.m5.n7.o9.p1.q3.r5.s7.', 'provider', 'active', 'approved', 'yes', '2025-09-05 05:00:00', '0775678901', '505 Heritage Lane, Mannar', 'Expert in antique furniture and architectural restoration, bringing old pieces back to life with care.', '[]', 'uploads/profiles/provider_6_68c25d6664ead.jpg'),
 (7, 'Denu Jesunesan', 'denujesu09@gmail.com', '$2y$10$k3.l5.m7.n9.o1.p3.q5.r7.s9.t2.u4.v6.w8.x0.', 'provider', 'active', 'approved', 'yes', '2025-09-06 07:30:00', '0776789012', '606 Colourful Rd, Trincomalee', 'Professional painting services for homes and commercial spaces, ensuring a flawless finish every time.', '[]', 'uploads/profiles/provider_7_68c25d4809a3a.jpg'),
 (8, 'Sarah Chen', 'sarah.c@example.com', '$2y$10$e4.f6.g8.h0.i2.j4.k6.l8.m0.n3.o5.p7.q9.r1.', 'customer', 'active', NULL, 'no', '2025-09-07 10:15:00', '0777890123', '707 Sunshine Apt, Batticaloa', '', NULL, 'uploads/profiles/user_8_68c25b42d81f0.jpg'),
 (9, 'Michael Green', 'michael.g@example.com', '$2y$10$v2.w4.x6.y8.z0.a3.b5.c7.d9.e1.f3.g5.h7.i9.', 'customer', 'active', NULL, 'no', '2025-09-08 12:00:00', '0778901234', '808 Palm St, Galle', '', NULL, 'uploads/profiles/user_9_68c25b33753cb.jpg'),
-(10, 'kisho jeyapragash', 'kishojeyapragash@gmail.com', '$2y$10$8.g51JZMrISZf53iKzZs3ODnGtU1oTd5eEVFS7oC4yYK2CjzM.hZ2', 'customer', 'active', NULL, 'no', '2025-09-11 05:36:44', '0773186706', 'batticaloa', '', NULL, 'uploads/profiles/user_10_68c2603912130.jpg');
+(10, 'kisho jeyapragash', 'kishojeyapragash@gmail.com', '$2y$10$8.g51JZMrISZf53iKzZs3ODnGtU1oTd5eEVFS7oC4yYK2CjzM.hZ2', 'provider', 'active', 'approved', 'no', '2025-09-11 05:36:44', '0773186706', 'batticaloa', '', NULL, 'uploads/profiles/user_10_68c289076c104.png'),
+(15, 'kj', 'j@gmail.com', '$2y$10$EBWBiy.KdrpZqElQA4SNJeUx02KoCbuvxgl2.r6WX5xO1TFfMRHOG', 'provider', 'active', 'approved', 'yes', '2025-09-11 10:26:10', '0773186706', 'batticaloa', 'ggjh', '', 'uploads/profiles/user_15_68c2c80c96e01.jpg');
 
 --
 -- Indexes for dumped tables
@@ -558,13 +556,13 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Constraints for dumped tables
