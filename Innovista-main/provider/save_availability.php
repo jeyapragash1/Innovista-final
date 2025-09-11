@@ -3,8 +3,9 @@ header('Content-Type: application/json');
 require_once '../config/Database.php';
 require_once '../config/session.php';
 
+
 $data = json_decode(file_get_contents('php://input'), true);
-if (!isset($data['dates']) || !is_array($data['dates'])) {
+if (!isset($data['availability']) || !is_array($data['availability'])) {
     echo json_encode(['success' => false, 'error' => 'Invalid data']);
     exit;
 }
@@ -26,16 +27,16 @@ try {
 
 $success = false;
 $errorMsg = '';
-foreach ($data['dates'] as $date) {
-    try {
-        $stmt = $db->prepare('INSERT IGNORE INTO provider_availability (provider_id, provider_name, available_date) VALUES (:provider_id, :provider_name, :available_date)');
-        $stmt->bindParam(':provider_id', $provider_id);
-        $stmt->bindParam(':provider_name', $provider_name);
-        $stmt->bindParam(':available_date', $date);
-        $stmt->execute();
-        $success = true; // Set to true if at least one insert succeeds
-    } catch (Exception $e) {
-        $errorMsg = $e->getMessage();
+foreach ($data['availability'] as $entry) {
+    $date = $entry['date'];
+    foreach ($entry['times'] as $time) {
+        try {
+            $stmt = $db->prepare('INSERT INTO provider_availability (provider_id, provider_name, available_date, available_time, created_at) VALUES (?, ?, ?, ?, NOW())');
+            $stmt->execute([$provider_id, $provider_name, $date, $time]);
+            $success = true;
+        } catch (Exception $e) {
+            $errorMsg = $e->getMessage();
+        }
     }
 }
 echo json_encode(['success' => $success, 'error' => $errorMsg]);
