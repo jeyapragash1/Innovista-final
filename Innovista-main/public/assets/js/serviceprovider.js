@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     function closeQuoteModal() {
         quoteModal.classList.remove('active');
+        quoteModal.style.display = 'none';
     }
     closeQuoteModalBtn.addEventListener('click', closeQuoteModal);
     window.addEventListener('click', function(e) {
@@ -41,10 +42,20 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedProviderId = null;
     let selectedServiceType = '';
     let selectedSubcategory = '';
+
+    function closeAllModals() {
+        document.getElementById('bookingModal').classList.remove('active');
+        document.getElementById('bookingModal').style.display = 'none';
+        document.getElementById('quoteRequestModal').classList.remove('active');
+        document.getElementById('quoteRequestModal').style.display = 'none';
+    }
+
     quoteForms.forEach(form => {
         const btn = form.querySelector('.btn-request-quote');
         btn.addEventListener('click', function(e) {
             e.preventDefault();
+            closeAllModals();
+            document.getElementById('quoteRequestModal').style.display = 'block';
             selectedProviderId = form.getAttribute('data-provider-id');
             selectedServiceType = form.getAttribute('data-service-type');
             selectedSubcategory = form.getAttribute('data-subcategory');
@@ -93,10 +104,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderRealTimeCalendar(providerId, year, month) {
         const calendarContainer = document.getElementById('calendar-container');
         calendarContainer.innerHTML = '';
+        document.getElementById('time-slots-section').style.display = 'none';
         fetch('../provider/get_provider_availability.php?provider_id=' + providerId)
             .then(response => response.json())
             .then(data => {
-                const availableDates = data.available_dates || [];
+                console.log('Provider availability response:', data);
+                const availability = data.availability || {};
+                const availableDates = Object.keys(availability);
                 // Calendar header and grid in one container for perfect alignment
                 let html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:#fff;border-radius:8px;padding:8px;">';
                 // Weekday headers
@@ -123,9 +137,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.calendar-date-cell').forEach(cell => {
                     cell.addEventListener('click', function() {
                         if (cell.style.background === 'rgb(52, 168, 83)' || cell.style.background === '#34a853') {
-                            // Show payment form
-                            document.getElementById('paymentStep').style.display = '';
-                            document.getElementById('calendarStep').style.display = 'none';
+                            // Show available times for this date
+                            const date = cell.getAttribute('data-date');
+                            const times = availability[date] || [];
+                            const timeSlotsList = document.getElementById('time-slots-list');
+                            timeSlotsList.innerHTML = '';
+                            if (times.length === 0) {
+                                timeSlotsList.innerHTML = '<em>No times available for this date.</em>';
+                            } else {
+                                times.forEach(time => {
+                                    const btn = document.createElement('button');
+                                    btn.className = 'btn btn-outline-primary time-slot-btn';
+                                    btn.textContent = time;
+                                    btn.onclick = function() {
+                                        // Highlight selected
+                                        document.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('selected'));
+                                        btn.classList.add('selected');
+                                        // Enable payment step
+                                        document.getElementById('paymentStep').style.display = '';
+                                        document.getElementById('calendarStep').style.display = 'none';
+                                    };
+                                    timeSlotsList.appendChild(btn);
+                                });
+                            }
+                            document.getElementById('time-slots-section').style.display = '';
                         } else {
                             // Show not available message
                             alert('This date is not available for this provider.');
@@ -144,7 +179,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const consultBtns = document.querySelectorAll('.btn-book-consultation');
     consultBtns.forEach(btn => {
         btn.addEventListener('click', function() {
+            closeAllModals();
+            // Reset modal content
+            document.getElementById('calendarStep').style.display = '';
+            document.getElementById('paymentStep').style.display = 'none';
+            document.getElementById('time-slots-section').style.display = 'none';
             document.getElementById('bookingModal').classList.add('active');
+            document.getElementById('bookingModal').style.display = 'block';
             const providerId = btn.closest('.provider-actions').querySelector('.quote-request-form').getAttribute('data-provider-id');
             renderRealTimeCalendar(providerId, currentYear, currentMonth);
             updateMonthTitle(currentYear, currentMonth);
@@ -168,8 +209,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeBookingModalBtn = bookingModal.querySelector('.close-modal-btn');
     closeBookingModalBtn.addEventListener('click', function() {
         bookingModal.classList.remove('active');
+        bookingModal.style.display = 'none';
     });
     window.addEventListener('click', function(e) {
-        if (e.target === bookingModal) bookingModal.classList.remove('active');
+        if (e.target === bookingModal) {
+            bookingModal.classList.remove('active');
+            bookingModal.style.display = 'none';
+        }
     });
 });
