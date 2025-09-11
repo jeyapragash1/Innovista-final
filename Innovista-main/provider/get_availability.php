@@ -10,8 +10,20 @@ if (!$provider_id) {
 }
 
 $db = (new Database())->getConnection();
-$stmt = $db->prepare('SELECT available_date FROM provider_availability WHERE provider_id = :provider_id');
+
+$stmt = $db->prepare('SELECT available_date, available_time FROM provider_availability WHERE provider_id = :provider_id');
 $stmt->bindParam(':provider_id', $provider_id);
 $stmt->execute();
-$dates = $stmt->fetchAll(PDO::FETCH_COLUMN);
-echo json_encode(['success' => true, 'dates' => $dates]);
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Group times by date
+$availability = [];
+foreach ($rows as $row) {
+    $date = $row['available_date'];
+    $time = $row['available_time'];
+    if (!isset($availability[$date])) {
+        $availability[$date] = [];
+    }
+    $availability[$date][] = $time;
+}
+echo json_encode(['success' => true, 'availability' => $availability]);

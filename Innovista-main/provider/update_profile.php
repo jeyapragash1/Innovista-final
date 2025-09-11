@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['update_details']) ||
         $new_services = isset($_POST['providerService']) ? $_POST['providerService'] : [];
         $new_subcategories = isset($_POST['providerSubcategories']) ? $_POST['providerSubcategories'] : [];
 
-        // Merge and remove duplicates
-        $all_services = array_unique(array_merge($old_services, $new_services));
-        $all_subcategories = array_unique(array_merge($old_subcategories, $new_subcategories));
+        // Merge, trim, and remove duplicates
+        $all_services = array_unique(array_filter(array_map('trim', array_merge($old_services, $new_services))));
+        $all_subcategories = array_unique(array_filter(array_map('trim', array_merge($old_subcategories, $new_subcategories))));
 
         $main_service = implode(',', $all_services);
         $subcategories = implode(',', $all_subcategories);

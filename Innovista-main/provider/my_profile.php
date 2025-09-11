@@ -1,6 +1,3 @@
-
-
-
 <?php
 require_once '../config/session.php';
 protectPage('provider');
@@ -35,7 +32,7 @@ if (!$provider) {
 
 
 
-<div class="profile-page-wrapper" style="max-width: 900px; margin: 0 auto; padding: 2rem 0;">
+<div class="profile-page-wrapper">
     <h2 style="margin-bottom: 0.5rem;">Business Profile</h2>
     <p style="margin-bottom: 2rem; color: #666;">Keep your information up to date to attract more clients.</p>
 
@@ -68,6 +65,13 @@ if (!$provider) {
     </form>
 
     <style>
+    .profile-page-wrapper {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 2rem 1.5rem;
+        box-sizing: border-box;
+    }
     .business-info-form {
         background: #fff;
         border-radius: 16px;
@@ -140,6 +144,12 @@ if (!$provider) {
         font-size: 1.1em;
         margin-left: 2px;
     }
+    @media (max-width: 1100px) {
+        .profile-page-wrapper {
+            max-width: 98vw;
+            padding: 1rem 0.5rem 1rem 0.5rem;
+        }
+    }
     @media (max-width: 700px) {
         .form-grid-pro {
             grid-template-columns: 1fr !important;
@@ -147,6 +157,10 @@ if (!$provider) {
         }
         .business-info-form {
             padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+        }
+        .profile-page-wrapper {
+            max-width: 100vw;
+            padding: 0.5rem 0.2rem 0.5rem 0.2rem;
         }
     }
     </style>
