@@ -58,46 +58,24 @@ if (isset($_GET['id']) && isset($_GET['action'])) {
                 }
                 break;
             
-            case 'activate': // Used for re-evaluating a rejected provider
+            case 're_evaluate': // Used for re-evaluating a rejected provider, setting status back to pending
                 $stmt = $conn->prepare("UPDATE users SET status = 'active', provider_status = 'pending' WHERE id = :id AND role = 'provider'");
                 $stmt->bindParam(':id', $provider_id, PDO::PARAM_INT);
                 $stmt->execute();
                 if ($stmt->rowCount() > 0) {
-                    $message = "Provider re-activated to pending status successfully.";
+                    $message = "Provider re-evaluated to pending status successfully.";
                     $status_type = "success";
                 } else {
-                    $message = "Failed to re-activate provider or provider not found/is not a provider.";
+                    $message = "Failed to re-evaluate provider or provider not found/is not a provider.";
                 }
                 break;
 
             case 'delete':
-                // Check if the current admin is trying to delete themselves (shouldn't happen here, but good general practice)
-                if ((int)$provider_id === (int)$_SESSION['user_id']) {
-                    $message = "You cannot delete your own account.";
-                } else {
-                    // Delete associated services first
-                    $stmt_service = $conn->prepare("DELETE FROM service WHERE provider_id = :id");
-                    $stmt_service->bindParam(':id', $provider_id, PDO::PARAM_INT);
-                    $stmt_service->execute();
-
-                    // Delete associated portfolio items
-                    $stmt_portfolio = $conn->prepare("DELETE FROM portfolio_items WHERE provider_id = :id");
-                    $stmt_portfolio->bindParam(':id', $provider_id, PDO::PARAM_INT);
-                    $stmt_portfolio->execute();
-
-                    // Then delete the user
-                    $stmt_user = $conn->prepare("DELETE FROM users WHERE id = :id AND role = 'provider'");
-                    $stmt_user->bindParam(':id', $provider_id, PDO::PARAM_INT);
-                    $stmt_user->execute();
-                    
-                    if ($stmt_user->rowCount() > 0) {
-                        $message = "Provider and all associated data deleted successfully.";
-                        $status_type = "success";
-                    } else {
-                        $message = "Failed to delete provider or provider not found/is not a provider.";
-                    }
-                }
-                break;
+                // Redirect to user_actions.php to handle full cascade deletion for this user_id
+                // This consolidates the complex deletion logic in one place.
+                header("Location: user_actions.php?id={$provider_id}&action=delete");
+                exit();
+                break; // This break is technically unreachable but good practice
 
             default:
                 $message = "Invalid action specified.";
@@ -109,6 +87,7 @@ if (isset($_GET['id']) && isset($_GET['action'])) {
     } catch (PDOException $e) {
         $conn->rollBack();
         $message = "Database error: " . $e->getMessage();
+        error_log("Provider Action Error: " . $e->getMessage());
     }
 
     header("Location: manage_providers.php?status={$status_type}&message=" . urlencode($message));
@@ -118,4 +97,3 @@ if (isset($_GET['id']) && isset($_GET['action'])) {
     header("Location: manage_providers.php?status=error&message=Invalid request.");
     exit();
 }
-?>

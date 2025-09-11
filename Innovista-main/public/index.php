@@ -6,7 +6,6 @@
     include 'header.php';
 
     // --- ESTABLISH DATABASE CONNECTION FOR THIS PAGE ---
-    // Moved here to ensure $conn is available before any database operations.
     require_once '../config/Database.php';
     $db = new Database();
     $conn = $db->getConnection();
@@ -22,6 +21,7 @@
         }
     } catch (PDOException $e) {
         error_log("Database error fetching settings: " . $e->getMessage());
+        // Fallback: Provide empty defaults to prevent further errors if DB connection failed
         $settings = array_fill_keys([
             'homepage_hero_h1', 'homepage_hero_p', 'homepage_how_it_works_title',
             'homepage_services_title', 'homepage_products_title', 'homepage_products_description',
@@ -80,7 +80,7 @@
     $featuredProfessionals = [];
     try {
         $stmt_providers = $conn->prepare("
-            SELECT id, name, bio
+            SELECT id, name, bio, profile_image_path
             FROM users
             WHERE role = 'provider' AND provider_status = 'approved'
             ORDER BY created_at DESC LIMIT 3
@@ -95,7 +95,7 @@
     $recentPortfolioItems = [];
     try {
         $stmt_portfolio = $conn->prepare("
-            SELECT title, description, image_path
+            SELECT id, title, description, image_path
             FROM portfolio_items
             ORDER BY created_at DESC LIMIT 6
         ");
@@ -106,7 +106,6 @@
     }
 
     // 3. Fetch Products (hardcoded for now, as no 'products' table in schema)
-    // You would uncomment and modify this if you add a 'products' table.
     /*
     $featuredProducts = [];
     try {
@@ -330,13 +329,11 @@
                 <?php if (!empty($featuredProfessionals)): ?>
                     <?php foreach ($featuredProfessionals as $provider): ?>
                         <div class="provider-card">
-                            <!-- Image path needs to be dynamic, assuming profile images are in 'uploads/profiles' -->
-                            <!-- Placeholder image for now. You'll need a 'profile_image_path' column in your 'users' table. -->
-                            <img src="assets/images/default-avatar.jpg" alt="<?php echo htmlspecialchars($provider['name']); ?> Profile">
+                            <img src="<?php echo getImageSrc($provider['profile_image_path'] ?? 'assets/images/default-avatar.jpg'); ?>" 
+                                 alt="<?php echo htmlspecialchars($provider['name']); ?> Profile">
                             <div class="provider-info">
                                 <h4><?php echo htmlspecialchars($provider['name']); ?></h4>
                                 <p><?php echo htmlspecialchars(substr($provider['bio'] ?? 'Specialist', 0, 50)) . (strlen($provider['bio'] ?? '') > 50 ? '...' : ''); ?></p>
-                                <!-- Link to provider's public profile page if you have one -->
                                 <a href="provider_profile.php?id=<?php echo htmlspecialchars($provider['id']); ?>" class="btn btn-link">View Profile</a>
                             </div>
                         </div>
@@ -384,12 +381,12 @@
             <?php if (!empty($recentPortfolioItems)): ?>
                 <?php foreach ($recentPortfolioItems as $item): ?>
                     <div class="portfolio-item">
-                        <img src="<?php echo htmlspecialchars($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['title']); ?>">
+                        <img src="<?php echo getImageSrc($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['title']); ?>">
                         <div class="portfolio-overlay">
                             <div class="portfolio-content">
                                 <h3><?php echo htmlspecialchars($item['title']); ?></h3>
                                 <p><?php echo htmlspecialchars($item['description']); ?></p>
-                                <!-- Link to full portfolio item if available -->
+                                <a href="portfolio_detail.php?id=<?php echo htmlspecialchars($item['id']); ?>" class="btn btn-link">View Project</a>
                             </div>
                         </div>
                     </div>

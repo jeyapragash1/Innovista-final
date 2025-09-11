@@ -88,8 +88,13 @@ class PDF extends FPDF
 
     function Header()
     {
-        // Logo (Optional) - adjust path as needed
-        // $this->Image('../../public/assets/images/logo1.png', 10, 8, 30);
+        // Logo (Optional) - adjust path as needed relative to this file's execution
+        // From admin/generate_report.php, ../public/assets/images/logo1.png
+        $logo_path = '../public/assets/images/logo1.png';
+        if (file_exists($logo_path)) {
+            $this->Image($logo_path, 10, 8, 30);
+        }
+        
         $this->SetFont('Arial', 'B', 15);
         // Move to the right
         $this->Cell(80);
@@ -121,7 +126,7 @@ class PDF extends FPDF
         $this->SetFont('Arial', 'B', 10);
         
         // Header
-        $w = [95, 95]; // Column widths for A4 (total 190mm)
+        $w = [95, 95]; // Column widths for A4 (total 190mm usable width)
         for ($i = 0; $i < count($header); $i++) {
             $this->Cell($w[$i], 7, $header[$i], 1, 0, 'C', true);
         }

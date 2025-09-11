@@ -84,7 +84,9 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
                                 </span>
                             </td>
                             <td><?php echo date('d M Y', strtotime($quote['created_at'])); ?></td>
-                            <td><a href="view_quotation.php?id=<?php echo $quote['id']; ?>" class="btn-link">View Details</a></td>
+                            <td class="action-buttons">
+                                <a href="view_quotation.php?id=<?php echo $quote['id']; ?>" class="btn-link">View Details</a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>

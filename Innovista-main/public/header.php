@@ -4,9 +4,6 @@
     // Include the session manager. This file now defines our helper functions.
     include_once 'session.php'; 
 
-    // --- Removed the helper function definitions from here ---
-    // They are now in session.php
-
     // Get the current page's filename for the active navigation link.
     $currentPage = basename($_SERVER['SCRIPT_NAME']);
 

@@ -1081,3 +1081,86 @@ table tbody tr:hover {
 :root {
     --primary-color-rgb: 13, 148, 136;
 }
+
+/* --- Admin Specific Button Icons --- */
+.btn-action i.fas.fa-check { color: var(--status-active); }
+.btn-action i.fas.fa-times { color: var(--status-rejected); }
+.btn-action i.fas.fa-power-off { color: var(--status-inactive); }
+.btn-action i.fas.fa-redo { color: var(--status-pending); } /* For re-evaluate */
+.btn-action i.fas.fa-eye { color: var(--status-verified); }
+
+/* --- Recent Activity Feed (from previous response, ensure these are in your admin.css) --- */
+.activity-feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.activity-item:last-child {
+    border-bottom: none;
+}
+.activity-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.2rem;
+    box-shadow: var(--shadow-sm);
+}
+/* Specific colors for activity icons */
+.activity-icon.blue { background-color: var(--status-verified); } /* For quotes */
+.activity-icon.green { background-color: var(--status-active); } /* For payments */
+.activity-icon.red { background-color: var(--status-rejected); } /* For disputes */
+.activity-icon.yellow { background-color: var(--status-pending); } /* For reviews */
+.activity-icon.purple { background-color: #9b59b6; } /* For new providers, use a distinct color */
+.activity-icon.grey { background-color: var(--status-info); } /* Default/info */
+
+
+.activity-content {
+    flex-grow: 1;
+}
+.activity-content a {
+    text-decoration: none;
+    color: var(--text-dark);
+}
+.activity-content a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+.activity-text {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+    font-size: 0.95rem;
+}
+.activity-time {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+/* For images in tables */
+td img {
+    max-width: 100px;
+    max-height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    vertical-align: middle; /* Align image vertically in table cell */
+}
+
+/* For image preview in forms (edit_provider, edit_portfolio_item) */
+.form-group img {
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}

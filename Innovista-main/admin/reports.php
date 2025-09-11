@@ -52,7 +52,7 @@ $booking_data = $stmt_booking->fetchAll(PDO::FETCH_ASSOC);
                 <option value="weekly" <?php echo ($income_period === 'weekly') ? 'selected' : ''; ?>>This Week</option>
                 <option value="yearly" <?php echo ($income_period === 'yearly') ? 'selected' : ''; ?>>This Year</option>
             </select>
-            <a href="generate_report.php?type=income&period=<?php echo htmlspecialchars($income_period); ?>" class="btn-download"><i class="fas fa-download"></i> Download</a>
+            <a href="generate_report.php?type=income&period=<?php echo htmlspecialchars($income_period); ?>" class="btn-download"><i class="fas fa-download"></i> Download PDF</a>
         </div>
     </div>
     <div class="table-wrapper">
@@ -88,7 +88,7 @@ $booking_data = $stmt_booking->fetchAll(PDO::FETCH_ASSOC);
                 <option value="weekly" <?php echo ($booking_period === 'weekly') ? 'selected' : ''; ?>>This Week</option>
                 <option value="yearly" <?php echo ($booking_period === 'yearly') ? 'selected' : ''; ?>>This Year</option>
             </select>
-            <a href="generate_report.php?type=booking&period=<?php echo htmlspecialchars($booking_period); ?>" class="btn-download"><i class="fas fa-download"></i> Download</a>
+            <a href="generate_report.php?type=booking&period=<?php echo htmlspecialchars($booking_period); ?>" class="btn-download"><i class="fas fa-download"></i> Download PDF</a>
         </div>
     </div>
     <div class="table-wrapper">

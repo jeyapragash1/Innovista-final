@@ -40,4 +40,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['id'])) {
     header("Location: resolve_disputes.php?status=error&message=Invalid request method or missing ID.");
     exit();
 }
-?>

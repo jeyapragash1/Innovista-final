@@ -17,8 +17,8 @@ if (!$dispute_id || !is_numeric($dispute_id)) {
 // Fetch dispute data with customer and provider names
 $stmt = $conn->prepare("
     SELECT d.id, d.quotation_id, d.reason, d.status, d.admin_notes, d.created_at, d.updated_at,
-           c.name AS customer_name,
-           p.name AS provider_name
+           c.id AS customer_id, c.name AS customer_name,
+           p.id AS provider_id, p.name AS provider_name
     FROM disputes d
     JOIN users c ON d.reported_by_id = c.id
     JOIN users p ON d.reported_against_id = p.id
@@ -37,7 +37,12 @@ if (!$dispute_data) {
 $quotation_details = null;
 if ($dispute_data['quotation_id']) {
     // Assuming quotation_id in disputes links to custom_quotations.id
-    $stmt_quote = $conn->prepare("SELECT cq.quotation_id, cq.project_description, cq.amount FROM custom_quotations cq WHERE cq.id = :quote_id");
+    $stmt_quote = $conn->prepare("
+        SELECT cq.id AS custom_quotation_id, cq.quotation_id AS original_quotation_id, 
+               cq.project_description, cq.amount 
+        FROM custom_quotations cq 
+        WHERE cq.id = :quote_id
+    ");
     $stmt_quote->bindParam(':quote_id', $dispute_data['quotation_id'], PDO::PARAM_INT);
     $stmt_quote->execute();
     $quotation_details = $stmt_quote->fetch(PDO::FETCH_ASSOC);
@@ -55,8 +60,8 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
 
 <div class="content-card">
     <h3>Dispute Overview</h3>
-    <div class="detail-item"><strong>Reported By:</strong> <?php echo htmlspecialchars($dispute_data['customer_name']); ?></div>
-    <div class="detail-item"><strong>Reported Against:</strong> <?php echo htmlspecialchars($dispute_data['provider_name']); ?></div>
+    <div class="detail-item"><strong>Reported By:</strong> <a href="view_user.php?id=<?php echo htmlspecialchars($dispute_data['customer_id']); ?>"><?php echo htmlspecialchars($dispute_data['customer_name']); ?></a></div>
+    <div class="detail-item"><strong>Reported Against:</strong> <a href="view_provider.php?id=<?php echo htmlspecialchars($dispute_data['provider_id']); ?>"><?php echo htmlspecialchars($dispute_data['provider_name']); ?></a></div>
     <div class="detail-item"><strong>Status:</strong> <span class="status-badge status-<?php echo strtolower($dispute_data['status'] === 'resolved' ? 'approved' : 'pending'); ?>"><?php echo htmlspecialchars($dispute_data['status']); ?></span></div>
     <div class="detail-item"><strong>Reported On:</strong> <?php echo date('d M Y, H:i', strtotime($dispute_data['created_at'])); ?></div>
     <div class="detail-item"><strong>Last Updated:</strong> <?php echo date('d M Y, H:i', strtotime($dispute_data['updated_at'])); ?></div>
@@ -68,10 +73,10 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
 
     <?php if ($quotation_details): ?>
     <div class="detail-item mt-3">
-        <strong>Associated Quotation (ID: #INV-<?php echo str_pad($quotation_details['quotation_id'], 4, '0', STR_PAD_LEFT); ?>):</strong>
+        <strong>Associated Quotation (Request ID: #INV-<?php echo str_pad($quotation_details['original_quotation_id'], 4, '0', STR_PAD_LEFT); ?>):</strong>
         <p>Project Description: <?php echo htmlspecialchars($quotation_details['project_description']); ?></p>
         <p>Quoted Amount: Rs <?php echo number_format($quotation_details['amount'], 2); ?></p>
-        <a href="view_quotation.php?id=<?php echo htmlspecialchars($quotutation_details['quotation_id']); ?>" class="btn-link small">View Full Quotation</a>
+        <a href="view_quotation.php?id=<?php echo htmlspecialchars($quotation_details['original_quotation_id']); ?>" class="btn-link small">View Full Quotation</a>
     </div>
     <?php endif; ?>
 </div>
@@ -92,7 +97,7 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
             <textarea id="admin_notes" name="admin_notes" rows="6" <?php echo ($dispute_data['status'] === 'resolved') ? 'disabled' : ''; ?>><?php echo htmlspecialchars($dispute_data['admin_notes'] ?? ''); ?></textarea>
         </div>
         <?php if ($dispute_data['status'] !== 'resolved'): ?>
-            <button type="submit" class="btn-save">Save Resolution</button>
+            <button type="submit" class="btn-submit">Save Resolution</button>
         <?php else: ?>
             <p class="text-info">This dispute is already resolved.</p>
         <?php endif; ?>
