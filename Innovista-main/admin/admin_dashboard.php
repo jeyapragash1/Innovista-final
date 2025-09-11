@@ -1,5 +1,6 @@
 <?php 
-require_once 'admin_header.php'; 
+// admin_dashboard.php
+require_once 'admin_header.php'; // session_start() and login check are handled here
 require_once '../config/Database.php';
 
 // Initialize DB
@@ -8,49 +9,55 @@ $conn = $db->getConnection();
 
 // --- FETCH DATA FOR DASHBOARD ---
 
-// 1. Total Revenue (sum of payments)
+// 1. Total Revenue (sum of all payments)
 $total_revenue = 0;
-$stmt = $conn->query("SELECT SUM(amount) as revenue FROM payments");
-if ($stmt) {
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $total_revenue = $row['revenue'] ?? 0;
-}
+$stmt = $conn->prepare("SELECT SUM(amount) as revenue FROM payments");
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$total_revenue = $row['revenue'] ?? 0;
 
-// 2. Active Users (customers + providers with status='active')
+// 2. Active Users (customers + providers with status='active', excluding admins)
 $active_users = 0;
-$stmt = $conn->query("SELECT COUNT(*) as total FROM users WHERE status='active'");
-if ($stmt) {
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $active_users = $row['total'];
-}
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM users WHERE status='active' AND role != 'admin'");
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$active_users = $row['total'];
 
 // 3. Pending Providers
 $pending_providers = 0;
-$stmt = $conn->query("SELECT COUNT(*) as total FROM users WHERE role='provider' AND provider_status='pending'");
-if ($stmt) {
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $pending_providers = $row['total'];
-}
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM users WHERE role='provider' AND provider_status='pending'");
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$pending_providers = $row['total'];
 
-// 4. New Messages (contacts table count)
+// 4. New Messages (contacts table, last 24 hours) - or you can use is_read = 0 if you add that column
 $new_messages = 0;
-$stmt = $conn->query("SELECT COUNT(*) as total FROM contacts");
-if ($stmt) {
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $new_messages = $row['total'];
-}
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM contacts WHERE created_at >= NOW() - INTERVAL 1 DAY");
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$new_messages = $row['total'];
 
-// 5. Recent Registrations (latest 5 users)
+
+// 5. Recent Registrations (latest 5 users, excluding admins)
 $recent_users = [];
-$stmt = $conn->query("SELECT id, name, role, 
+$stmt = $conn->prepare("SELECT id, name, role, 
         CASE 
             WHEN role='provider' THEN provider_status 
             ELSE status 
         END AS status 
-        FROM users ORDER BY created_at DESC LIMIT 5");
-if ($stmt) {
-    $recent_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        FROM users 
+        WHERE role != 'admin' -- Exclude admin users from recent registrations
+        ORDER BY created_at DESC LIMIT 5");
+$stmt->execute();
+$recent_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Optional: Fetch data for Open Disputes count
+$open_disputes_count = 0;
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM disputes WHERE status != 'resolved'");
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$open_disputes_count = $row['total'];
+
 ?>
 
 <h2>Dashboard</h2>
@@ -94,6 +101,15 @@ if ($stmt) {
             <p><?php echo $new_messages; ?></p>
         </div>
     </div>
+     <div class="stat-card">
+        <div class="stat-icon" style="background-color: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+            <i class="fas fa-gavel"></i>
+        </div>
+        <div class="stat-info">
+            <h4>Open Disputes</h4>
+            <p><?php echo $open_disputes_count; ?></p>
+        </div>
+    </div>
 </div>
 
 <!-- Quick Access -->
@@ -115,6 +131,14 @@ if ($stmt) {
         <a href="resolve_disputes.php" class="access-card">
             <i class="fas fa-gavel"></i>
             <span>Resolve Disputes</span>
+        </a>
+         <a href="manage_contacts.php" class="access-card">
+            <i class="fas fa-envelope-open-text"></i>
+            <span>Contact Messages</span>
+        </a>
+         <a href="settings.php" class="access-card">
+            <i class="fas fa-cogs"></i>
+            <span>System Settings</span>
         </a>
     </div>
 </div>
@@ -142,13 +166,21 @@ if ($stmt) {
                             <td>
                                 <?php 
                                     $status_class = strtolower($user['status']);
+                                    // Map custom provider_status to generic classes if needed, e.g., 'pending' to 'status-pending'
+                                    if ($user['role'] === 'provider') {
+                                        $status_class = (strtolower($user['status']) === 'pending') ? 'pending' : (strtolower($user['status']) === 'approved' ? 'active' : 'inactive');
+                                    }
                                     echo "<span class='status-badge status-{$status_class}'>" . htmlspecialchars($user['status']) . "</span>";
                                 ?>
                             </td>
                             <td>
-                                <a href="<?php echo ($user['role'] === 'provider') ? 'manage_providers.php' : 'manage_users.php'; ?>" class="btn-view">
-                                    View
-                                </a>
+                                <?php if ($user['role'] === 'provider'): ?>
+                                    <a href="manage_providers.php" class="btn-view">View</a>
+                                <?php elseif ($user['role'] === 'customer'): ?>
+                                    <a href="manage_users.php" class="btn-view">View</a>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>

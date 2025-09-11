@@ -548,3 +548,23 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+-- Add is_read column to contacts table
+ALTER TABLE `contacts` ADD `is_read` TINYINT(1) NOT NULL DEFAULT 0 AFTER `created_at`;
+
+
+INSERT IGNORE INTO `settings` (`setting_key`, `setting_value`) VALUES
+('homepage_hero_h1', 'Transforming Spaces, Restoring Dreams'),
+('homepage_hero_p', 'Your one-stop platform for interior design, painting, and restoration services in the Northern Province'),
+('homepage_how_it_works_title', 'How It Works'),
+('homepage_services_title', 'Our Core Services'),
+('homepage_products_title', 'Complete Your Project'),
+('homepage_products_description', 'Find high-quality products from trusted brands, all in one place. From paints to furniture, get everything you need for your project delivered.'),
+('homepage_why_choose_us_title', 'Why Choose Innovista?'),
+('homepage_testimonials_title', 'What Our Clients Say'),
+('homepage_our_work_title', 'Our Recent Work'),
+('homepage_our_work_description', 'A glimpse into the spaces we\'ve transformed.'),
+('homepage_faq_title', 'Frequently Asked Questions'),
+('homepage_cta_title', 'Ready to Start Your Next Project?'),
+('homepage_cta_description', 'Whether you\'re looking to transform your home or grow your service business, the Innovista community is here for you. Join today for a seamless, transparent, and trustworthy experience.');

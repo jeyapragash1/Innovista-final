@@ -3,23 +3,52 @@
    =================================================================== */
 
 :root {
+    /* Base Colors */
     --admin-bg: #f0f2f5;
     --sidebar-bg: #1e293b;
     --sidebar-text: #cbd5e1;
     --sidebar-text-hover: #ffffff;
     --sidebar-active-bg: #334155;
-    --sidebar-active-border: #5eead4;
+    --sidebar-active-border: #5eead4; /* A vibrant teal for active states */
     --card-bg: #ffffff;
-    --text-dark: #1e293b;
-    --text-light: #64748b;
-    --border-color: #e2e8f0;
-    --primary-color: #0d9488; /* A nice teal color */
+    --text-dark: #1e293b; /* Dark text for headings and main content */
+    --text-light: #64748b; /* Lighter text for descriptions and labels */
+    --border-color: #e2e8f0; /* Subtle border color */
+
+    /* Status & Action Colors */
+    --primary-color: #0d9488; /* A balanced, professional teal */
+    --primary-dark-hover: #0a756b; /* A slightly darker shade of the primary for hover */
+    --status-active: #27ae60; /* Green for active/approved */
+    --status-pending: #f39c12; /* Orange/Yellow for pending */
+    --status-rejected: #e74c3c; /* Red for rejected/inactive/delete */
+    --status-verified: #3498db; /* Blue for verified */
+    --status-info: #64748b; /* Grey for general info/neutral */
+
+    /* Shadows for depth */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Poppins', sans-serif; background-color: var(--admin-bg); color: var(--text-dark); }
+/* --- Base Reset & Typography --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-.admin-container { display: flex; position: relative; }
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--admin-bg);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.admin-container {
+    display: flex;
+    position: relative;
+    min-height: 100vh; /* Ensure container fills viewport height */
+}
 
 /* --- Sidebar --- */
 .sidebar {
@@ -35,193 +64,163 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--admin-bg); co
     left: 0;
     z-index: 1000;
     transition: transform 0.3s ease-in-out;
+    box-shadow: var(--shadow-md);
 }
-.sidebar-header { padding: 1.5rem; border-bottom: 1px solid #334155; }
-.sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--sidebar-text-hover); }
-.sidebar-logo img { height: 35px; }
-.sidebar-logo span { font-size: 1.4rem; font-weight: 600; }
-.sidebar-nav { flex-grow: 1; padding: 1rem 0; }
 
-.nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.5rem; color: var(--sidebar-text); text-decoration: none; transition: all 0.2s; font-size: 0.95rem; font-weight: 500; border-left: 4px solid transparent; }
-.nav-link:hover { background-color: var(--sidebar-active-bg); color: var(--sidebar-text-hover); }
-.nav-link.active { background-color: var(--sidebar-active-bg); color: var(--sidebar-text-hover); font-weight: 600; border-left-color: var(--sidebar-active-border); }
-.nav-link i { width: 20px; text-align: center; font-size: 1.1rem; }
-.sidebar-footer { padding: 1rem 0; margin-top: auto; border-top: 1px solid #334155; }
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #334155; /* Darker border for contrast */
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--sidebar-text-hover);
+}
+
+.sidebar-logo img {
+    height: 35px;
+}
+
+.sidebar-logo span {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    padding: 1rem 0;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.5rem;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-left: 4px solid transparent; /* Highlight active link */
+}
+
+.nav-link:hover {
+    background-color: var(--sidebar-active-bg);
+    color: var(--sidebar-text-hover);
+}
+
+.nav-link.active {
+    background-color: var(--sidebar-active-bg);
+    color: var(--sidebar-text-hover);
+    font-weight: 600;
+    border-left-color: var(--sidebar-active-border);
+}
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.sidebar-footer {
+    padding: 1rem 0;
+    margin-top: auto;
+    border-top: 1px solid #334155;
+}
+
+.sidebar-footer .nav-link {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+}
 
 /* --- Main Content Area --- */
-.content-wrapper { flex-grow: 1; margin-left: 260px; transition: margin-left 0.3s ease-in-out; }
-.main-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 999; }
-.menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-dark); }
-.admin-profile { display: flex; align-items: center; gap: 10px; font-weight: 500; }
-.admin-profile i { font-size: 1.8rem; color: var(--primary-color); }
-.main-content { padding: 2rem; }
-.main-content h2 { font-size: 2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.5rem; }
-.main-content > p { color: var(--text-light); margin-bottom: 2rem; font-size: 1rem; }
-
-/* --- Dashboard Stat Cards (New Design) --- */
-.stats-container { background-color: var(--card-bg); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: grid; grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem; }
-.stat-card { padding: 1.5rem; text-align: center; position: relative; }
-.stat-card:not(:last-child) { border-right: 1px solid var(--border-color); }
-.stat-card h4 { font-size: 0.9rem; color: var(--text-light); font-weight: 500; margin-bottom: 0.5rem; text-transform: uppercase; }
-.stat-card p { font-size: 2.2rem; font-weight: 600; color: var(--text-dark); }
-
-/* --- Chart & Content Cards --- */
-.charts-container { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
-.chart-card { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.chart-card h3 { font-size: 1.2rem; margin-bottom: 1.5rem; }
-
-/* --- Admin Control Panel (New Action Hub) --- */
-.control-panel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-.action-card { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-decoration: none; color: var(--text-dark); display: flex; align-items: flex-start; gap: 1.5rem; transition: all 0.3s ease; }
-.action-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: var(--primary-color); }
-.action-card .icon { font-size: 1.8rem; color: var(--primary-color); }
-.action-card h4 { margin-bottom: 0.25rem; font-size: 1.1rem; }
-.action-card p { font-size: 0.9rem; color: var(--text-light); line-height: 1.4; }
-
-/* --- RESPONSIVE DESIGN --- */
-@media (max-width: 1200px) {
-    .charts-container { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 992px) {
-    .sidebar { transform: translateX(-260px); }
-    .sidebar.active { transform: translateX(0); }
-    .content-wrapper { margin-left: 0; }
-    .menu-toggle { display: block; }
-    .stats-container { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 576px) {
-    .main-content { padding: 1rem; }
-    .main-header-bar { padding: 1rem; }
-    .stats-container { grid-template-columns: 1fr; }
-    .stat-card:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border-color); }
-    .admin-profile span { display: none; }
-}
-
-/* ===================================================================
-   NEW DASHBOARD COMPONENTS - V3
-   =================================================================== */
-
-/* Main grid for the new components */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-/* --- Component 1: Recent Activity Feed --- */
-.activity-feed {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.activity-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-.activity-item:not(:last-child) {
-    padding-bottom: 1.25rem;
-    margin-bottom: 1.25rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.activity-icon {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-}
-.activity-icon.blue { background-color: #3498db; }
-.activity-icon.green { background-color: #27ae60; }
-.activity-icon.yellow { background-color: #f1c40f; }
-.activity-icon.purple { background-color: #8e44ad; }
-
-.activity-text {
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-    line-height: 1.4;
-}
-
-.activity-time {
-    font-size: 0.85rem;
-    color: var(--text-light);
-}
-
-/* --- Component 2: Key Tasks List --- */
-.tasks-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.task-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-}
-
-.task-item:hover {
-    background-color: var(--admin-bg);
-}
-
-.task-item-empty {
-    padding: 1rem;
-    color: var(--text-light);
-}
-
-.task-icon {
-    font-size: 1.2rem;
-    color: var(--primary-color);
-}
-
-.task-content {
+.content-wrapper {
     flex-grow: 1;
+    margin-left: 260px; /* Offset for sidebar width */
+    transition: margin-left 0.3s ease-in-out;
 }
 
-.task-text {
+.main-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky; /* Sticky header for scrolling content */
+    top: 0;
+    z-index: 999;
+    box-shadow: var(--shadow-sm);
+}
+
+.menu-toggle {
+    display: none; /* Hidden by default, shown on smaller screens */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-dark);
+    transition: transform 0.2s ease;
+}
+.menu-toggle:hover {
+    transform: scale(1.1);
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-weight: 500;
+    color: var(--text-dark);
 }
 
-.task-action {
-    color: var(--text-light);
-    font-size: 1rem;
-    transition: color 0.2s;
-}
-
-.task-item:hover .task-action {
+.admin-profile i {
+    font-size: 1.8rem;
     color: var(--primary-color);
 }
 
-
-/* --- Responsive Adjustments for New Components --- */
-@media (max-width: 1200px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
+.main-content {
+    padding: 2rem;
 }
-/* ===================================================================
-   ADMIN DASHBOARD STYLES - V4 (Official & Clean)
-   =================================================================== */
 
-/* Section headers for the dashboard */
+.main-content h2 {
+    font-size: 2rem;
+    font-weight: 700; /* Bolder heading */
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.main-content > p {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+/* --- General Content Card Styling --- */
+.content-card {
+    background: var(--card-bg);
+    border-radius: 10px; /* Slightly more rounded */
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem; /* Consistent spacing between cards */
+    transition: all 0.2s ease-in-out;
+}
+.content-card:hover {
+    box-shadow: var(--shadow-lg); /* Lift effect on hover */
+}
+
+
+/* --- Dashboard Section Headers --- */
 .dashboard-section {
     margin-top: 2.5rem;
 }
+
 .dashboard-section h3 {
     font-size: 1.4rem;
-    font-weight: 600;
+    font-weight: 700; /* Bolder heading */
     margin-bottom: 1rem;
     color: var(--text-dark);
 }
@@ -229,247 +228,184 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--admin-bg); co
 /* --- Stat Cards (Refined Design) --- */
 .stats-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Adjusted minmax for better fit */
     gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .stat-card {
     background: var(--card-bg);
     padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-7px); /* More pronounced lift */
+    box-shadow: var(--shadow-lg);
 }
 
 .stat-icon {
-    font-size: 1.8rem;
-    width: 60px;
-    height: 60px;
+    font-size: 2rem; /* Larger icon */
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #fff;
+    box-shadow: var(--shadow-sm); /* Subtle shadow for icon */
 }
 
+/* Specific stat icon backgrounds */
+.stat-card:nth-child(1) .stat-icon { background: linear-gradient(45deg, #27ae60, #2ecc71); } /* Total Revenue */
+.stat-card:nth-child(2) .stat-icon { background: linear-gradient(45deg, #3498db, #5dade2); } /* Active Users */
+.stat-card:nth-child(3) .stat-icon { background: linear-gradient(45deg, #f39c12, #f5b041); } /* Pending Providers */
+.stat-card:nth-child(4) .stat-icon { background: linear-gradient(45deg, #5eead4, #88d4d4); } /* New Messages */
+.stat-card:nth-child(5) .stat-icon { background: linear-gradient(45deg, #e74c3c, #ec7063); } /* Open Disputes */
+
+
 .stat-info h4 {
-    font-size: 0.9rem;
+    font-size: 0.95rem; /* Slightly larger */
     color: var(--text-light);
     font-weight: 500;
     margin-bottom: 0.25rem;
     text-transform: uppercase;
+    letter-spacing: 0.5px; /* Added letter spacing */
 }
 
 .stat-info p {
-    font-size: 1.8rem;
-    font-weight: 600;
+    font-size: 2.2rem; /* Larger number */
+    font-weight: 700;
     color: var(--text-dark);
+    line-height: 1.2;
 }
-
 
 /* --- Quick Access Grid --- */
 .quick-access-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted minmax */
     gap: 1.5rem;
 }
 
 .access-card {
     background: var(--card-bg);
     padding: 2rem 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
     text-decoration: none;
     color: var(--text-dark);
     text-align: center;
     transition: all 0.3s ease;
     border: 1px solid var(--border-color);
+    position: relative; /* For potential pseudo-elements */
+    overflow: hidden;
+}
+
+.access-card::before { /* Subtle background animation */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(var(--primary-color-rgb), 0.05), transparent 60%);
+    transform: scale(0);
+    opacity: 0;
+    border-radius: 10px;
+    transition: all 0.4s ease-out;
+    z-index: 0;
 }
 
 .access-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    transform: translateY(-10px); /* More pronounced lift */
+    box-shadow: var(--shadow-lg);
     border-color: var(--primary-color);
     color: var(--primary-color);
+}
+.access-card:hover::before {
+    transform: scale(1);
+    opacity: 1;
 }
 
 .access-card i {
-    font-size: 2.5rem;
+    font-size: 2.8rem; /* Larger icon */
     margin-bottom: 1rem;
     display: block;
     color: var(--primary-color);
+    position: relative;
+    z-index: 1; /* Keep icon above pseudo-element */
 }
 
 .access-card span {
-    font-size: 1rem;
+    font-size: 1.05rem; /* Slightly larger text */
     font-weight: 600;
+    position: relative;
+    z-index: 1;
 }
 
 
-/* --- Recent Registrations Table --- */
-/* The general .content-card and table styles from your existing admin.css will style this */
-.btn-view {
-    text-decoration: none;
-    color: var(--primary-color);
-    font-weight: 600;
-    padding: 0.3rem 0.8rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-
-.btn-view:hover {
-    background-color: var(--primary-color);
-    color: #fff;
-    border-color: var(--primary-color);
-}
-/* ===================================================================
-   ADMIN PANEL UPGRADES V5
-   =================================================================== */
-
-/* --- Enhanced Buttons & Actions --- */
-.action-buttons {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-}
-.btn-action {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0.5rem;
-    border-radius: 4px;
-    line-height: 1;
-    transition: background-color 0.2s;
-}
-.btn-action.edit { color: #f39c12; }
-.btn-action.delete { color: #e74c3c; }
-.btn-action:hover { background-color: #f0f2f5; }
-.btn-link { color: #3498db; text-decoration: none; font-weight: 500; }
-.btn-link:hover { text-decoration: underline; }
-
-/* --- Dispute Management Section --- */
-.disputes-list {
-    list-style: none;
-    margin-top: 1.5rem;
-}
-.dispute-item {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--border-color);
-}
-.dispute-item:last-child { border-bottom: none; }
-.dispute-icon { font-size: 1.5rem; color: var(--text-light); width: 30px; text-align: center; }
-.dispute-details { flex-grow: 1; }
-.dispute-details p { font-weight: 500; margin-bottom: 0.25rem; }
-.dispute-details span { font-size: 0.9rem; color: var(--text-light); }
-.dispute-status .status-badge { font-size: 0.8rem; }
-
-/* --- Report Generation Filters --- */
-.report-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* --- Alerts for messages (e.g., success/error) --- */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
     margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-.report-filters { display: flex; gap: 1rem; align-items: center; }
-.report-filters select {
-    padding: 0.5rem;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    font-family: 'Poppins', sans-serif;
-}
-.btn-download {
-    background-color: var(--primary-color);
-    color: #fff;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    text-decoration: none;
     font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-.btn-download:hover { opacity: 0.85; }
-
-/* --- System Settings Form --- */
-.form-section { margin-top: 2rem; }
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-.form-group { margin-bottom: 1rem; }
-.form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-.form-group input, .form-group textarea {
-    width: 100%;
-    padding: 0.8rem;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
-}
-.form-group textarea { resize: vertical; min-height: 100px; }
-.btn-save {
-    background-color: var(--status-approved);
-    color: #fff;
-    padding: 0.8rem 2rem;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    margin-top: 1rem;
-}
-.btn-save:hover { opacity: 0.85; }
-
-@media(max-width: 768px) {
-    .form-grid { grid-template-columns: 1fr; }
+    border: 1px solid transparent;
+    animation: fadeIn 0.5s ease-out;
 }
 
-/* ===================================================================
-   STYLES FOR DASHBOARD CONTENT PAGES (Projects, Forms, etc.)
-   =================================================================== */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-error { /* Using 'error' for general issues/danger */
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 
 /* --- General Table Styling --- */
-.content-card {
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    margin-bottom: 2rem;
-}
-
 .table-wrapper {
-    overflow-x: auto;
+    overflow-x: auto; /* Enables horizontal scroll on small screens */
+    -webkit-overflow-scrolling: touch; /* Smoother scrolling on touch devices */
+    border-radius: 8px; /* Match card border-radius */
+    border: 1px solid var(--border-color); /* Subtle border for the table wrapper */
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 700px; /* Ensure table isn't too narrow on small screens */
 }
 
 table thead th {
     text-align: left;
-    padding: 1rem;
+    padding: 1.2rem 1rem; /* More padding */
     background-color: #f8f9fa;
     color: var(--text-light);
     font-weight: 600;
     font-size: 0.9rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px; /* More letter spacing */
     border-bottom: 2px solid var(--border-color);
 }
 
@@ -484,14 +420,51 @@ table tbody tr:last-child td {
 }
 
 table tbody tr:hover {
-    background-color: #f8f9fa;
+    background-color: #f0f2f5; /* Lighter hover for table rows */
 }
 
-/* --- Form Styling --- */
-.form-section {
-    max-width: 800px;
+/* --- Status Badges (used in tables and details) --- */
+.status-badge {
+    padding: 0.4rem 0.8rem; /* Slightly larger padding */
+    border-radius: 25px; /* More rounded */
+    font-size: 0.8rem; /* Slightly larger font */
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px; /* Give badges a consistent width */
+    text-align: center;
+    letter-spacing: 0.3px;
 }
 
+.status-active, .status-approved, .status-success {
+    background-color: rgba(39, 174, 96, 0.15);
+    color: var(--status-active);
+}
+
+.status-pending, .status-awaiting {
+    background-color: rgba(243, 156, 18, 0.15);
+    color: var(--status-pending);
+}
+
+.status-inactive, .status-rejected, .status-declined {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: var(--status-rejected);
+}
+
+.status-verified {
+    background-color: rgba(52, 152, 219, 0.15);
+    color: var(--status-verified);
+}
+
+.status-info {
+    background-color: rgba(100, 116, 139, 0.15);
+    color: var(--status-info);
+}
+
+
+/* --- Form Styling (Consolidated) --- */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -499,92 +472,254 @@ table tbody tr:hover {
 .form-group label {
     display: block;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.6rem; /* More space */
     color: var(--text-dark);
+    font-size: 0.95rem;
 }
 
-.form-group input,
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="url"],
+.form-group input[type="number"],
+.form-group input[type="date"],
 .form-group textarea,
 .form-group select {
     width: 100%;
-    padding: 0.8rem 1rem;
-    border-radius: 6px;
+    padding: 0.9rem 1.2rem; /* More padding */
+    border-radius: 8px; /* Slightly more rounded */
     border: 1px solid var(--border-color);
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    color: var(--text-dark);
+    background-color: var(--card-bg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-group input:focus,
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="url"]:focus,
+.form-group input[type="number"]:focus,
+.form-group input[type="date"]:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2); /* Softer focus glow */
 }
 
 .form-group textarea {
     resize: vertical;
-    min-height: 120px;
+    min-height: 140px; /* Slightly taller default */
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* --- Button Styles --- */
+/* Base button styles for all buttons that look like traditional buttons */
+.btn-base {
+    display: inline-flex; /* Use flex for vertical alignment */
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 1.8rem; /* More substantial padding */
+    border-radius: 8px; /* Modern rounded corners */
+    font-weight: 600;
+    letter-spacing: 0.5px; /* Added letter spacing */
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transitions for everything */
+    border: none;
+    font-size: 1rem;
+    line-height: 1;
+    min-width: 120px; /* Minimum width for consistency */
+}
+
+/* Primary Action Button (e.g., general "Submit") */
 .btn-submit {
+    @extend .btn-base;
     background-color: var(--primary-color);
     color: #fff;
-    padding: 0.8rem 2rem;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-submit:hover {
-    background-color: #0a756b; /* A darker shade of the primary color */
+    background-color: var(--primary-dark-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+.btn-submit:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
 }
 
-/* --- Project Details & Tracking --- */
-.project-details-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
+/* Distinct Save Button (e.g., from settings.php, with aqua theme) */
+.btn-save {
+    @extend .btn-base;
+    background-color: var(--sidebar-bg); /* Dark background */
+    color: aqua; /* Your requested text color */
+    border: 1px solid aqua; /* Aqua border */
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7); /* Subtle aqua glow */
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3); /* Outer glow */
 }
 
+.btn-save:hover {
+    background-color: #1a242f; /* Even darker on hover */
+    color: #00ffff; /* Slightly brighter aqua on hover */
+    border-color: #00ffff;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.9);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+    transform: translateY(-3px) scale(1.02);
+}
+.btn-save:active {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+/* Link-style buttons (used often in tables) */
+.btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem; /* Small gap for icon-links */
+    padding: 0.6rem 1rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+.btn-link:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.08); /* Light background on hover */
+    color: var(--primary-dark-hover);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+.btn-link i {
+    font-size: 0.9em;
+}
+
+
+/* Special 'View' button from recent registrations/tables */
+.btn-view {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--primary-color); /* Outline style */
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    background-color: transparent;
+}
+
+.btn-view:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* Action icons (Edit, Delete) in tables */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem; /* Slightly larger icons */
+    padding: 0.6rem; /* More clickable area */
+    border-radius: 50%; /* Circular hover effect */
+    line-height: 1;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-action.edit {
+    color: var(--status-pending); /* Orange for edit actions */
+}
+
+.btn-action.delete {
+    color: var(--status-rejected); /* Red for destructive actions */
+}
+
+.btn-action:hover {
+    background-color: rgba(0, 0, 0, 0.08); /* Darker hover background */
+    transform: scale(1.1); /* Slight pop */
+}
+
+
+/* --- Project Details & Tracking / Dispute Items --- */
+.detail-item {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+.detail-item strong {
+    color: var(--text-dark);
+}
+.detail-item p {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-light);
+}
+
+.mt-3 { margin-top: 1.5rem !important; } /* Use !important if needed to override */
+.mt-4 { margin-top: 2rem !important; }
+.text-info { color: var(--status-info); }
+
+/* Timeline for project progress */
 .progress-timeline {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .timeline-item {
     position: relative;
-    padding-left: 2rem;
+    padding-left: 2.5rem; /* More space for dots */
     padding-bottom: 1.5rem;
     border-left: 2px solid var(--border-color);
 }
 
 .timeline-item:last-child {
-    border-left: 2px solid transparent;
+    border-left: 2px solid transparent; /* No border for the last item */
 }
 
 .timeline-item::before {
     content: '';
     position: absolute;
-    left: -9px;
+    left: -10px; /* Adjust to center dot on line */
     top: 0;
-    width: 16px;
-    height: 16px;
+    width: 20px; /* Larger dot */
+    height: 20px;
     border-radius: 50%;
     background-color: var(--border-color);
-    border: 3px solid #fff;
+    border: 4px solid var(--admin-bg); /* White ring around the dot (matching admin background) */
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.05); /* Subtle shadow for depth */
 }
 
 .timeline-item.completed::before {
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Green dot for completed */
+    box-shadow: 0 0 0 2px var(--primary-color), var(--shadow-sm); /* Glow for completed */
 }
 
 .timeline-item h4 {
     font-size: 1.1rem;
     font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-dark);
 }
 
 .timeline-item p {
@@ -592,67 +727,162 @@ table tbody tr:hover {
     color: var(--text-light);
 }
 
-@media (max-width: 992px) {
-    .project-details-grid {
-        grid-template-columns: 1fr;
-    }
+/* Dispute Management Section */
+.disputes-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.5rem;
 }
 
-/* ===================================================================
-   STYLES FOR PROVIDER-SPECIFIC DASHBOARD PAGES
-   =================================================================== */
+.dispute-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+.dispute-item:hover {
+    background-color: #f8f9fa; /* Light hover effect */
+}
 
-/* --- Portfolio Management --- */
-.portfolio-gallery {
+.dispute-item:last-child {
+    border-bottom: none;
+}
+
+.dispute-icon {
+    font-size: 1.6rem; /* Larger icon */
+    color: var(--text-light);
+    width: 35px; /* Consistent width */
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.dispute-details {
+    flex-grow: 1;
+}
+
+.dispute-details p {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: var(--text-dark);
+}
+
+.dispute-details span {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.dispute-status .status-badge {
+    font-size: 0.8rem;
+}
+
+
+/* --- Report Generation Filters --- */
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: 1rem;
+}
+
+.report-filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.report-filters select {
+    padding: 0.7rem 1.2rem; /* Consistent padding with inputs */
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--card-bg);
+    color: var(--text-dark);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.report-filters select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+}
+
+
+.btn-download {
+    @extend .btn-base;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 0.7rem 1.5rem; /* Slightly smaller for download, but still substantial */
+    box-shadow: var(--shadow-sm);
+    gap: 0.5rem; /* Space between text and icon */
+}
+
+.btn-download:hover {
+    background-color: var(--primary-dark-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+.btn-download:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* --- Portfolio Management (for provider views if included) --- */
+.portfolio-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Adjusted minmax for better layout */
     gap: 1.5rem;
     margin-top: 1.5rem;
 }
 
-.portfolio-image-card {
+.portfolio-item {
     position: relative;
     overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+    background-color: var(--card-bg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.portfolio-image-card img {
+.portfolio-item:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--shadow-lg);
+}
+
+.portfolio-item img {
     width: 100%;
-    height: 150px;
+    height: 180px; /* Consistent image height */
     object-fit: cover;
     display: block;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.delete-photo-btn {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background-color: rgba(231, 76, 60, 0.8);
-    color: #fff;
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
+.portfolio-item h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 1rem 1rem 0.5rem;
+    color: var(--text-dark);
+}
+
+.portfolio-item p {
     font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s;
+    color: var(--text-light);
+    padding: 0 1rem 1rem;
 }
 
-.portfolio-image-card:hover .delete-photo-btn {
-    opacity: 1;
-}
 
-/* --- Service Tags --- */
+/* --- Service Tags (for provider views if included) --- */
 .service-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    margin-top: 1rem;
 }
+
 .service-tag {
     background-color: var(--primary-color);
     color: #fff;
@@ -660,19 +890,194 @@ table tbody tr:hover {
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 500;
+    letter-spacing: 0.3px;
 }
 
-/* --- Form Styling --- */
-.form-section { max-width: 800px; }
-.form-group { margin-bottom: 1.5rem; }
-.form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-dark); }
-.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.8rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
-.form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1); }
-.form-group textarea { resize: vertical; min-height: 120px; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.btn-submit { background-color: var(--primary-color); color: #fff; padding: 0.8rem 2rem; border-radius: 6px; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; transition: background-color 0.2s; }
-.btn-submit:hover { background-color: #0a756b; }
 
-@media (max-width: 768px) {
-    .form-grid { grid-template-columns: 1fr; }
+/* ===================================================================
+   RESPONSIVE DESIGN (Consolidated & Enhanced)
+   =================================================================== */
+
+/* Tablet & Smaller Desktop Adjustments */
+@media (max-width: 1200px) {
+    .main-content {
+        padding: 1.5rem;
+    }
+    .stats-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .quick-access-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+    .portfolio-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+/* Tablet / Mobile Landscape */
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-260px); /* Hide sidebar by default */
+        box-shadow: 4px 0 10px rgba(0,0,0,0.2);
+    }
+    .sidebar.active {
+        transform: translateX(0); /* Show sidebar when active */
+    }
+    .content-wrapper {
+        margin-left: 0; /* No offset when sidebar is hidden */
+    }
+    .main-header-bar {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+    .menu-toggle {
+        display: block; /* Show hamburger icon */
+    }
+    /* Dim content when sidebar is open on smaller screens */
+    .admin-container.sidebar-active .content-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 900; /* Below sidebar, above content */
+        display: block;
+        cursor: pointer; /* Indicate it's clickable to close sidebar */
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 2 columns on most tablets */
+    }
+    .form-grid {
+        grid-template-columns: 1fr; /* Stack form fields */
+    }
+    .project-details-grid {
+        grid-template-columns: 1fr; /* Stack project details */
+    }
+    .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .report-filters {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .report-filters select, .btn-download {
+        flex-grow: 1; /* Make filter and download buttons fill space */
+    }
+    table {
+        min-width: 700px; /* Ensure tables are still scrollable horizontally if needed */
+    }
+}
+
+/* Mobile Portrait */
+@media (max-width: 576px) {
+    .main-content {
+        padding: 1rem;
+    }
+    .main-header-bar {
+        padding: 0.8rem 1rem;
+    }
+    .admin-profile span {
+        display: none; /* Hide admin name, only show icon */
+    }
+    .stats-container {
+        grid-template-columns: 1fr; /* Single column on mobile */
+    }
+    .quick-access-grid {
+        grid-template-columns: 1fr; /* Single column for quick access */
+    }
+    .portfolio-grid {
+        grid-template-columns: 1fr; /* Single column for portfolio images */
+    }
+    .stat-card {
+        flex-direction: column; /* Stack icon and info vertically */
+        text-align: center;
+        gap: 0.8rem;
+        padding: 1rem; /* Smaller padding */
+    }
+    .stat-icon {
+        margin-bottom: 0.5rem;
+        width: 55px; /* Slightly smaller icon */
+        height: 55px;
+        font-size: 1.8rem;
+    }
+    .stat-info p {
+        font-size: 1.5rem; /* Adjust stat numbers for mobile */
+    }
+
+    .dispute-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+    .dispute-status, .dispute-icon, .action-buttons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .action-buttons {
+        margin-top: 0.5rem;
+    }
+
+    /* Adjust form fields */
+    .form-group input, .form-group textarea, .form-group select,
+    .report-filters select {
+        padding: 0.7rem 1rem;
+        font-size: 0.95rem;
+    }
+    .btn-base {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
+        min-width: unset; /* Remove min-width on mobile to allow flexibility */
+        width: 100%; /* Make buttons full width */
+    }
+    .action-buttons {
+        flex-wrap: wrap; /* Allow action buttons to wrap */
+        justify-content: center;
+    }
+    .btn-action {
+        font-size: 1.1rem;
+        padding: 0.5rem;
+    }
+}
+
+/* Helper for extending properties (like @extend in Sass) - for compatibility */
+/* Note: This is a simplified @extend. For full functionality, consider a CSS preprocessor. */
+/* Using this for demonstration, for production, manually copy properties or use a build tool. */
+.btn-submit, .btn-save, .btn-download {
+    /* Copy properties from .btn-base */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 1rem;
+    line-height: 1;
+    min-width: 120px;
+}
+
+@media (max-width: 576px) {
+    .btn-submit, .btn-save, .btn-download {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
+        min-width: unset;
+        width: 100%;
+    }
+}
+
+/* Define RGB version of primary color for rgba usage */
+/* This is a common pattern when you need translucent versions of your main color */
+/* You would need to update this manually if you change --primary-color */
+/* Or use a CSS preprocessor like SASS/LESS to automate this. */
+/* For #0d9488: 13, 148, 136 */
+:root {
+    --primary-color-rgb: 13, 148, 136;
 }

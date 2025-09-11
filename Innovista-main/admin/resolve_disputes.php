@@ -1,8 +1,7 @@
 <?php 
-require_once 'admin_header.php'; 
+// resolve_disputes.php
+require_once 'admin_header.php'; // session_start() and login check are handled here
 require_once '../config/Database.php';
-
-session_start();
 
 // DB connection
 $db = (new Database())->getConnection();
@@ -11,10 +10,13 @@ $db = (new Database())->getConnection();
 $query = "
     SELECT d.id, d.reason, d.status, d.created_at,
            c.name AS customer_name,
-           p.name AS provider_name
+           p.name AS provider_name,
+           q.id AS quotation_table_id -- To link back to the original quotation request if needed
     FROM disputes d
     JOIN users c ON d.reported_by_id = c.id
     JOIN users p ON d.reported_against_id = p.id
+    LEFT JOIN custom_quotations cq ON d.quotation_id = cq.id -- If quotation_id in disputes references custom_quotations
+    LEFT JOIN quotations q ON cq.quotation_id = q.id -- If custom_quotations links to quotations
     ORDER BY d.created_at DESC
 ";
 $stmt = $db->prepare($query);
@@ -28,6 +30,13 @@ $resolvedDisputes = array_filter($disputes, fn($d) => strtolower($d['status']) =
 
 <h2>Resolve Disputes</h2>
 <p>Review and resolve issues reported between users to maintain platform integrity.</p>
+
+<?php
+if (isset($_GET['status']) && isset($_GET['message'])) {
+    $status_class = ($_GET['status'] === 'success') ? 'success' : 'error';
+    echo "<div class='alert alert-{$status_class}'>" . htmlspecialchars($_GET['message']) . "</div>";
+}
+?>
 
 <div class="content-card">
     <h3>Open Disputes</h3>

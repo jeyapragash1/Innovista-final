@@ -1,12 +1,18 @@
 <?php
-    // In a real application, you would have session start and login checks here
-    // session_start();
-    // if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    //     header("Location: ../login.php");
-    //     exit();
-    // }
+// admin_header.php
+session_start(); // MUST be the very first line of PHP in your script
 
-    $currentPage = basename($_SERVER['SCRIPT_NAME']);
+// Basic authentication check
+// Ensure user_id and user_role are set in session upon successful login
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    // Redirect to the login page if not logged in as admin
+    header("Location: ../public/login.php");
+    exit();
+}
+
+$admin_name = $_SESSION['user_name'] ?? 'Admin'; // Fetch admin's name from session if available
+
+$currentPage = basename($_SERVER['SCRIPT_NAME']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +25,6 @@
     
     <!-- This path is corrected to go up one directory to the assets folder -->
     <link rel="stylesheet" href="../public/assets/css/admin.css">
-    <link rel="stylesheet" href="../public/assets/css/customer-dashboard.css"> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -59,6 +64,10 @@
                 </a>
             </nav>
             <div class="sidebar-footer">
+                <!-- NEW: Back to Home Link -->
+                <a href="../public/index.php" class="nav-link">
+                    <i class="fas fa-home"></i><span>Back to Home</span>
+                </a>
                 <a href="../public/logout.php" class="nav-link logout">
                     <i class="fas fa-sign-out-alt"></i><span>Logout</span>
                 </a>
@@ -71,7 +80,7 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="admin-profile">
-                    <span>Welcome, Admin</span>
+                    <span>Welcome, <?php echo htmlspecialchars($admin_name); ?></span>
                     <i class="fas fa-user-circle"></i>
                 </div>
             </header>

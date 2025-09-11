@@ -1,25 +1,32 @@
 <?php
-    // Include the session manager at the very top of the header.
-    include_once 'session.php'; // Or your config/session.php path
+    // C:\xampp1\htdocs\Innovista-final\Innovista-main\public\header.php
+
+    // Include the session manager. This file now defines our helper functions.
+    include_once 'session.php'; 
+
+    // --- Removed the helper function definitions from here ---
+    // They are now in session.php
 
     // Get the current page's filename for the active navigation link.
     $currentPage = basename($_SERVER['SCRIPT_NAME']);
 
-    // --- THE FIX: DYNAMIC DASHBOARD URL LOGIC ---
-    $dashboardUrl = 'login.php'; // Default URL if not logged in
-    if (isUserLoggedIn()) {
-        switch ($_SESSION['user_role']) {
+    // --- DYNAMIC DASHBOARD URL LOGIC ---
+    // This logic determines where a logged-in user's dashboard link should point.
+    $dashboardUrl = 'login.php'; // Default URL if not logged in or role not recognized
+
+    if (isUserLoggedIn()) { // This function is now available from session.php
+        switch (getUserRole()) { // This function is now available from session.php
             case 'admin':
                 $dashboardUrl = '../admin/admin_dashboard.php';
                 break;
             case 'provider':
-                $dashboardUrl = '../provider/provider_dashboard.php';
+                $dashboardUrl = 'provider_dashboard.php'; // Assuming this is in public/
                 break;
             case 'customer':
-                $dashboardUrl = '../customer/customer_dashboard.php';
+                $dashboardUrl = 'customer_dashboard.php'; // Assuming this is in public/
                 break;
             default:
-                $dashboardUrl = 'index.php'; // Fallback
+                $dashboardUrl = 'index.php'; // Fallback for logged-in but unrecognized role
                 break;
         }
     }
@@ -29,7 +36,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($pageTitle) ? $pageTitle . ' - Innovista' : 'Innovista - Transforming Spaces'; ?></title>
+    <!-- Use $pageTitle if set, otherwise a default title -->
+    <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' - Innovista' : 'Innovista - Transforming Spaces'; ?></title>
     
     <!-- External Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -49,7 +57,8 @@
 
     
 </head>
-<body data-logged-in="<?php echo isUserLoggedIn() ? 'true' : 'false'; ?>">
+<!-- Add data-user-role for potential JavaScript interactions -->
+<body data-logged-in="<?php echo isUserLoggedIn() ? 'true' : 'false'; ?>" data-user-role="<?php echo htmlspecialchars(getUserRole() ?? 'guest'); ?>">
 <header class="main-header">
     <nav class="navbar container">
         <a href="./index.php" class="navbar-logo">
@@ -67,13 +76,13 @@
             <?php if (isUserLoggedIn()): ?>
                 <!-- User Profile Icon with Dropdown -->
                 <div class="user-profile">
-                    <!-- THE FIX: The href now uses the dynamic $dashboardUrl variable -->
-                    <a href="<?php echo $dashboardUrl; ?>" class="user-icon-link">
+                    <!-- Dashboard link in the main nav action area -->
+                    <a href="<?php echo htmlspecialchars($dashboardUrl); ?>" class="user-icon-link">
                         <i class="fas fa-user-circle"></i>
                     </a>
                     <div class="profile-dropdown">
-                        <!-- THE FIX: This link also uses the dynamic variable -->
-                        <a href="<?php echo $dashboardUrl; ?>" class="dropdown-item">My Dashboard</a>
+                        <!-- Dashboard link in the dropdown -->
+                        <a href="<?php echo htmlspecialchars($dashboardUrl); ?>" class="dropdown-item">My Dashboard</a>
                         <a href="profile.php" class="dropdown-item">Edit Profile</a>
                         <a href="logout.php" class="dropdown-item logout">Logout</a>
                     </div>
