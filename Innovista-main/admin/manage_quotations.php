@@ -40,7 +40,7 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
         <table>
             <thead>
                 <tr>
-                    <th>Quote ID</th>
+                    <!-- <th>Quote ID</th> -->
                     <th>Customer</th>
                     <th>Provider</th>
                     <th>Service Type</th>
@@ -59,7 +59,6 @@ if (isset($_GET['status']) && isset($_GET['message'])) {
                         $display_status = $quote['custom_quotation_status'] ?? $quote['customer_request_status'];
                         ?>
                         <tr>
-                            <td>#INV-<?php echo str_pad($quote['id'], 4, '0', STR_PAD_LEFT); ?></td>
                             <td><?php echo htmlspecialchars($quote['customer_name']); ?></td>
                             <td><?php echo htmlspecialchars($quote['provider_name']); ?></td>
                             <td><?php echo htmlspecialchars($quote['service_type']); ?></td>

@@ -14,22 +14,20 @@
     $dashboardUrl = 'login.php'; 
 
     if (isUserLoggedIn()) {
-        switch (getUserRole()) {
+                switch (getUserRole()) {
             case 'admin':
-                // Admin dashboard is outside the 'public' directory
                 $dashboardUrl = '../admin/admin_dashboard.php';
                 break;
             case 'provider':
-                // Assuming provider_dashboard.php is within the 'public' directory
-                $dashboardUrl = '../provider/provider_dashboard.php'; ///C:\xampp1\htdocs\Innovista-final\Innovista-main\provider\provider_dashboard.php
+                // Corrected path: from public/ to provider/
+                $dashboardUrl = '../provider/provider_dashboard.php';
                 break;
             case 'customer':
-                // Assuming customer_dashboard.php is within the 'public' directory
-                $dashboardUrl = '../customer/customer_dashboard.php'; 
+                // Corrected path: from public/ to customer/
+                $dashboardUrl = '../customer/customer_dashboard.php';
                 break;
             default:
-                // Fallback for logged-in users with an unrecognized role, directs them home
-                $dashboardUrl = 'index.php'; 
+                $dashboardUrl = 'index.php';
                 break;
         }
     }

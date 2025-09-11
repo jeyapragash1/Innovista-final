@@ -37,17 +37,38 @@ function getUserId(): ?int {
  * or a relative path to an internally uploaded file.
  * Automatically adjusts path for admin panel vs public pages.
  *
- * @param string $imagePath The raw image path from the database.
+ * @param mixed $rawImagePath The raw image path from the database (can be string, array, or null).
  * @return string The correctly formatted URL for the <img> tag.
  */
-function getImageSrc(string $imagePath): string {
-    // Basic validation for an empty path
+function getImageSrc(mixed $rawImagePath): string {
+    // --- Step 1: Ensure $imagePath is a string at all costs ---
+    $imagePath = ''; // Initialize as an empty string
+
+    if (is_string($rawImagePath)) {
+        $imagePath = $rawImagePath;
+    } elseif ($rawImagePath === null) {
+        // null is a common value for empty DB fields, treat as empty string
+        $imagePath = '';
+    } elseif (is_array($rawImagePath) || is_object($rawImagePath)) {
+        // This is the problematic case: an array or object was passed.
+        // Log this to find where the bad data is coming from.
+        error_log("getImageSrc received unexpected array/object type for imagePath: " . var_export($rawImagePath, true));
+        // Return a specific error placeholder, or just the generic one
+        return htmlspecialchars('assets/images/error_placeholder.jpg'); // Make sure this file exists
+    } else {
+        // Handle other unexpected types (e.g., boolean, int) by casting to string
+        error_log("getImageSrc received unexpected non-string, non-array, non-null type: " . gettype($rawImagePath) . " value: " . var_export($rawImagePath, true));
+        $imagePath = (string) $rawImagePath;
+    }
+
+    // --- Step 2: Handle empty path after type conversion ---
     if (empty($imagePath)) {
         return htmlspecialchars('assets/images/placeholder.jpg'); // Return a generic placeholder if path is empty
     }
 
-    // Check if the path is a full URL (starts with http/https)
+    // --- Step 3: Determine if it's a URL or relative path ---
     if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+        // It's a full URL, use it directly
         return htmlspecialchars($imagePath);
     } else {
         // It's a relative path. Assume it's relative to the 'public' directory from the web server's perspective.
@@ -58,7 +79,7 @@ function getImageSrc(string $imagePath): string {
         if (str_contains($_SERVER['SCRIPT_NAME'], '/admin/')) {
             $base_url_prefix = '../public/'; // From admin/ to public/
         }
-        // If not in admin, then it's a public page, path is already relative to public/
+        // This is where the concatenation happens: $base_url_prefix . $imagePath
         return htmlspecialchars($base_url_prefix . $imagePath);
     }
 }

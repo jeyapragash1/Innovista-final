@@ -44,7 +44,7 @@
                     <a href="payment_history.php" class="nav-link"><i class="fas fa-receipt"></i><span>Payments</span></a>
                     <a href="my_profile.php" class="nav-link"><i class="fas fa-user-edit"></i><span>My Profile</span></a>
                 <?php else: // Service Provider Links ?>
-                    <a href="provider_dashboard.php" class="nav-link <?php if($currentPage == 'provider_dashboard.php') echo 'active'; ?>"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+                    <a href="../customer/customer_dashboard.php" class="nav-link <?php if($currentPage == 'provider_dashboard.php') echo 'active'; ?>"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
                     <a href="manage_quotations.php" class="nav-link"><i class="fas fa-file-invoice-dollar"></i><span>Quotations</span></a>
                     <a href="my_projects.php" class="nav-link"><i class="fas fa-tasks"></i><span>My Projects</span></a>
                     <a href="manage_portfolio.php" class="nav-link"><i class="fas fa-images"></i><span>My Portfolio</span></a>
