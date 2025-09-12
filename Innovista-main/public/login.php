@@ -1,13 +1,27 @@
 <?php 
     $pageTitle = 'Login';
-    require_once __DIR__ . '/../config/session.php'; 
+    require_once __DIR__ . '/../public/session.php'; // Correct path to session.php
+    require_once __DIR__ . '/../handlers/flash_message.php'; // Include flash message functions
+
+    // If user is already logged in, redirect them
+    if (isUserLoggedIn()) {
+        $userRole = getUserRole();
+        if ($userRole === 'admin') {
+            header("Location: ../admin/admin_dashboard.php");
+        } elseif ($userRole === 'provider') {
+            header("Location: provider_dashboard.php");
+        } else { // customer or unknown
+            header("Location: customer_dashboard.php");
+        }
+        exit();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle; ?> - Innovista</title>
+    <title><?php echo htmlspecialchars($pageTitle); ?> - Innovista</title>
     
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/login.css"> <!-- Your existing login styles -->
@@ -31,7 +45,7 @@
                         <label for="email">Email Address</label>
                         <div class="input-wrapper">
                             <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                            <input type="email" id="email" name="email" placeholder="you@example.com" required value="<?php echo htmlspecialchars($_SESSION['login_data']['email'] ?? ''); unset($_SESSION['login_data']['email']); ?>">
                         </div>
                     </div>
                     <div class="form-group">
@@ -60,8 +74,5 @@
             </div>
         </div>
     </div>
-    
-    <!-- We will remove the link to login-script.js as it's not needed for a pure backend login -->
-    <!-- <script src="assets/js/login-script.js"></script> -->
 </body>
 </html>
