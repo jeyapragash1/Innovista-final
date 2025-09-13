@@ -75,13 +75,39 @@ try {
         }
     }
 
+
+    // Handle photo uploads
+    $uploadedPhotoPaths = [];
+    if (!empty($_FILES['photos']['name'][0])) {
+        $uploadDir = __DIR__ . '/../uploads/quotations/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        foreach ($_FILES['photos']['tmp_name'] as $idx => $tmpName) {
+            if ($_FILES['photos']['error'][$idx] === UPLOAD_ERR_OK) {
+                $originalName = basename($_FILES['photos']['name'][$idx]);
+                $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+                if (in_array($ext, $allowed)) {
+                    $newName = 'quote_' . uniqid() . '.' . $ext;
+                    $dest = $uploadDir . $newName;
+                    if (move_uploaded_file($tmpName, $dest)) {
+                        $uploadedPhotoPaths[] = 'uploads/quotations/' . $newName;
+                    }
+                }
+            }
+        }
+    }
+    $photosStr = !empty($uploadedPhotoPaths) ? implode(',', $uploadedPhotoPaths) : null;
+
     $subcategory = isset($_POST['subcategory']) ? $_POST['subcategory'] : '';
-    $stmt = $db->prepare("INSERT INTO quotations (customer_id, provider_id, service_type, subcategory, project_description, status, created_at) VALUES (:customer_id, :provider_id, :service_type, :subcategory, :project_description, :status, NOW())");
+    $stmt = $db->prepare("INSERT INTO quotations (customer_id, provider_id, service_type, subcategory, project_description, photos, status, created_at) VALUES (:customer_id, :provider_id, :service_type, :subcategory, :project_description, :photos, :status, NOW())");
     $stmt->bindParam(':customer_id', $customer_id);
     $stmt->bindParam(':provider_id', $provider_id);
     $stmt->bindParam(':service_type', $service_type);
     $stmt->bindParam(':subcategory', $subcategory);
     $stmt->bindParam(':project_description', $project_description);
+    $stmt->bindParam(':photos', $photosStr);
     $status = 'Awaiting Quote';
     $stmt->bindParam(':status', $status);
 
