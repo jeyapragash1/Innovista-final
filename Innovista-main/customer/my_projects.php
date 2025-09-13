@@ -4,9 +4,7 @@ protectPage('customer');
 
 $pageTitle = 'My Projects';
 require_once '../includes/user_dashboard_header.php'; 
-require_once '../config/Database.php';
-
-require_once __DIR__ . '/../classes/Review.php';
+require_once '../config/Database.php';  
 
 $customer_id = $_SESSION['user_id'];
 $database = new Database();
