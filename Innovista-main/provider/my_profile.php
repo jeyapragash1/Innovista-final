@@ -166,51 +166,292 @@ if (!$provider) {
     </style>
 
 
-    <div class="content-card" style="margin-bottom: 2.5rem; padding: 2rem 2.5rem; box-shadow: 0 4px 16px rgba(0,0,0,0.06); border-radius: 14px;">
-        <h3 style="margin-bottom: 1.5rem; font-size: 1.35rem; font-weight: 700; letter-spacing: 0.5px;">My Services</h3>
-        <form action="update_profile.php" method="POST" class="form-section">
-            <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label for="providerService" style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.5rem; display: block;">Service(s)</label>
-                <select id="providerService" name="providerService[]" multiple style="min-width:240px; min-height: 90px; border-radius: 8px; border: 1.5px solid #d1d5db; padding: 0.5rem; font-size: 1rem;">
-                    <option value="Interior Design" <?php echo (strpos($provider['main_service'], 'Interior Design') !== false) ? 'selected' : ''; ?>>Interior Design</option>
-                    <option value="Painting" <?php echo (strpos($provider['main_service'], 'Painting') !== false) ? 'selected' : ''; ?>>Painting</option>
-                    <option value="Restoration" <?php echo (strpos($provider['main_service'], 'Restoration') !== false) ? 'selected' : ''; ?>>Restoration</option>
-                </select>
-                
+    <div class="services-section-pro">
+        <h3 class="services-title-pro">My Services</h3>
+        <p class="services-description-pro">Select the services you offer to help customers find you easily.</p>
+        
+        <form action="update_profile.php" method="POST" class="services-form-pro">
+            <div class="services-main-pro">
+                <label for="providerService" class="services-label-pro">Main Services</label>
+                <div class="service-options-pro">
+                    <label class="service-option-pro">
+                        <input type="checkbox" name="providerService[]" value="Interior Design" <?php echo (strpos($provider['main_service'], 'Interior Design') !== false) ? 'checked' : ''; ?>>
+                        <span class="service-icon-pro"><i class="fas fa-couch"></i></span>
+                        <span class="service-text-pro">Interior Design</span>
+                    </label>
+                    <label class="service-option-pro">
+                        <input type="checkbox" name="providerService[]" value="Painting" <?php echo (strpos($provider['main_service'], 'Painting') !== false) ? 'checked' : ''; ?>>
+                        <span class="service-icon-pro"><i class="fas fa-paint-roller"></i></span>
+                        <span class="service-text-pro">Painting</span>
+                    </label>
+                    <label class="service-option-pro">
+                        <input type="checkbox" name="providerService[]" value="Restoration" <?php echo (strpos($provider['main_service'], 'Restoration') !== false) ? 'checked' : ''; ?>>
+                        <span class="service-icon-pro"><i class="fas fa-hammer"></i></span>
+                        <span class="service-text-pro">Restoration</span>
+                    </label>
+                </div>
             </div>
-            <div class="form-group" id="providerSubcategories" style="display:none; margin-bottom: 1.5rem;">
-                <label style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.5rem; display: block;">Subcategories <span style="font-weight:400; color:#888;">(select all that apply):</span></label>
-                <div id="subcategoryCheckboxes" style="margin-top: 0.5rem;"></div>
+            
+            <div class="subcategories-section-pro" id="providerSubcategories" style="display:none;">
+                <label class="subcategories-label-pro">Specializations</label>
+                <p class="subcategories-hint-pro">Select all specializations that apply to your services</p>
+                <div id="subcategoryCheckboxes" class="subcategory-grid-pro"></div>
             </div>
-            <button type="submit" name="update_services" class="btn-submit" style="margin-top: 0.5rem; padding: 0.6rem 1.5rem; font-size: 1rem; border-radius: 7px;">Save Services</button>
+            
+            <button type="submit" name="update_services" class="btn-save-services-pro">
+                <i class="fas fa-save"></i>
+                Save Services
+            </button>
         </form>
     </div>
 
     <style>
-    /* Modernize the multi-select and checkboxes */
-    #providerService { background: #f8fafc; }
-    #subcategoryCheckboxes label {
-        margin-right: 18px;
-        margin-bottom: 8px;
+    /* Services Section Styling */
+    .services-section-pro {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        padding: 2.5rem 2.5rem 2rem 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .services-title-pro {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #18181b;
+        letter-spacing: 0.2px;
+        border-bottom: 1.5px solid #ececec;
+        padding-bottom: 0.7rem;
+    }
+    
+    .services-description-pro {
+        color: #666;
         font-size: 1rem;
-        font-weight: 500;
-        color: #222;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+    }
+    
+    .services-form-pro {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .services-main-pro {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .services-label-pro {
+        font-weight: 600;
+        color: #22223b;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .service-options-pro {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .service-option-pro {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
         cursor: pointer;
+        transition: all 0.3s ease;
         user-select: none;
     }
-    #subcategoryCheckboxes input[type="checkbox"] {
-        accent-color: #0d9488;
+    
+    .service-option-pro:hover {
+        background: #f1f5f9;
+        border-color: #0d9488;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.1);
+    }
+    
+    .service-option-pro input[type="checkbox"] {
+        display: none;
+    }
+    
+    .service-option-pro input[type="checkbox"]:checked + .service-icon-pro {
+        background: #0d9488;
+        color: #fff;
+        transform: scale(1.1);
+    }
+    
+    .service-option-pro input[type="checkbox"]:checked ~ .service-text-pro {
+        color: #0d9488;
+        font-weight: 600;
+    }
+    
+    .service-option-pro input[type="checkbox"]:checked {
+        background: #ecfdf5;
+        border-color: #0d9488;
+    }
+    
+    .service-icon-pro {
+        width: 40px;
+        height: 40px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .service-text-pro {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #374151;
+        transition: all 0.3s ease;
+    }
+    
+    .subcategories-section-pro {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .subcategories-label-pro {
+        font-weight: 600;
+        color: #22223b;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .subcategories-hint-pro {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .subcategory-grid-pro {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    
+    .subcategory-grid-pro label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    .subcategory-grid-pro label:hover {
+        background: #f9fafb;
+        border-color: #0d9488;
+    }
+    
+    .subcategory-grid-pro input[type="checkbox"] {
         width: 18px;
         height: 18px;
-        margin-right: 5px;
-        vertical-align: middle;
+        accent-color: #0d9488;
+        cursor: pointer;
     }
-    #subcategoryCheckboxes div {
+    
+    .service-category-header {
         font-weight: 700;
-        margin-top: 0.7rem;
-        margin-bottom: 0.3rem;
+        margin: 1rem 0 0.5rem 0;
         color: #0d9488;
-        font-size: 1.08rem;
+        font-size: 1rem;
+        grid-column: 1 / -1;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .subcategory-option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    .subcategory-option:hover {
+        background: #f9fafb;
+        border-color: #0d9488;
+    }
+    
+    .subcategory-option input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #0d9488;
+        cursor: pointer;
+    }
+    
+    .btn-save-services-pro {
+        background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+        border: none;
+        border-radius: 10px;
+        padding: 0.875rem 2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(13, 148, 136, 0.2);
+        align-self: flex-start;
+    }
+    
+    .btn-save-services-pro:hover {
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(13, 148, 136, 0.3);
+    }
+    
+    .btn-save-services-pro i {
+        font-size: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .services-section-pro {
+            padding: 1.5rem 1rem;
+        }
+        
+        .service-options-pro {
+            grid-template-columns: 1fr;
+        }
+        
+        .subcategory-grid-pro {
+            grid-template-columns: 1fr;
+        }
+        
+        .btn-save-services-pro {
+            width: 100%;
+        }
     }
     </style>
 
@@ -242,37 +483,49 @@ if (!$provider) {
             "Full Building Renovation"
         ]
     };
+    
     document.addEventListener('DOMContentLoaded', function() {
-        const providerService = document.getElementById('providerService');
+        const serviceCheckboxes = document.querySelectorAll('input[name="providerService[]"]');
         const subcatContainer = document.getElementById('providerSubcategories');
         const subcatCheckboxes = document.getElementById('subcategoryCheckboxes');
+        
         function updateSubcategories() {
-            const selected = Array.from(providerService.selectedOptions).map(opt => opt.value);
+            const selected = Array.from(serviceCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            
             subcatCheckboxes.innerHTML = '';
+            
             if (selected.length > 0) {
                 subcatContainer.style.display = 'block';
+                
                 selected.forEach(function(service) {
                     if (subcategories[service]) {
-                        const label = document.createElement('div');
-                        label.style.fontWeight = 'bold';
-                        label.textContent = service + ' Subcategories:';
-                        subcatCheckboxes.appendChild(label);
+                        // Create section header for this service
+                        const serviceHeader = document.createElement('div');
+                        serviceHeader.className = 'service-category-header';
+                        serviceHeader.textContent = service + ' Specializations:';
+                        subcatCheckboxes.appendChild(serviceHeader);
+                        
+                        // Create checkboxes for each subcategory
                         subcategories[service].forEach(function(subcat) {
                             const id = 'subcat_' + service.replace(/\s+/g, '_') + '_' + subcat.replace(/\s+/g, '_');
                             const checkboxLabel = document.createElement('label');
-                            checkboxLabel.style.display = 'inline-block';
-                            checkboxLabel.style.marginRight = '10px';
+                            checkboxLabel.className = 'subcategory-option';
+                            
                             const checkbox = document.createElement('input');
                             checkbox.type = 'checkbox';
                             checkbox.name = 'providerSubcategories[]';
                             checkbox.value = service + ' - ' + subcat;
                             checkbox.id = id;
+                            
                             // Pre-check if already selected
                             <?php if (!empty($provider['subcategories'])): ?>
                             if (<?php echo json_encode(explode(',', $provider['subcategories'])); ?>.includes(service + ' - ' + subcat)) {
                                 checkbox.checked = true;
                             }
                             <?php endif; ?>
+                            
                             checkboxLabel.appendChild(checkbox);
                             checkboxLabel.appendChild(document.createTextNode(' ' + subcat));
                             subcatCheckboxes.appendChild(checkboxLabel);
@@ -284,208 +537,18 @@ if (!$provider) {
                 subcatCheckboxes.innerHTML = '';
             }
         }
-        providerService.addEventListener('change', updateSubcategories);
-        updateSubcategories(); // Initial call
+        
+        // Add event listeners to all service checkboxes
+        serviceCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', updateSubcategories);
+        });
+        
+        // Initial call to show subcategories if services are already selected
+        updateSubcategories();
     });
     </script>
 
-    <div class="content-card portfolio-section-pro" style="margin-bottom: 2.5rem;">
-        <h3 class="portfolio-title-pro">Portfolio</h3>
-        <form action="upload_portfolio.php" method="POST" enctype="multipart/form-data" class="portfolio-upload-form-pro">
-            <label for="portfolio_photos" class="portfolio-upload-label-pro">Upload New Portfolio Files</label>
-            <input type="file" id="portfolio_photos" name="portfolio_photos[]" multiple class="portfolio-upload-input-pro">
-            <button type="submit" class="btn-portfolio-upload-pro">Upload Portfolio</button>
-        </form>
-        <div class="portfolio-gallery-pro">
-            <?php 
-            $portfolio = isset($provider['portfolio']) && $provider['portfolio'] ? (is_array($provider['portfolio']) ? $provider['portfolio'] : explode(',', $provider['portfolio'])) : [];
-            if (count($portfolio) > 0 && $portfolio[0] !== ''): 
-                foreach($portfolio as $photo): ?>
-                    <div class="portfolio-image-card-pro">
-                        <img src="/INNOVISTA/Innovista-final/Innovista-main/public/assets/images/<?php echo htmlspecialchars($photo); ?>" alt="Portfolio work" class="portfolio-img-pro" onclick="showPortfolioModal(this.src)" />
-                        <form class="delete-portfolio-form" method="POST" action="delete_portfolio.php" style="display:inline;">
-                            <input type="hidden" name="photo" value="<?php echo htmlspecialchars($photo); ?>">
-                            <button type="submit" class="delete-photo-btn-pro" title="Delete Photo"><i class="fas fa-trash"></i></button>
-                        </form>
-                    </div>
-                <?php endforeach; 
-            else: ?>
-                <p class="portfolio-empty-pro">No portfolio images uploaded yet.</p>
-            <?php endif; ?>
-        </div>
-        <!-- Modal for big image -->
-        <div id="portfolioModal" class="portfolio-modal-pro">
-            <span onclick="closePortfolioModal()" class="portfolio-modal-close-pro">&times;</span>
-            <img id="portfolioModalImg" src="" alt="Portfolio Large" class="portfolio-modal-img-pro" />
-        </div>
-        <script>
-        function showPortfolioModal(src) {
-            document.getElementById('portfolioModalImg').src = src;
-            document.getElementById('portfolioModal').style.display = 'flex';
-        }
-        function closePortfolioModal() {
-            document.getElementById('portfolioModal').style.display = 'none';
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            var modal = document.getElementById('portfolioModal');
-            if(modal) {
-                modal.addEventListener('click', function(e) {
-                    if(e.target === modal) closePortfolioModal();
-                });
-            }
-            // AJAX delete for portfolio images
-            document.querySelectorAll('.delete-portfolio-form').forEach(function(form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    var formData = new FormData(form);
-                    fetch('delete_portfolio.php', {
-                        method: 'POST',
-                        body: formData
-                    }).then(function(resp) {
-                        if (resp.redirected) {
-                            window.location.href = resp.url;
-                        } else {
-                            window.location.reload();
-                        }
-                    });
-                });
-            });
-        });
-        </script>
-        <style>
-        .portfolio-section-pro {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-            padding: 2.5rem 2.5rem 2rem 2.5rem;
-        }
-        .portfolio-title-pro {
-            font-size: 1.35rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #18181b;
-            letter-spacing: 0.2px;
-            border-bottom: 1.5px solid #ececec;
-            padding-bottom: 0.7rem;
-        }
-        .portfolio-upload-form-pro {
-            display: flex;
-            align-items: flex-end;
-            gap: 1.2rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-        .portfolio-upload-label-pro {
-            font-weight: 600;
-            color: #22223b;
-            font-size: 1.08rem;
-        }
-        .portfolio-upload-input-pro {
-            border: 1.5px solid #d1d5db;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            font-size: 1.05rem;
-            background: #f8fafc;
-            transition: border 0.2s;
-            outline: none;
-        }
-        .btn-portfolio-upload-pro {
-            background: linear-gradient(90deg, #0d9488 0%, #14b8a6 100%);
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.08rem;
-            border: none;
-            border-radius: 8px;
-            padding: 0.7rem 2rem;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(13,148,136,0.08);
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-        .btn-portfolio-upload-pro:hover {
-            background: linear-gradient(90deg, #14b8a6 0%, #0d9488 100%);
-            box-shadow: 0 4px 16px rgba(13,148,136,0.13);
-        }
-        .portfolio-gallery-pro {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-        }
-        .portfolio-image-card-pro {
-            background: #f8f9fa;
-            border-radius: 14px;
-            padding: 0.7rem;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 170px;
-            transition: box-shadow 0.2s, transform 0.2s;
-        }
-        .portfolio-image-card-pro:hover {
-            box-shadow: 0 6px 24px rgba(13,148,136,0.13);
-            transform: translateY(-2px) scale(1.03);
-        }
-        .portfolio-img-pro {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 10px;
-            display: block;
-            cursor: pointer;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-            margin-bottom: 0.7rem;
-            transition: box-shadow 0.2s;
-        }
-        .portfolio-img-pro:hover {
-            box-shadow: 0 4px 16px rgba(13,148,136,0.13);
-        }
-        .delete-photo-btn-pro {
-            background: #fff;
-            border: 1.5px solid #e11d48;
-            color: #e11d48;
-            border-radius: 6px;
-            padding: 0.3rem 0.7rem;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-top: 0.2rem;
-            transition: background 0.2s, color 0.2s;
-        }
-        .delete-photo-btn-pro:hover {
-            background: #e11d48;
-            color: #fff;
-        }
-        .portfolio-empty-pro {
-            color: #888;
-            font-size: 1rem;
-            margin-top: 0.7rem;
-        }
-        .portfolio-modal-pro {
-            display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;
-        }
-        .portfolio-modal-close-pro {
-            position:absolute;top:30px;right:50px;font-size:2.5rem;color:#fff;cursor:pointer;font-weight:bold;z-index:10001;
-        }
-        .portfolio-modal-img-pro {
-            max-width:90vw;max-height:90vh;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.25);background:#fff;z-index:10000;
-        }
-        @media (max-width: 700px) {
-            .portfolio-section-pro {
-                padding: 1.2rem 0.7rem 1.2rem 0.7rem;
-            }
-            .portfolio-gallery-pro {
-                gap: 0.7rem;
-            }
-            .portfolio-image-card-pro {
-                width: 100%;
-                min-width: 0;
-            }
-            .portfolio-img-pro {
-                width: 100%;
-                height: 120px;
-            }
-        }
-        </style>
-    </div>
+    <!-- Portfolio section removed -->
     </div>
 
 

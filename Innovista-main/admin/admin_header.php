@@ -2,6 +2,12 @@
 // admin_header.php
 session_start(); // MUST be the very first line of PHP in your script
 
+// Disallow caching so Back button doesn't reveal protected pages post-logout
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
+header('Expires: 0');
+
 // Basic authentication check
 // Ensure user_id and user_role are set in session upon successful login
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
@@ -20,6 +26,22 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innovista Admin Panel</title>
+    <script>
+    // Force back button to loop to the admin dashboard
+    (function(){
+        var dashboardUrl = 'admin_dashboard.php';
+        if (window.history && history.pushState) {
+            history.replaceState(null, document.title, location.href);
+            history.pushState(null, document.title, location.href);
+            window.addEventListener('popstate', function () {
+                location.replace(dashboardUrl);
+            });
+        }
+        window.addEventListener('pageshow', function(e){
+            if (e.persisted) { location.replace(dashboardUrl); }
+        });
+    })();
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     

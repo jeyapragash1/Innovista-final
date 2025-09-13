@@ -156,8 +156,8 @@ if (isset($_SESSION['flash_message'])) {
                     <?php endif; ?>
                 </div>
                 <div class="provider-actions">
-                    <button type="button" class="btn btn-primary btn-book-consultation">Book Consultation</button>
-                    <form class="quote-request-form" data-provider-id="<?php echo htmlspecialchars($provider['provider_id']); ?>" data-service-type="<?php echo htmlspecialchars($provider['main_service']); ?>" data-subcategory="<?php echo isset($_GET['subcategory']) ? htmlspecialchars($_GET['subcategory']) : ''; ?>" data-project-description="Request for <?php echo htmlspecialchars($provider['main_service']); ?> - <?php echo isset($_GET['subcategory']) ? htmlspecialchars($_GET['subcategory']) : ''; ?>" style="display:inline;">
+                    <button type="button" class="btn btn-primary btn-book-consultation" data-provider-id="<?php echo htmlspecialchars($provider['provider_id']); ?>">Book Consultation</button>
+                    <form class="quote-request-form" data-provider-id="<?php echo htmlspecialchars($provider['provider_id']); ?>" data-service-type="<?php echo htmlspecialchars($selectedService); ?>" data-subcategory="<?php echo isset($_GET['subcategory']) ? htmlspecialchars($_GET['subcategory']) : ''; ?>" data-project-description="Request for <?php echo htmlspecialchars($selectedService); ?> - <?php echo isset($_GET['subcategory']) ? htmlspecialchars($_GET['subcategory']) : ''; ?>" style="display:inline;">
                         <button type="button" class="btn btn-secondary btn-request-quote">Request a Quote</button>
                     </form>
                 </div>
@@ -194,7 +194,7 @@ if (isset($_SESSION['flash_message'])) {
 <div id="bookingModal" class="booking-modal" style="display:none;">
     <div class="booking-modal-content">
         <span class="close-modal-btn">×</span>
-        <div id="calendarStep">
+        <div id="">
             <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;gap:12px;">
                 <button id="prevMonthBtn" style="background:#e5e7eb;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-weight:600;">&#8592;</button>
                 <span id="calendarMonthTitle" style="font-weight:600;font-size:1.1rem;min-width:120px;text-align:center;"></span>
@@ -206,34 +206,81 @@ if (isset($_SESSION['flash_message'])) {
                 <div id="time-slots-list" class="time-slots-list"></div>
             </div>
         </div>
-        <div id="paymentStep" style="display:none;">
+                   <!-- Payment Modal Popup -->
+                     <div id="paymentStep" style="display:none;">
             <h3>Confirm & Pay Consultation Fee</h3>
             <p>A $50 fee is required to confirm your booking. This will be credited towards your project.</p>
-            <form action="#" class="payment-form">
-                <div class="form-group">
-                    <label for="cardholder-name">Cardholder Name</label>
-                    <input type="text" id="cardholder-name" placeholder="John M. Doe" required>
+
+            <div id="paymentModal" class="payment-modal" style="display:none;">
+                <div class="payment-modal-content">
+                    <span class="close-payment-modal-btn" style="position:absolute;top:10px;right:18px;font-size:1.5rem;cursor:pointer;">&times;</span>
+                    <h3 style="margin-top:0;margin-bottom:0.5rem;">Confirm & Pay Consultation Fee</h3>
+                    <p style="margin-bottom:1.5rem;">A $50 fee is required to confirm your booking. This will be credited towards your project.</p>
+                    <form action="#" class="payment-form">
+                        <div class="form-group">
+                            <label for="cardholder-name">Cardholder Name</label>
+                            <input type="text" id="cardholder-name" placeholder="John M. Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <input type="text" id="card-number" placeholder="•••• •••• •••• ••••" required>
+                        </div>
+                        <div class="card-details">
+                            <div class="form-group">
+                                <label for="expiry-date">Expiry</label>
+                                <input type="text" id="expiry-date" placeholder="MM / YY" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cvc">CVC</label>
+                                <input type="text" id="cvc" placeholder="CVC" required>
+                            </div>
+                             <div class="form-group">
+                                <label for="zip">ZIP</label>
+                                <input type="text" id="zip" placeholder="ZIP Code" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-confirm-booking">Pay $50 & Confirm Booking</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="card-number">Card Number</label>
-                    <input type="text" id="card-number" placeholder="•••• •••• •••• ••••" required>
-                </div>
-                <div class="card-details">
-                    <div class="form-group">
-                        <label for="expiry-date">Expiry</label>
-                        <input type="text" id="expiry-date" placeholder="MM / YY" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cvc">CVC</label>
-                        <input type="text" id="cvc" placeholder="CVC" required>
-                    </div>
-                     <div class="form-group">
-                        <label for="zip">ZIP</label>
-                        <input type="text" id="zip" placeholder="ZIP Code" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-confirm-booking">Pay $50 & Confirm Booking</button>
-            </form>
+            </div>
+<style>
+.payment-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 2000;
+    background: rgba(0,0,0,0.25);
+}
+.payment-modal-content {
+    background: #fff;
+    /* border-radius: 1.2rem; */
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    min-width: 320px;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 32px rgba(30,182,233,0.12);
+    position: relative;
+}
+</style>
+<script>
+// Show payment modal when a time slot is clicked
+document.addEventListener('DOMContentLoaded', function() {
+    // Attach to all time slot buttons
+    document.body.addEventListener('click', function(e) {
+        if (e.target.classList.contains('time-slot-btn')) {
+            var paymentModal = document.getElementById('paymentModal');
+            if (paymentModal) paymentModal.style.display = 'flex';
+        }
+        if (e.target.classList.contains('close-payment-modal-btn')) {
+            var paymentModal = document.getElementById('paymentModal');
+            if (paymentModal) paymentModal.style.display = 'none';
+        }
+    });
+});
+</script>
             <a href="#" id="backToCalendar" class="back-to-calendar">← Back to Calendar</a>
         </div>
     </div>
@@ -250,15 +297,15 @@ if (isset($_SESSION['flash_message'])) {
     background: rgba(0,0,0,0.18);
 }
 .booking-modal-content {
-    padding: 2rem 2.5rem 2rem 2.5rem;
+    padding: 4rem 6.5rem 4rem 6.5rem;
     border-radius: 1.5rem;
     background: #fff;
     box-shadow: 0 4px 32px rgba(30,182,233,0.08);
-    min-width: 340px;
+    min-width: 400px;
     max-width: 540px;
     margin: 0 auto;
     max-height: 90vh;
-    overflow-y: auto;
+     /* overflow-y: auto;  */
 }
 .calendar-date-cell.selected {
     box-shadow: 0 0 0 2px #1eb6e9;
@@ -344,6 +391,21 @@ if (isset($_SESSION['flash_message'])) {
 }
 </style>
 <script src="assets/js/serviceprovider.js"></script>
+<script>
+// Always close the booking modal on page load to prevent leftover popups
+document.addEventListener('DOMContentLoaded', function() {
+    var bookingModal = document.getElementById('bookingModal');
+    if (bookingModal) {
+        bookingModal.classList.remove('active');
+        bookingModal.style.display = 'none';
+    }
+    var quoteModal = document.getElementById('quoteRequestModal');
+    if (quoteModal) {
+        quoteModal.classList.remove('active');
+        quoteModal.style.display = 'none';
+    }
+});
+</script>
 <?php 
 // Output the booking modal at the end of the body
 echo $bookingModalHtml;

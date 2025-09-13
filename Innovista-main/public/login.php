@@ -3,15 +3,23 @@
     require_once __DIR__ . '/../public/session.php'; // Correct path to session.php
     require_once __DIR__ . '/../handlers/flash_message.php'; // Include flash message functions
 
-    // If user is already logged in, redirect them
+    // Prevent caching so Back button won't show this page after login
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Cache-Control: post-check=0, pre-check=0', false);
+    header('Pragma: no-cache');
+    header('Expires: 0');
+
+    // If user is already logged in, redirect them (prevents returning to login)
     if (isUserLoggedIn()) {
         $userRole = getUserRole();
         if ($userRole === 'admin') {
             header("Location: ../admin/admin_dashboard.php");
         } elseif ($userRole === 'provider') {
-            header("Location: provider_dashboard.php");
+            // Redirect to provider dashboard located under /provider/
+            header("Location: ../provider/provider_dashboard.php");
         } else { // customer or unknown
-            header("Location: customer_dashboard.php");
+            // Redirect to customer dashboard located under /customer/
+            header("Location: ../customer/customer_dashboard.php");
         }
         exit();
     }

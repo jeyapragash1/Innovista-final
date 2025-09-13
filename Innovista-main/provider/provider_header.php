@@ -11,6 +11,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../public/assets/css/dashboard.css"> <!-- Link to the new unified CSS -->
 
+    <script>
+    // Force back button to loop to the provider dashboard
+    (function(){
+        var dashboardUrl = 'provider_dashboard.php';
+        if (window.history && history.pushState) {
+            history.replaceState(null, document.title, location.href);
+            history.pushState(null, document.title, location.href);
+            window.addEventListener('popstate', function () {
+                location.replace(dashboardUrl);
+            });
+        }
+        window.addEventListener('pageshow', function(e){
+            if (e.persisted) { location.replace(dashboardUrl); }
+        });
+    })();
+    </script>
+
     <style>
     /* Fallback flash message style for guaranteed visibility */
     .flash-message-container {
