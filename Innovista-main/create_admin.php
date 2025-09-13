@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 // A simple script to generate a secure password hash for your admin user.
 
 // --- IMPORTANT: SET THE ADMIN PASSWORD YOU WANT TO USE HERE ---
@@ -21,4 +21,4 @@ echo "<pre style='background-color:#f0f0f0; padding:1rem; border:1px solid #ccc;
 echo "UPDATE `users` SET `password` = '" . $hashed_password . "' WHERE `email` = 'admin@innovista.com';";
 echo "</code></pre>";
 
-?>
+?> -->

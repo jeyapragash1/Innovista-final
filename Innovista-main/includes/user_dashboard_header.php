@@ -24,6 +24,23 @@
     <!-- Add this before closing head tag -->
     <script defer src="../public/assets/js/notifications.js"></script>
 
+    <script>
+    // Force back button to loop to the correct dashboard for this header (customer)
+    (function(){
+        var dashboardUrl = 'customer_dashboard.php';
+        if (window.history && history.pushState) {
+            history.replaceState(null, document.title, location.href);
+            history.pushState(null, document.title, location.href);
+            window.addEventListener('popstate', function () {
+                location.replace(dashboardUrl);
+            });
+        }
+        window.addEventListener('pageshow', function(e){
+            if (e.persisted) { location.replace(dashboardUrl); }
+        });
+    })();
+    </script>
+
 </head>
 <body>
     <div class="admin-container">

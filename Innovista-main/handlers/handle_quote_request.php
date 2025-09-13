@@ -75,10 +75,12 @@ try {
         }
     }
 
-    $stmt = $db->prepare("INSERT INTO quotations (customer_id, provider_id, service_type, project_description, status, created_at) VALUES (:customer_id, :provider_id, :service_type, :project_description, :status, NOW())");
+    $subcategory = isset($_POST['subcategory']) ? $_POST['subcategory'] : '';
+    $stmt = $db->prepare("INSERT INTO quotations (customer_id, provider_id, service_type, subcategory, project_description, status, created_at) VALUES (:customer_id, :provider_id, :service_type, :subcategory, :project_description, :status, NOW())");
     $stmt->bindParam(':customer_id', $customer_id);
     $stmt->bindParam(':provider_id', $provider_id);
     $stmt->bindParam(':service_type', $service_type);
+    $stmt->bindParam(':subcategory', $subcategory);
     $stmt->bindParam(':project_description', $project_description);
     $status = 'Awaiting Quote';
     $stmt->bindParam(':status', $status);
