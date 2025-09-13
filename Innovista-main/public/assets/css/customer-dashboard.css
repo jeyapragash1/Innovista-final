@@ -9,7 +9,7 @@
     width: 100%;
     max-width: 420px;
     text-align: center;
-    pointer-events: none;
+    pointer-events: none; /* Allows clicks to pass through the container */
 }
 .flash-message {
     padding: 1rem 1.5rem 1rem 1.5rem;
@@ -22,7 +22,7 @@
     letter-spacing: 0.5px;
     animation: fadeInScale 0.7s cubic-bezier(.4,2,.6,1) both;
     position: relative;
-    pointer-events: auto;
+    pointer-events: auto; /* Re-enable pointer events for the message itself */
     transition: opacity 0.5s;
 }
 .flash-message.success {
@@ -34,6 +34,11 @@
     background: #ffeaea;
     color: #c0392b;
     border: 1.5px solid #c0392b;
+}
+.flash-message.info { /* Added info style */
+    background: #e0f2fe;
+    color: #2563eb;
+    border: 1.5px solid #2563eb;
 }
 .flash-message .flash-close-btn {
     position: absolute;
@@ -71,7 +76,7 @@
 }
 .dashboard-section h3 {
     font-size: 1.4rem;
-    font-weight: 600;
+    font-weight: 700; /* Bolder heading */
     margin-bottom: 1rem;
     color: var(--text-dark);
 }
@@ -79,14 +84,16 @@
 /* --- New Stat Cards (Customer Design) --- */
 .stats-container-customer {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    /* Adjust grid to accommodate 5 cards, minmax ensures responsiveness */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
     gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .stat-card-customer {
     background: var(--card-bg);
     padding: 1.5rem;
-    border-radius: 8px;
+    border-radius: 10px; /* Slightly more rounded */
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
@@ -96,27 +103,31 @@
 }
 
 .stat-card-customer:hover {
-    transform: translateY(-5px);
+    transform: translateY(-7px); /* More pronounced lift */
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
 .stat-icon-customer {
-    font-size: 1.5rem; /* Smaller icon size */
-    width: 50px;     /* Smaller circle */
-    height: 50px;
+    font-size: 1.8rem; /* Larger icon size */
+    width: 60px;     /* Larger circle */
+    height: 60px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for icon */
 }
-/* Icon Colors */
-.stat-icon-customer.blue { background-color: #3498db; }
-.stat-icon-customer.yellow { background-color: #f1c40f; }
-.stat-icon-customer.purple { background-color: #8e44ad; }
+/* Icon Colors (using gradients for "killer style") */
+.stat-icon-customer.blue { background: linear-gradient(45deg, #3498db, #5dade2); }
+.stat-icon-customer.yellow { background: linear-gradient(45deg, #f1c40f, #f5b041); }
+.stat-icon-customer.purple { background: linear-gradient(45deg, #8e44ad, #af7ac5); }
+.stat-icon-customer.green { background: linear-gradient(45deg, #27ae60, #2ecc71); } /* For completed projects */
+.stat-icon-customer.primary-color-bg { background: linear-gradient(45deg, var(--primary-color), var(--primary-dark-hover)); } /* For total paid, using main brand colors */
+
 
 .stat-info-customer h4 {
-    font-size: 0.85rem;
+    font-size: 0.95rem; /* Slightly larger text */
     color: var(--text-light);
     font-weight: 500;
     margin-bottom: 0.1rem;
@@ -125,29 +136,47 @@
 }
 
 .stat-info-customer p {
-    font-size: 2rem;
-    font-weight: 600;
+    font-size: 2.2rem; /* Larger number */
+    font-weight: 700; /* Bolder number */
     color: var(--text-dark);
+    line-height: 1.2;
 }
 
 
 /* --- Quick Access Grid (Matches Admin style) --- */
 .quick-access-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Adjusted minmax for more links */
     gap: 1.5rem;
 }
 
 .access-card {
     background: var(--card-bg);
     padding: 2rem 1.5rem;
-    border-radius: 8px;
+    border-radius: 10px; /* More rounded */
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     text-decoration: none;
     color: var(--text-dark);
     text-align: center;
     transition: all 0.3s ease;
     border: 1px solid var(--border-color);
+    position: relative; /* For potential pseudo-elements */
+    overflow: hidden;
+}
+/* Subtle background animation */
+.access-card::before { 
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(var(--primary-color-rgb, 13, 148, 136), 0.05), transparent 60%);
+    transform: scale(0);
+    opacity: 0;
+    border-radius: 10px;
+    transition: all 0.4s ease-out;
+    z-index: 0;
 }
 
 .access-card:hover {
@@ -156,36 +185,147 @@
     border-color: var(--primary-color);
     color: var(--primary-color);
 }
+.access-card:hover::before {
+    transform: scale(1);
+    opacity: 1;
+}
 
 .access-card i {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     display: block;
     color: var(--primary-color);
+    position: relative; /* Keep icon above pseudo-element */
+    z-index: 1;
 }
 
 .access-card span {
     font-size: 1rem;
     font-weight: 600;
+    position: relative; /* Keep text above pseudo-element */
+    z-index: 1;
 }
+
 
 /* --- Table Styles (Matches Admin style for consistency) --- */
 .table-wrapper {
     overflow-x: auto;
+    border-radius: 8px; /* Match card border-radius */
+    border: 1px solid var(--border-color); /* Subtle border for the table wrapper */
 }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Ensure table isn't too narrow on small screens */
+}
+table thead th {
+    text-align: left;
+    padding: 1.2rem 1rem; /* More padding */
+    background-color: #f8f9fa;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid var(--border-color);
+}
+table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+table tbody tr:last-child td {
+    border-bottom: none;
+}
+table tbody tr:hover {
+    background-color: #f0f2f5; /* Lighter hover for table rows */
+}
+
+/* --- Status Badges (Matches Admin style) --- */
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+.status-active, .status-approved, .status-success {
+    background-color: rgba(39, 174, 96, 0.15);
+    color: #27ae60; /* Use direct color or specific var for status-active */
+}
+.status-pending, .status-awaiting, .status-yellow { /* Added .status-yellow */
+    background-color: rgba(243, 156, 18, 0.15);
+    color: #f39c12;
+}
+.status-inactive, .status-rejected, .status-declined {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
+.status-verified {
+    background-color: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+}
+.status-info {
+    background-color: rgba(100, 116, 139, 0.15);
+    color: #64748b;
+}
+
+/* --- Buttons (Matches Admin style) --- */
 .btn-view {
     text-decoration: none;
     color: var(--primary-color);
     font-weight: 600;
-    padding: 0.3rem 0.8rem;
-    border: 1px solid #e2e8f0;
+    padding: 0.4rem 1rem; /* Adjusted padding */
+    border: 1px solid var(--primary-color); /* Outline style */
     border-radius: 6px;
-    white-space: nowrap; /* Prevents text wrapping */
+    white-space: nowrap;
     transition: all 0.2s;
+    background-color: transparent;
+    display: inline-flex; /* Align icon if any */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
-
 .btn-view:hover {
     background-color: var(--primary-color);
     color: #fff;
     border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* --- Responsive Adjustments for Customer Dashboard --- */
+@media (max-width: 992px) {
+    .stats-container-customer {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 2 columns on tablets */
+    }
+    .quick-access-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+}
+@media (max-width: 576px) {
+    .stats-container-customer,
+    .quick-access-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+    }
+    .stat-card-customer {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.8rem;
+    }
+    .stat-icon-customer {
+        margin-bottom: 0.5rem;
+    }
+    .stat-info-customer p {
+        font-size: 1.8rem; /* Adjust size for mobile */
+    }
+    table {
+        min-width: 500px; /* Ensure table remains scrollable */
+    }
 }

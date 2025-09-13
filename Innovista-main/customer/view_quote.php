@@ -1,42 +1,114 @@
 <?php
-require_once '../config/session.php';
+// C:\xampp1\htdocs\Innovista-final\Innovista-main\customer\view_quote.php
+
+require_once '../public/session.php';
+require_once '../handlers/flash_message.php'; // For display_flash_message
+
+// --- User-specific authentication function ---
+if (!function_exists('protectPage')) {
+    function protectPage(string $requiredRole): void {
+        if (!isUserLoggedIn()) {
+            header("Location: ../public/login.php");
+            exit();
+        }
+        if (getUserRole() !== $requiredRole && getUserRole() !== 'admin') { 
+            set_flash_message('error', 'Access denied. You do not have permission to view this page.');
+            header("Location: ../public/index.php");
+            exit();
+        }
+    }
+}
 protectPage('customer');
 
 $pageTitle = 'View Quotation';
 require_once '../includes/user_dashboard_header.php';
 require_once '../config/Database.php';
 
+$db = (new Database())->getConnection();
+$loggedInUserId = getUserId(); // Current customer's ID
+
 $quotation_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if (!$quotation_id) {
-    echo "<h2>Invalid Quotation ID</h2>";
-    require_once '../includes/user_dashboard_footer.php';
+$quote_type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_FULL_SPECIAL_CHARS); // 'original' or 'custom'
+
+if (!$quotation_id || empty($quote_type)) {
+    set_flash_message('error', 'Invalid Quotation ID or type.');
+    header('Location: my_projects.php');
     exit();
 }
 
-// In a real app, query the database for quote details// Fetch real quotation details from DB
-// Try to fetch custom quotation first
-$db = (new Database())->getConnection();
-$stmt = $db->prepare('SELECT cq.*, u.name as provider_name FROM custom_quotations cq JOIN users u ON cq.provider_id = u.id WHERE cq.quotation_id = :id');
-$stmt->bindParam(':id', $quotation_id);
-$stmt->execute();
-$custom_quote = $stmt->fetch(PDO::FETCH_ASSOC);
-if ($custom_quote) {
-    $quote = $custom_quote;
-    $is_custom = true;
-} else {
-    // Fallback to original quotation
-    $stmt = $db->prepare('SELECT q.*, u.name as provider_name FROM quotations q JOIN users u ON q.provider_id = u.id WHERE q.id = :id');
-    $stmt->bindParam(':id', $quotation_id);
+$quote = null;
+$is_custom_quote = false; // Flag to determine if it's a provider's custom quote
+
+if ($quote_type === 'custom') {
+    // Fetch custom quotation details from `custom_quotations`
+    // Ensure this customer is the owner or admin
+    $stmt = $db->prepare('
+        SELECT 
+            cq.id, cq.quotation_id AS original_request_id, cq.provider_id, cq.customer_id, 
+            cq.amount, cq.advance, cq.start_date, cq.end_date, cq.validity, cq.provider_notes, 
+            cq.photos AS custom_quote_photos, cq.status, cq.created_at, cq.project_description,
+            prov.name as provider_name, prov.email as provider_email,
+            cust.name as customer_name, cust.email as customer_email
+        FROM custom_quotations cq 
+        JOIN users prov ON cq.provider_id = prov.id 
+        JOIN users cust ON cq.customer_id = cust.id
+        WHERE cq.id = :id AND (cq.customer_id = :customer_id OR :user_role = "admin")
+    ');
+    $stmt->bindParam(':id', $quotation_id, PDO::PARAM_INT);
+    $stmt->bindParam(':customer_id', $loggedInUserId, PDO::PARAM_INT);
+    $stmt->bindParam(':user_role', getUserRole());
     $stmt->execute();
     $quote = $stmt->fetch(PDO::FETCH_ASSOC);
-    $is_custom = false;
-    if (!$quote) {
-        echo '<h2>Quotation not found.</h2>';
-        require_once '../includes/user_dashboard_footer.php';
-        exit();
+    if ($quote) {
+        $is_custom_quote = true;
     }
+} else { // quote_type is 'original'
+    // Fetch original quotation request from `quotations`
+    // Ensure this customer is the owner or admin
+    $stmt = $db->prepare('
+        SELECT 
+            q.id, q.customer_id, q.provider_id, q.service_type, q.project_description, 
+            q.status, q.created_at, q.photos AS request_photos,
+            prov.name as provider_name, prov.email as provider_email,
+            cust.name as customer_name, cust.email as customer_email
+        FROM quotations q 
+        JOIN users prov ON q.provider_id = prov.id 
+        JOIN users cust ON q.customer_id = cust.id
+        WHERE q.id = :id AND (q.customer_id = :customer_id OR :user_role = "admin")
+    ');
+    $stmt->bindParam(':id', $quotation_id, PDO::PARAM_INT);
+    $stmt->bindParam(':customer_id', $loggedInUserId, PDO::PARAM_INT);
+    $stmt->bindParam(':user_role', getUserRole());
+    $stmt->execute();
+    $quote = $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+
+if (!$quote) {
+    set_flash_message('error', 'Quotation not found or you do not have access.');
+    header('Location: my_projects.php');
+    exit();
+}
+
+// Prepare data for the booking modal
+$bookingModalData = [];
+if ($is_custom_quote) {
+    $bookingModalData = [
+        'customer_id' => $quote['customer_id'],
+        'customer_name' => $quote['customer_name'],
+        'customer_email' => $quote['customer_email'],
+        'provider_id' => $quote['provider_id'],
+        'provider_name' => $quote['provider_name'],
+        'project_description' => $quote['project_description'], // Use cq.project_description
+        'quotation_id' => $quote['id'], // ID of the custom_quotation
+        'amount' => $quote['advance'], // Initial payment is the advance amount
+        'booking_date' => $quote['start_date'] // Use the proposed start date as booking date
+    ];
+}
+
 ?>
+
+<?php display_flash_message(); ?>
 
 <h2>Review Quotation</h2>
 <p>Please review the details of the quotation below and take action.</p>
@@ -45,37 +117,74 @@ if ($custom_quote) {
     <h3>Quotation Details</h3>
     <div class="details-list">
         <p><strong>Provider:</strong> <?php echo htmlspecialchars($quote['provider_name']); ?></p>
-        <p><strong>Project:</strong> <?php echo htmlspecialchars($quote['project_description']); ?></p>
-        <p><strong>Status:</strong> <span class="status-badge status-pending"><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', $quote['status']))); ?></span></p>
-        <?php if ($is_custom): ?>
-            <p><strong>Quoted Price:</strong> <span style="font-size: 1.5rem; font-weight: 600; color: var(--primary-color);">₹<?php echo number_format($quote['amount'], 2); ?></span></p>
-            <p><strong>Advance (25%):</strong> ₹<?php echo number_format($quote['advance'], 2); ?></p>
-            <p><strong>Timeline:</strong> <?php echo htmlspecialchars($quote['start_date']); ?> to <?php echo htmlspecialchars($quote['end_date']); ?></p>
+        <p><strong>Service Type:</strong> <?php echo htmlspecialchars($quote['service_type'] ?? 'N/A'); ?></p>
+        <p><strong>Project Description:</strong> <?php echo htmlspecialchars($is_custom_quote ? $quote['project_description'] : $quote['project_description']); ?></p>
+        <p><strong>Status:</strong> <span class="status-badge status-<?php 
+            $status_lower = strtolower($quote['status']);
+            if ($status_lower === 'awaiting quote') echo 'pending';
+            elseif ($status_lower === 'sent' || $status_lower === 'pending') echo 'yellow'; // Awaiting customer action
+            elseif ($status_lower === 'approved') echo 'approved'; // Customer has approved custom quote
+            elseif ($status_lower === 'rejected' || $status_lower === 'declined') echo 'rejected';
+            else echo 'info';
+        ?>"><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', $quote['status']))); ?></span></p>
+        
+        <?php if ($is_custom_quote): ?>
+            <p><strong>Quoted Price:</strong> <span style="font-size: 1.5rem; font-weight: 600; color: var(--primary-color);">Rs <?php echo number_format($quote['amount'], 2); ?></span></p>
+            <p><strong>Advance (25%):</strong> Rs <?php echo number_format($quote['advance'], 2); ?></p>
+            <p><strong>Proposed Timeline:</strong> <?php echo htmlspecialchars($quote['start_date']); ?> to <?php echo htmlspecialchars($quote['end_date']); ?></p>
             <p><strong>Validity Period:</strong> <?php echo htmlspecialchars($quote['validity']); ?> days</p>
-            <?php if (!empty($quote['photos'])): ?>
-                <div class="quotation-images"><strong>Images:</strong><br>
-                    <?php foreach (explode(',', $quote['photos']) as $img): ?>
-                        <img src="../uploads/<?php echo htmlspecialchars($img); ?>" style="max-width:100px; margin:5px; border-radius:6px;">
-                    <?php endforeach; ?>
+            
+            <?php if (!empty($quote['custom_quote_photos'])): ?>
+                <div class="quotation-images mt-3"><strong>Provider Images:</strong><br>
+                    <?php 
+                    // Assuming photos are comma-separated paths or URLs
+                    $photos = explode(',', $quote['custom_quote_photos']);
+                    foreach ($photos as $img_path): 
+                        if (!empty(trim($img_path))): ?>
+                            <img src="<?php echo getImageSrc(trim($img_path)); ?>" alt="Quote Image" style="max-width:100px; height:auto; margin:5px; border-radius:6px; object-fit: cover;">
+                        <?php endif;
+                    endforeach; ?>
                 </div>
             <?php endif; ?>
         <?php else: ?>
             <p><strong>Quoted Price:</strong> <span style="font-size: 1.5rem; font-weight: 600; color: var(--primary-color);">-</span></p>
             <p><strong>Advance (25%):</strong> -</p>
-            <p><strong>Timeline:</strong> -</p>
+            <p><strong>Proposed Timeline:</strong> -</p>
             <p><strong>Validity Period:</strong> -</p>
+            <?php if (!empty($quote['request_photos'])): ?>
+                <div class="quotation-images mt-3"><strong>Your Request Images:</strong><br>
+                    <?php 
+                    // Assuming photos are comma-separated paths or URLs
+                    $photos = explode(',', $quote['request_photos']);
+                    foreach ($photos as $img_path): 
+                        if (!empty(trim($img_path))): ?>
+                            <img src="<?php echo getImageSrc(trim($img_path)); ?>" alt="Request Image" style="max-width:100px; height:auto; margin:5px; border-radius:6px; object-fit: cover;">
+                        <?php endif;
+                    endforeach; ?>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 
     <h3 style="margin-top: 2rem;">Provider Notes</h3>
-    <p><?php echo $is_custom ? htmlspecialchars($quote['provider_notes']) : '-'; ?></p>
+    <p><?php echo $is_custom_quote ? nl2br(htmlspecialchars($quote['provider_notes'])) : 'N/A'; ?></p>
 
     <div class="action-buttons" style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; display: flex; gap: 16px;">
-        <button type="button" class="btn-submit" id="btnConfirmBooking" style="background-color: #27ae60; width:100%;">Confirm Booking</button>
-        <form action="../handlers/handle_quote_action.php" method="POST" style="flex:1;">
-            <input type="hidden" name="quotation_id" value="<?php echo $quotation_id; ?>">
-            <button type="submit" name="action" value="cancel" class="btn-submit" style="background-color: #c0392b; width:100%;">Cancel</button>
-        </form>
+        <?php if ($is_custom_quote && ($quote['status'] === 'sent' || $quote['status'] === 'pending')): // Only allow action if it's a custom quote awaiting response ?>
+            <button type="button" class="btn-submit" id="btnConfirmBooking" style="background-color: #27ae60; flex:1;">Confirm Booking & Pay Advance</button>
+            <form action="../handlers/handle_quote_action.php" method="POST" style="flex:1;">
+                <input type="hidden" name="action" value="decline">
+                <input type="hidden" name="quote_id" value="<?php echo htmlspecialchars($quotation_id); ?>">
+                <input type="hidden" name="quote_type" value="custom">
+                <button type="submit" name="submit_decline" class="btn-submit" style="background-color: #c0392b; flex:1;" onclick="return confirm('Are you sure you want to decline this quotation?');">Decline Quotation</button>
+            </form>
+        <?php elseif ($is_custom_quote && $quote['status'] === 'approved'): ?>
+            <p class="text-info" style="flex:1; text-align: center;">This quotation has been approved.</p>
+        <?php elseif ($is_custom_quote && ($quote['status'] === 'declined' || $quote['status'] === 'rejected')): ?>
+            <p class="text-info" style="flex:1; text-align: center;">This quotation has been declined.</p>
+        <?php else: // Original request, or custom quote already in progress/completed ?>
+            <p class="text-info" style="flex:1; text-align: center;">No action needed at this stage, or quotation has already been handled.</p>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -90,28 +199,40 @@ document.addEventListener('DOMContentLoaded', function() {
     var confirmBtn = document.getElementById('btnConfirmBooking');
     var modalContainer = document.getElementById('bookingModalContainer');
     var iframe = document.getElementById('bookingModalIframe');
-    var serviceName = "<?php echo isset($quote['project_description']) ? htmlspecialchars($quote['project_description']) : ''; ?>";
-    console.log('Service name for modal:', serviceName);
-    if (confirmBtn && modalContainer && iframe) {
+
+    // Prepare data to pass to the modal iframe
+    const bookingData = <?php echo json_encode($bookingModalData); ?>;
+
+    if (confirmBtn && modalContainer && iframe && Object.keys(bookingData).length > 0) {
         confirmBtn.addEventListener('click', function() {
-            iframe.src = "booking-modal.html?service=" + encodeURIComponent(serviceName);
+            // Construct query string
+            const queryString = new URLSearchParams(bookingData).toString();
+            iframe.src = "booking-modal.html?" + queryString;
             modalContainer.style.display = 'flex';
         });
-        window.addEventListener('click', function(e) {
+        // Close modal by clicking outside iframe
+        modalContainer.addEventListener('click', function(e) {
             if (e.target === modalContainer) {
                 modalContainer.style.display = 'none';
             }
         });
     }
-});
-window.addEventListener('message', function(event) {
-    if (event.data === 'closeBookingModal') {
-        var modalContainer = document.getElementById('bookingModalContainer');
-        if (modalContainer) {
-            modalContainer.style.display = 'none';
+
+    // Listener for messages FROM the iframe (e.g., to close itself)
+    window.addEventListener('message', function(event) {
+        // Ensure the message is from a trusted origin in production
+        // if (event.origin !== "http://your-trusted-domain.com") return; 
+
+        if (event.data === 'closeBookingModal') {
+            var modalContainer = document.getElementById('bookingModalContainer');
+            if (modalContainer) {
+                modalContainer.style.display = 'none';
+                // Optionally, refresh parent page or relevant section after booking
+                location.reload(); 
+            }
         }
-    }
-}, false);
+    }, false);
+});
 </script>
 
 <?php require_once '../includes/user_dashboard_footer.php'; ?>
