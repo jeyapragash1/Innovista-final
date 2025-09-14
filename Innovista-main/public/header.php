@@ -8,15 +8,6 @@
     // Get the current page's filename for dynamic 'active' navigation link styling.
     $currentPage = basename($_SERVER['SCRIPT_NAME']);
 
-    // If a provider is logged in, block public pages and force redirect to provider dashboard
-    if (isUserLoggedIn() && getUserRole() === 'provider') {
-        // Allow specific public endpoints like logout; otherwise, redirect
-        if ($currentPage !== 'logout.php') {
-            header('Location: ../provider/provider_dashboard.php');
-            exit();
-        }
-    }
-
     // --- DYNAMIC DASHBOARD URL LOGIC ---
     // This logic determines the correct dashboard URL based on the logged-in user's role.
     // Default to the login page if the user is not logged in or their role is unknown.

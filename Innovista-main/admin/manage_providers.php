@@ -10,7 +10,7 @@ $conn = $db->getConnection();
 // Fetch all providers (regardless of status for management)
 // Joining with the 'service' table to display their main service if available
 $stmt = $conn->prepare("
-    SELECT u.id, u.name, u.email, u.provider_status, u.credentials_verified, u.portfolio,
+    SELECT u.id, u.name, u.email, u.provider_status, u.credentials_verified, u.profile_image_path,
            s.main_service, s.subcategories
     FROM users u
     LEFT JOIN service s ON u.id = s.provider_id

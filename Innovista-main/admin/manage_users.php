@@ -12,7 +12,7 @@ $conn = $db->getConnection(); // $conn now holds the PDO database connection obj
 $current_admin_id = $_SESSION['user_id']; // Get current admin's ID from session
 
 // FIX: Change $db->prepare to $conn->prepare
-$stmt = $conn->prepare("SELECT id, name, email, role, status, provider_status, portfolio FROM users WHERE id != :current_admin_id ORDER BY created_at DESC");
+$stmt = $conn->prepare("SELECT id, name, email, role, status, provider_status, profile_image_path FROM users WHERE id != :current_admin_id ORDER BY created_at DESC");
 $stmt->bindParam(':current_admin_id', $current_admin_id, PDO::PARAM_INT);
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);

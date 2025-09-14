@@ -75,6 +75,7 @@
     <script src="assets/js/product-script.js"></script>
     <script src="assets/js/portfolio-script.js"></script>
     <script src="assets/js/contact-script.js"></script>
+    <script src="assets/js/booking-script.js"></script>
 
 </body>
 </html>

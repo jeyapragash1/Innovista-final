@@ -153,11 +153,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                         // Highlight selected
                                         document.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('selected'));
                                         btn.classList.add('selected');
-                                        // Show payment form as popup/modal
-                                        var paymentStep = document.getElementById('paymentStep');
-                                        var calendarStep = document.getElementById('calendarStep');
-                                        if (paymentStep) paymentStep.style.display = 'block';
-                                        if (calendarStep) calendarStep.style.display = 'none';
+                                        // Enable payment step
+                                        document.getElementById('paymentStep').style.display = '';
+                                        document.getElementById('calendarStep').style.display = 'none';
                                     };
                                     timeSlotsList.appendChild(btn);
                                 });
@@ -183,19 +181,12 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             closeAllModals();
             // Reset modal content
-            var calendarStep = document.getElementById('calendarStep');
-            var paymentStep = document.getElementById('paymentStep');
-            var timeSlotsSection = document.getElementById('time-slots-section');
-            var bookingModal = document.getElementById('bookingModal');
-            if (calendarStep) calendarStep.style.display = '';
-            if (paymentStep) paymentStep.style.display = 'none';
-            if (timeSlotsSection) timeSlotsSection.style.display = 'none';
-            if (bookingModal) {
-                bookingModal.classList.add('active');
-                bookingModal.style.display = 'block';
-            }
+            document.getElementById('calendarStep').style.display = '';
+            document.getElementById('paymentStep').style.display = 'none';
+            document.getElementById('time-slots-section').style.display = 'none';
+            document.getElementById('bookingModal').classList.add('active');
+            document.getElementById('bookingModal').style.display = 'block';
             const providerId = btn.closest('.provider-actions').querySelector('.quote-request-form').getAttribute('data-provider-id');
-            console.log('Book Consultation clicked. Provider ID:', providerId);
             renderRealTimeCalendar(providerId, currentYear, currentMonth);
             updateMonthTitle(currentYear, currentMonth);
             document.getElementById('prevMonthBtn').onclick = function() {

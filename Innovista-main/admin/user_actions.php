@@ -1,9 +1,8 @@
 <?php
 // user_actions.php
-// Use session guard without rendering HTML to allow header() redirects
-require_once '../config/session.php';
-protectPage('admin');
+require_once 'admin_header.php'; // Ensures admin is logged in
 require_once '../config/Database.php';
+require_once '../public/session.php'; // For getImageSrc to unlink files
 
 $db = new Database();
 $conn = $db->getConnection();

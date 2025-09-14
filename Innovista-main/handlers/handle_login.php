@@ -55,14 +55,6 @@ $loggedInUser = $userClass->login($email, $password);
 
 if ($loggedInUser) {
     // Authentication successful
-    // Block login if account status is not active (applies to all roles)
-    $accountStatus = strtolower(trim((string)($loggedInUser['status'] ?? '')));
-    if ($accountStatus !== 'active') {
-        // Show clear message for inactive accounts and redirect back to login
-        set_flash_message('error', 'Your account is inactive. Please contact support or an administrator.');
-        header('Location: ../public/login.php');
-        exit();
-    }
     // Set session variables
     $_SESSION['user_id'] = $loggedInUser['id'];
     $_SESSION['user_name'] = $loggedInUser['name'];
@@ -71,28 +63,23 @@ if ($loggedInUser) {
     // Clear login data from session
     unset($_SESSION['login_data']);
 
-    // Do not set flash messages on login to avoid top alerts
+    set_flash_message('success', 'Welcome back, ' . htmlspecialchars($loggedInUser['name']) . '!');
 
     // Redirect based on user role
     if ($loggedInUser['role'] === 'admin') {
         header('Location: ../admin/admin_dashboard.php');
     } elseif ($loggedInUser['role'] === 'provider') {
-        // Normalize and handle legacy/missing provider_status values gracefully
-        $providerStatusRaw = $loggedInUser['provider_status'] ?? '';
-        $providerStatus = strtolower(trim((string)$providerStatusRaw));
-
-        // Allow login if explicitly approved OR legacy records marked active even if provider_status is missing
-        if ($providerStatus === 'approved' || ($providerStatus === '' && $accountStatus === 'active')) {
-            header('Location: ../provider/provider_dashboard.php');
-        } elseif ($providerStatus === 'pending') {
-            // Silent redirect without alert
-            header('Location: ../public/index.php');
-        } elseif ($providerStatus === 'rejected' || $accountStatus === 'inactive') {
-            // Silent redirect without alert
-            header('Location: ../public/login.php');
-        } else {
-            // Fallback: treat unknown as pending, redirect silently
-            header('Location: ../public/index.php');
+        // This is the CRITICAL block to check
+        if ($loggedInUser['provider_status'] === 'approved') {
+            // THE PROBLEM IS HERE! THIS PATH IS LIKELY STILL WRONG.
+            // It should be relative from /handlers/ to /provider/
+            header('Location: ../provider/provider_dashboard.php'); // Ensure this is '../provider/' NOT '../public/provider/'
+        } elseif ($loggedInUser['provider_status'] === 'pending') {
+            set_flash_message('info', 'Your provider account is pending approval. Please wait for an administrator to review it.');
+            header('Location: ../public/index.php'); // This path is correct
+        } else { // rejected or inactive
+            set_flash_message('error', 'Your provider account is currently inactive or rejected. Please contact support.');
+            header('Location: ../public/login.php'); // This path is correct
         }
     } else { // Default to customer dashboard for 'customer' role
         // This is also a CRITICAL block to check

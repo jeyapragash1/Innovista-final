@@ -3,21 +3,15 @@
     require_once __DIR__ . '/../config/session.php';
     // No need for header.php here as it's a standalone page, but session is needed.
 
-    // Prevent caching so Back button won't show this page after login
-    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-    header('Cache-Control: post-check=0, pre-check=0', false);
-    header('Pragma: no-cache');
-    header('Expires: 0');
-
     // If a user is already logged in, redirect them away from signup
     if (isUserLoggedIn()) {
         $userRole = getUserRole();
         if ($userRole === 'admin') {
             header("Location: ../admin/admin_dashboard.php");
         } elseif ($userRole === 'provider') {
-            header("Location: ../provider/provider_dashboard.php");
+            header("Location: provider_dashboard.php");
         } else { // customer or unknown
-            header("Location: ../customer/customer_dashboard.php");
+            header("Location: customer_dashboard.php");
         }
         exit();
     }

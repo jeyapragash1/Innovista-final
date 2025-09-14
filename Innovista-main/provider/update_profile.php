@@ -16,17 +16,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['update_details']) ||
     $db = (new Database())->getConnection();
 
     if (isset($_POST['update_services'])) {
-        // Get new services and subcategories from form
+        // Fetch old values from DB
+        $stmtOld = $db->prepare('SELECT main_service, subcategories FROM service WHERE provider_id = :provider_id');
+        $stmtOld->bindParam(':provider_id', $provider_id);
+        $stmtOld->execute();
+        $old = $stmtOld->fetch(PDO::FETCH_ASSOC);
+        $old_services = isset($old['main_service']) ? explode(',', $old['main_service']) : [];
+        $old_subcategories = isset($old['subcategories']) ? explode(',', $old['subcategories']) : [];
+
         $new_services = isset($_POST['providerService']) ? $_POST['providerService'] : [];
         $new_subcategories = isset($_POST['providerSubcategories']) ? $_POST['providerSubcategories'] : [];
 
-        // Clean and format the data
-        $main_service = implode(',', array_filter(array_map('trim', $new_services)));
-        $subcategories = implode(',', array_filter(array_map('trim', $new_subcategories)));
-        
-        // Debug logging (remove in production)
-        error_log("Services being saved: " . $main_service);
-        error_log("Subcategories being saved: " . $subcategories);
+        // Merge, trim, and remove duplicates
+        $all_services = array_unique(array_filter(array_map('trim', array_merge($old_services, $new_services))));
+        $all_subcategories = array_unique(array_filter(array_map('trim', array_merge($old_subcategories, $new_subcategories))));
+
+        $main_service = implode(',', $all_services);
+        $subcategories = implode(',', $all_subcategories);
     }
 
     $db = (new Database())->getConnection();
@@ -39,27 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['update_details']) ||
 
     // Always update service table
     if (isset($_POST['update_services'])) {
-        // Check if service record exists, if not create it
-        $checkStmt = $db->prepare('SELECT id FROM service WHERE provider_id = :provider_id');
-        $checkStmt->bindParam(':provider_id', $provider_id);
-        $checkStmt->execute();
-        
-        if ($checkStmt->rowCount() > 0) {
-            // Update existing record
-            $stmt = $db->prepare('UPDATE service SET main_service = :main_service, subcategories = :subcategories WHERE provider_id = :provider_id');
-            $stmt->bindParam(':main_service', $main_service);
-            $stmt->bindParam(':subcategories', $subcategories);
-            $stmt->bindParam(':provider_id', $provider_id);
-            $stmt->execute();
-        } else {
-            // Create new record
-            $stmt = $db->prepare('INSERT INTO service (provider_id, main_service, subcategories) VALUES (:provider_id, :main_service, :subcategories)');
-            $stmt->bindParam(':provider_id', $provider_id);
-            $stmt->bindParam(':main_service', $main_service);
-            $stmt->bindParam(':subcategories', $subcategories);
-            $stmt->execute();
-        }
-        
+        $stmt = $db->prepare('UPDATE service SET main_service = :main_service, subcategories = :subcategories WHERE provider_id = :provider_id');
+        $stmt->bindParam(':main_service', $main_service);
+        $stmt->bindParam(':subcategories', $subcategories);
+        $stmt->bindParam(':provider_id', $provider_id);
+        $stmt->execute();
         set_flash_message('success', 'Services updated successfully!');
         header('Location: my_profile.php');
         exit();
