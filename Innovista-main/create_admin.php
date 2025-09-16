@@ -2,7 +2,7 @@
 // A simple script to generate a secure password hash for your admin user.
 
 // --- IMPORTANT: SET THE ADMIN PASSWORD YOU WANT TO USE HERE ---
-$admin_password = 'admin123';
+$admin_password = 'DENU@jp59';
 
 // Generate the secure hash using PHP's standard, secure method
 $hashed_password = password_hash($admin_password, PASSWORD_BCRYPT);

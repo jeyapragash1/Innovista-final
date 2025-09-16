@@ -2,8 +2,137 @@
     // Set the specific title for this page
     $pageTitle = 'Home'; 
     
-    // Include the master header. This will also start the session.
+    // Include the master header. This will also start the session and include helper functions.
     include 'header.php';
+
+    // --- ESTABLISH DATABASE CONNECTION FOR THIS PAGE ---
+    require_once '../config/Database.php';
+    $db = new Database();
+    $conn = $db->getConnection();
+    // ---------------------------------------------------
+
+    // --- Fetch Dynamic Settings for the Homepage ---
+    $settings = [];
+    try {
+        $stmt_settings = $conn->prepare("SELECT setting_key, setting_value FROM settings");
+        $stmt_settings->execute();
+        while ($row = $stmt_settings->fetch(PDO::FETCH_ASSOC)) {
+            $settings[$row['setting_key']] = $row['setting_value'];
+        }
+    } catch (PDOException $e) {
+        error_log("Database error fetching settings: " . $e->getMessage());
+        // Fallback: Provide empty defaults to prevent further errors if DB connection failed
+        $settings = array_fill_keys([
+            'homepage_hero_h1', 'homepage_hero_p', 'homepage_how_it_works_title',
+            'homepage_services_title', 'homepage_products_title', 'homepage_products_description',
+            'homepage_why_choose_us_title', 'homepage_testimonials_title', 'homepage_our_work_title',
+            'homepage_our_work_description', 'homepage_faq_title', 'homepage_cta_title',
+            'homepage_cta_description'
+        ], ''); // Fill with empty strings as fallbacks
+    }
+
+    // Default values if settings are not found in DB or error occurred
+    $settings['homepage_hero_h1'] = $settings['homepage_hero_h1'] ?? 'Transforming Spaces, Restoring Dreams';
+    $settings['homepage_hero_p'] = $settings['homepage_hero_p'] ?? 'Your one-stop platform for interior design, painting, and restoration services in the Northern Province';
+    $settings['homepage_how_it_works_title'] = $settings['homepage_how_it_works_title'] ?? 'How It Works';
+    $settings['homepage_services_title'] = $settings['homepage_services_title'] ?? 'Our Core Services';
+    $settings['homepage_products_title'] = $settings['homepage_products_title'] ?? 'Complete Your Project';
+    $settings['homepage_products_description'] = $settings['homepage_products_description'] ?? 'Find high-quality products from trusted brands, all in one place. From paints to furniture, get everything you need for your project delivered.';
+    $settings['homepage_why_choose_us_title'] = $settings['homepage_why_choose_us_title'] ?? 'Why Choose Innovista?';
+    $settings['homepage_testimonials_title'] = $settings['homepage_testimonials_title'] ?? 'What Our Clients Say';
+    $settings['homepage_our_work_title'] = $settings['homepage_our_work_title'] ?? 'Our Recent Work';
+    $settings['homepage_our_work_description'] = $settings['homepage_our_work_description'] ?? 'A glimpse into the spaces we\'ve transformed.';
+    $settings['homepage_faq_title'] = $settings['homepage_faq_title'] ?? 'Frequently Asked Questions';
+    $settings['homepage_cta_title'] = $settings['homepage_cta_title'] ?? 'Ready to Start Your Next Project?';
+    $settings['homepage_cta_description'] = $settings['homepage_cta_description'] ?? 'Whether you\'re looking to transform your home or grow your service business, the Innovista community is here for you. Join today for a seamless, transparent, and trustworthy experience.';
+
+
+    // --- Dynamic Link Logic ---
+    $userLoggedIn = isUserLoggedIn();
+    $userRole = getUserRole();
+    $loggedInUserId = getUserId(); 
+
+    // Determine target page for generic "Explore Services" / "Find a Professional" links
+    $servicesLink = 'login.php';
+    if ($userLoggedIn) {
+        if ($userRole === 'admin') {
+            $servicesLink = '../admin/admin_dashboard.php';
+        } else {
+            $servicesLink = 'services.php';
+        }
+    }
+
+    // Determine target page for "Join as a Provider" link
+    $joinProviderLink = 'signup.php';
+    if ($userLoggedIn) {
+        if ($userRole === 'provider') {
+            $joinProviderLink = '../provider/provider_dashboard.php';
+        } elseif ($userRole === 'customer') {
+            $joinProviderLink = '../customer/customer_dashboard.php';
+        } elseif ($userRole === 'admin') {
+            $joinProviderLink = '../admin/admin_dashboard.php'; 
+        }
+    }
+
+    // --- Fetch Dynamic Data for Sections ---
+
+    // 1. Fetch Featured Professionals (Top 3 approved providers)
+    $featuredProfessionals = [];
+    try {
+        $stmt_providers = $conn->prepare("
+            SELECT id, name, bio, profile_image_path
+            FROM users
+            WHERE role = 'provider' AND provider_status = 'approved'
+            ORDER BY created_at DESC LIMIT 3
+        ");
+        $stmt_providers->execute();
+        $featuredProfessionals = $stmt_providers->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database error fetching featured professionals: " . $e->getMessage());
+    }
+
+    // 2. Fetch Recent Work / Portfolio Items (e.g., latest 6)
+    $recentPortfolioItems = [];
+    try {
+        $stmt_portfolio = $conn->prepare("
+            SELECT id, title, description, image_path
+            FROM portfolio_items
+            ORDER BY created_at DESC LIMIT 6
+        ");
+        $stmt_portfolio->execute();
+        $recentPortfolioItems = $stmt_portfolio->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database error fetching recent portfolio items: " . $e->getMessage());
+    }
+
+    // 3. Fetch Products (hardcoded for now, as no 'products' table in schema)
+    /*
+    $featuredProducts = [];
+    try {
+        $stmt_products = $conn->prepare("SELECT id, name, category, price, image_path FROM products ORDER BY created_at DESC LIMIT 3");
+        $stmt_products->execute();
+        $featuredProducts = $stmt_products->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database error fetching featured products: " . $e->getMessage());
+    }
+    */
+
+    // 4. Testimonials
+    $testimonials = [];
+    try {
+        $stmt_testimonials = $conn->prepare("
+            SELECT r.review_text, r.rating, c.name AS customer_name
+            FROM reviews r
+            JOIN users c ON r.customer_id = c.id
+            -- WHERE r.is_featured = 1 -- Add this column to reviews table for featured testimonials
+            ORDER BY r.created_at DESC LIMIT 3
+        ");
+        $stmt_testimonials->execute();
+        $testimonials = $stmt_testimonials->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Database error fetching testimonials: " . $e->getMessage());
+    }
+
 ?>
 <main>
     <!-- =========================================
@@ -17,10 +146,9 @@
         </div>
         <div class="hero-overlay"></div>
         <div class="hero-content container">
-            <h1 style="color: white;">Transforming Spaces, Restoring Dreams</h1>
-            <p>Your one-stop platform for interior design, painting, and restoration services in the Northern Province</p>
-            <!-- DYNAMIC LINK -->
-            <a href="<?php echo isUserLoggedIn() ? 'services.php' : './login.php'; ?>" class="btn btn-primary">Explore Services</a>
+            <h1 style="color: white;"><?php echo htmlspecialchars($settings['homepage_hero_h1']); ?></h1>
+            <p><?php echo htmlspecialchars($settings['homepage_hero_p']); ?></p>
+            <a href="<?php echo htmlspecialchars($servicesLink); ?>" class="btn btn-primary">Explore Services</a>
         </div>
         <div class="slider-dots">
             <span class="dot active" data-slide="0"></span>
@@ -34,7 +162,7 @@
      ========================================= -->
     <section class="how-it-works page-section">
         <div class="container">
-            <h2 class="section-title">How It Works</h2>
+            <h2 class="section-title"><?php echo htmlspecialchars($settings['homepage_how_it_works_title']); ?></h2>
             <div class="steps">
                 <div class="step">
                     <div class="step-icon">1</div>
@@ -60,7 +188,7 @@
      ========================================= -->
     <section class="services-section page-section">
         <div class="container">
-            <h2 class="section-title">Our Core Services</h2>
+            <h2 class="section-title"><?php echo htmlspecialchars($settings['homepage_services_title']); ?></h2>
             <div class="services-grid">
                 <!-- Interior Design Card -->
                 <div class="service-card">
@@ -68,8 +196,7 @@
                     <div class="service-card-content">
                         <h3>Interior Design</h3>
                         <p>From concept to completion, we bring your vision to life. Our experts create beautiful, functional spaces tailored to your lifestyle.</p>
-                        <!-- DYNAMIC LINK -->
-                        <a href="<?php echo isUserLoggedIn() ? 'services.php' : 'login.php'; ?>" class="btn btn-secondary">Learn More</a>
+                        <a href="<?php echo htmlspecialchars($servicesLink); ?>" class="btn btn-secondary">Learn More</a>
                     </div>
                 </div>
                 <!-- Painting Card -->
@@ -78,8 +205,7 @@
                     <div class="service-card-content">
                         <h3>Professional Painting</h3>
                         <p>A fresh coat of paint can redefine a room. Our professionals deliver flawless, lasting finishes for both interior and exterior projects.</p>
-                        <!-- DYNAMIC LINK -->
-                        <a href="<?php echo isUserLoggedIn() ? 'services.php' : 'login.php'; ?>" class="btn btn-secondary">Learn More</a>
+                        <a href="<?php echo htmlspecialchars($servicesLink); ?>" class="btn btn-secondary">Learn More</a>
                     </div>
                 </div>
                 <!-- Restoration Card -->
@@ -88,8 +214,7 @@
                     <div class="service-card-content">
                         <h3>Restoration</h3>
                         <p>We breathe new life into your cherished spaces and furniture. Our restoration services preserve the beauty and integrity of your property.</p>
-                        <!-- DYNAMIC LINK -->
-                        <a href="<?php echo isUserLoggedIn() ? 'services.php' : 'login.php'; ?>" class="btn btn-secondary">Learn More</a>
+                        <a href="<?php echo htmlspecialchars($servicesLink); ?>" class="btn btn-secondary">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -102,19 +227,21 @@
     <section class="products-section page-section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Complete Your Project</h2>
-                <p>Find high-quality products from trusted brands, all in one place. From paints to furniture, get everything you need for your project delivered.</p>
+                <h2 class="section-title"><?php echo htmlspecialchars($settings['homepage_products_title']); ?></h2>
+                <p><?php echo htmlspecialchars($settings['homepage_products_description']); ?></p>
             </div>
             <div class="products-grid">
-                <!-- Product 1 -->
+                <?php
+                // For now, keeping hardcoded examples:
+                ?>
+                <!-- Product 1 (Hardcoded, but could be dynamic from 'products' table) -->
                 <div class="product-card">
                     <img src="assets/images/port1.jpg" alt="Premium Interior Paint">
                     <div class="product-info">
                         <h4>Premium Interior Paint</h4>
                         <p class="product-category">Painting Supplies</p>
                         <div class="product-price">Starts from $45</div>
-                        <!-- DYNAMIC LINK -->
-                        <a href="<?php echo isUserLoggedIn() ? 'product.php' : 'login.php'; ?>" class="btn btn-secondary">View Product</a>
+                        <a href="<?php echo htmlspecialchars($servicesLink); ?>" class="btn btn-secondary">View Product</a>
                     </div>
                 </div>
                 <!-- Product 2 -->
@@ -124,8 +251,7 @@
                         <h4>Modern Velvet Sofa</h4>
                         <p class="product-category">Furniture</p>
                         <div class="product-price">$899</div>
-                        <!-- DYNAMIC LINK -->
-                        <a href="<?php echo isUserLoggedIn() ? 'product.php' : 'login.php'; ?>" class="btn btn-secondary">View Product</a>
+                        <a href="<?php echo htmlspecialchars($servicesLink); ?>" class="btn btn-secondary">View Product</a>
                     </div>
                 </div>
                 <!-- Product 3 -->
@@ -135,8 +261,7 @@
                         <h4>Elegant Pendant Lights</h4>
                         <p class="product-category">Lighting</p>
                         <div class="product-price">$120</div>
-                        <!-- DYNAMIC LINK -->
-                        <a href="<?php echo isUserLoggedIn() ? 'product.php' : 'login.php'; ?>" class="btn btn-secondary">View Product</a>
+                        <a href="<?php echo htmlspecialchars($servicesLink); ?>" class="btn btn-secondary">View Product</a>
                     </div>
                 </div>
             </div>
@@ -148,7 +273,7 @@
      ========================================= -->
     <section class="why-choose-us page-section">
         <div class="container">
-            <h2 class="section-title">Why Choose Innovista?</h2>
+            <h2 class="section-title"><?php echo htmlspecialchars($settings['homepage_why_choose_us_title']); ?></h2>
             <div class="features-grid">
                 <div class="feature-item">
                     <i class="fas fa-user-shield"></i>
@@ -175,12 +300,12 @@
     </section>
 
     <!-- =========================================
-     ACHIEVEMENTS / STATS SECTION
+     ACHIEVEMENTS / STATS SECTION (Could be dynamic from DB counts)
      ========================================= -->
     <section class="achievements">
         <div class="container achievements-grid">
             <div class="achievement-item">
-                <h3 class="counter" data-goal="50">0</h3>
+                <h3 class="counter" data-goal="50">0</h3> <!-- Example data-goal, could fetch from DB -->
                 <p>Projects Completed</p>
             </div>
             <div class="achievement-item">
@@ -201,30 +326,21 @@
         <div class="container">
             <h2 class="section-title">Meet Our Top Professionals</h2>
             <div class="provider-cards">
-                <!-- Provider 1 -->
-                <div class="provider-card">
-                    <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=400" alt="Provider 1">
-                    <div class="provider-info">
-                        <h4>Jeronimo G.</h4>
-                        <p>Modern Interior Specialist</p>
-                    </div>
-                </div>
-                <!-- Provider 2 -->
-                <div class="provider-card">
-                    <img src="https://images.unsplash.com/photo-1611432579402-7037e3e2c1e4?w=600&auto=format&fit=crop&q=60" alt="Provider 2">
-                    <div class="provider-info">
-                        <h4>Maria S.</h4>
-                        <p>Vintage Restoration Expert</p>
-                    </div>
-                </div>
-                <!-- Provider 3 -->
-                <div class="provider-card">
-                    <img src="https://images.unsplash.com/flagged/photo-1553642618-de0381320ff3?q=80&w=687" alt="Provider 3">
-                    <div class="provider-info">
-                        <h4>David L.</h4>
-                        <p>Precision Painting Pro</p>
-                    </div>
-                </div>
+                <?php if (!empty($featuredProfessionals)): ?>
+                    <?php foreach ($featuredProfessionals as $provider): ?>
+                        <div class="provider-card">
+                            <img src="<?php echo getImageSrc($provider['profile_image_path'] ?? 'assets/images/default-avatar.jpg'); ?>" 
+                                 alt="<?php echo htmlspecialchars($provider['name']); ?> Profile">
+                            <div class="provider-info">
+                                <h4><?php echo htmlspecialchars($provider['name']); ?></h4>
+                                <p><?php echo htmlspecialchars(substr($provider['bio'] ?? 'Specialist', 0, 50)) . (strlen($provider['bio'] ?? '') > 50 ? '...' : ''); ?></p>
+                                <a href="provider_profile.php?id=<?php echo htmlspecialchars($provider['id']); ?>" class="btn btn-link">View Profile</a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="text-center text-light">No featured professionals found at the moment.</p>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -234,12 +350,20 @@
      ========================================= -->
     <section class="testimonials page-section">
         <div class="container">
-            <h2 style="color: white;" class="section-title">What Our Clients Say</h2>
+            <h2 style="color: white;" class="section-title"><?php echo htmlspecialchars($settings['homepage_testimonials_title']); ?></h2>
             <div class="testimonial-slider">
                 <div class="testimonial-cards">
-                    <div class="testimonial-card">"Innovista made finding a reliable interior designer so easy! The entire process was seamless, and the result was beyond my expectations. Highly recommended!"<br><span class="author">- Sarah K., Jaffna</span></div>
-                    <div class="testimonial-card">"The restoration work on our antique furniture was incredible. The attention to detail was amazing. A truly professional service from start to finish."<br><span class="author">- Ravi P., Vavuniya</span></div>
-                    <div class="testimonial-card">"The painting service was fast, clean, and professional. My home feels completely new. I couldn't be happier with the outcome."<br><span class="author">- David L., Kilinochchi</span></div>
+                    <?php if (!empty($testimonials)): ?>
+                        <?php foreach ($testimonials as $testimonial): ?>
+                            <div class="testimonial-card">
+                                "<?php echo htmlspecialchars($testimonial['review_text']); ?>"
+                                <br><span class="author">- <?php echo htmlspecialchars($testimonial['customer_name']); ?></span>
+                                <!-- You could also display rating stars here -->
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="text-center text-light">No testimonials available at the moment.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -250,70 +374,26 @@
 <section class="portfolio-section page-section">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">Our Recent Work</h2>
-            <p>A glimpse into the spaces we've transformed.</p>
+            <h2 class="section-title"><?php echo htmlspecialchars($settings['homepage_our_work_title']); ?></h2>
+            <p><?php echo htmlspecialchars($settings['homepage_our_work_description']); ?></p>
         </div>
         <div class="portfolio-grid homepage-grid">
-            <!-- Portfolio Item 1 -->
-            <div class="portfolio-item">
-                <img src="assets/images/portfolio-1.jpg" alt="Modern living room with minimalist design">
-                <div class="portfolio-overlay">
-                    <div class="portfolio-content">
-                        <h3>Modern Living Room</h3>
-                        <p>Interior Design</p>
+            <?php if (!empty($recentPortfolioItems)): ?>
+                <?php foreach ($recentPortfolioItems as $item): ?>
+                    <div class="portfolio-item">
+                        <img src="<?php echo getImageSrc($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['title']); ?>">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-content">
+                                <h3><?php echo htmlspecialchars($item['title']); ?></h3>
+                                <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                <a href="portfolio_detail.php?id=<?php echo htmlspecialchars($item['id']); ?>" class="btn btn-link">View Project</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <!-- Portfolio Item 2 -->
-            <div class="portfolio-item">
-                <img src="assets/images/portfolio-2.jpg" alt="Cozy bedroom with fresh blue paint">
-                <div class="portfolio-overlay">
-                    <div class="portfolio-content">
-                        <h3>Serene Bedroom Repaint</h3>
-                        <p>Painting</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Portfolio Item 3 (Wide) -->
-            <div class="portfolio-item wide">
-                <img src="assets/images/portfolio-3.jpg" alt="Complete kitchen restoration with new cabinets and island">
-                <div class="portfolio-overlay">
-                    <div class="portfolio-content">
-                        <h3>Full Kitchen Restoration</h3>
-                        <p>Restoration</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Portfolio Item 4 (Wide) -->
-            <div class="portfolio-item wide">
-                <img src="assets/images/portfolio-4.jpg" alt="Bright and open commercial office space design">
-                <div class="portfolio-overlay">
-                    <div class="portfolio-content">
-                        <h3>Office Space Concept</h3>
-                        <p>Interior Design</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Portfolio Item 5 -->
-            <div class="portfolio-item">
-                <img src="assets/images/portfolio-5.jpg" alt="Antique wooden chair restored and reupholstered">
-                <div class="portfolio-overlay">
-                    <div class="portfolio-content">
-                        <h3>Antique Chair Refurbish</h3>
-                        <p>Restoration</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Portfolio Item 6 -->
-            <div class="portfolio-item">
-                <img src="assets/images/portfolio-6.jpg" alt="Exterior of a house after professional painting">
-                <div class="portfolio-overlay">
-                    <div class="portfolio-content">
-                        <h3>Exterior House Painting</h3>
-                        <p>Painting</p>                    
-                    </div>
-                </div>
-            </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-center">No recent work to display.</p>
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -323,7 +403,7 @@
      ========================================= -->
     <section class="faq-section page-section">
         <div class="container">
-            <h2 class="section-title">Frequently Asked Questions</h2>
+            <h2 class="section-title"><?php echo htmlspecialchars($settings['homepage_faq_title']); ?></h2>
             <div class="faq-accordion">
                 <div class="faq-item">
                     <button class="faq-question">
@@ -371,18 +451,15 @@
     <section class="cta-section">
         <div class="container">
             <div class="cta-content">
-                <h2>Ready to Start Your Next Project?</h2>
-                <p>Whether you're looking to transform your home or grow your service business, the Innovista community is here for you. Join today for a seamless, transparent, and trustworthy experience.</p>
+                <h2><?php echo htmlspecialchars($settings['homepage_cta_title']); ?></h2>
+                <p><?php echo htmlspecialchars($settings['homepage_cta_description']); ?></p>
                 <div class="cta-buttons">
-                    <!-- DYNAMIC LINK -->
-                    <a href="<?php echo isUserLoggedIn() ? 'services.php' : 'login.php'; ?>" class="btn btn-primary">Find a Professional</a>
-                    <!-- DYNAMIC LINK -->
-                    <a href="<?php echo isUserLoggedIn() ? 'provider_dashboard.php' : 'signup.php'; ?>" class="btn btn-secondary">Join as a Provider</a>
+                    <a href="<?php echo htmlspecialchars($servicesLink); ?>" class="btn btn-primary">Find a Professional</a>
+                    <a href="<?php echo htmlspecialchars($joinProviderLink); ?>" class="btn btn-secondary">Join as a Provider</a>
                 </div>
             </div>
         </div>
     </section>
 
 </main>   
-
 <?php include './footer.php'; ?>

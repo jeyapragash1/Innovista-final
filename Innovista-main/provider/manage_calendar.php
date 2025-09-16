@@ -33,8 +33,9 @@ require_once 'provider_header.php';
         </div>
     </div>
 </div>
-
 <style>
+
+
 .booking-layout {
     display: flex;
     justify-content: center;
@@ -166,10 +167,11 @@ require_once 'provider_header.php';
     color: #1eb6e9;
     transition: 0.2s;
 }
-.time-slot.selected {
+.time-slot.selected-db {
     background: #1eb6e9;
     color: #fff;
     font-weight: 700;
+    opacity: 0.7;
 }
 .time-slot:hover { background: #e0e7ff; }
 .save-btn {
@@ -183,6 +185,60 @@ require_once 'provider_header.php';
     margin-top: auto;
 }
 .save-btn:hover { background: #159ac2; }
+
+.booking-layout {
+    display: flex;
+    justify-content: center;
+}
+
+/* Highlight saved (DB) times in time slots */
+.time-slot.selected-db {
+    background: #1eb6e9;
+    color: #fff;
+    font-weight: 700;
+    opacity: 0.7;
+}
+/* Saved availability styles */
+.saved-availability-section {
+    margin: 32px auto 0 auto;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #e0e7ff;
+    padding: 24px 32px;
+}
+#saved-availability-list {
+    margin-top: 12px;
+}
+.saved-date {
+    font-weight: 700;
+    color: #1eb6e9;
+    margin-top: 12px;
+}
+.saved-time {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #1eb6e9;
+    border-radius: 6px;
+    padding: 4px 12px;
+    margin: 4px 6px 4px 0;
+    font-weight: 600;
+    position: relative;
+}
+.delete-time-btn {
+    background: #ff4d4f;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.9em;
+    margin-left: 6px;
+    cursor: pointer;
+    position: absolute;
+    top: -6px;
+    right: -10px;
+}
 </style>
 
 <script>
@@ -194,22 +250,44 @@ const timeSlots = [
     "05:00 PM","05:30 PM","06:00 PM"
 ];
 
+
+
+// Store selected times for each date: { 'YYYY-MM-DD': ["09:00 AM", ...] }
+let selectedAvailability = {};
+let selectedDate = null;
+let savedAvailability = {}; // fetched from backend
+
 function renderTimeSlots() {
     const container = document.getElementById('time-slots');
     const selectedDisplay = document.getElementById('selected-time-display');
     container.innerHTML = '';
+    if (!selectedDate) {
+        selectedDisplay.textContent = 'Selected Date: None';
+        return;
+    }
+    selectedDisplay.textContent = `Selected Date: ${selectedDate}`;
+    const selectedTimes = selectedAvailability[selectedDate] || [];
+    const dbTimes = savedAvailability[selectedDate] || [];
     timeSlots.forEach(slot => {
         const div = document.createElement('div');
         div.classList.add('time-slot');
         div.textContent = slot;
+        if (dbTimes.includes(slot)) div.classList.add('selected-db');
+        if (selectedTimes.includes(slot)) div.classList.add('selected');
         div.addEventListener('click', () => {
-            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-            div.classList.add('selected');
-            selectedDisplay.textContent = `Selected Time: ${slot}`;
+            let times = selectedAvailability[selectedDate] || [];
+            if (times.includes(slot)) {
+                times = times.filter(t => t !== slot);
+            } else {
+                times.push(slot);
+            }
+            selectedAvailability[selectedDate] = times;
+            renderTimeSlots();
         });
         container.appendChild(div);
     });
 }
+
 
 function renderCalendar(year, month) {
     const calendarDays = document.getElementById('calendar-days');
@@ -228,31 +306,169 @@ function renderCalendar(year, month) {
         dayDiv.classList.add('calendar-day');
         dayDiv.textContent = i;
         const today = new Date();
+        const dateStr = `${firstDay.getFullYear()}-${String(firstDay.getMonth()+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
         if(i===today.getDate() && month===today.getMonth() && year===today.getFullYear()){
             dayDiv.classList.add('today');
         }
-        dayDiv.addEventListener('click', () => {
-            document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+        // Highlight if available in DB or selected
+        if ((savedAvailability[dateStr] && savedAvailability[dateStr].length > 0) || (selectedAvailability[dateStr] && selectedAvailability[dateStr].length > 0)) {
             dayDiv.classList.add('selected');
+        }
+        dayDiv.addEventListener('click', () => {
+            selectedDate = dateStr;
+            renderCalendar(year, month);
+            renderTimeSlots();
         });
+        if (selectedDate === dateStr) {
+            dayDiv.classList.add('selected');
+        }
         calendarDays.appendChild(dayDiv);
     }
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
-    renderTimeSlots();
     const today = new Date();
-    renderCalendar(today.getFullYear(), today.getMonth());
+    selectedDate = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    // Always render calendar and time slots, even if AJAX fails
+    function renderAll() {
+        renderCalendar(today.getFullYear(), today.getMonth());
+        renderTimeSlots();
+        if (typeof renderSavedAvailability === 'function') renderSavedAvailability();
+    }
+
+    // Fetch saved availability from backend first
+    fetch('get_availability.php')
+        .then(res => {
+            if (!res.ok) throw new Error('Network response was not ok');
+            return res.json();
+        })
+        .then(data => {
+            savedAvailability = (data && data.success && data.availability) ? data.availability : {};
+            renderAll();
+        })
+        .catch(err => {
+            console.error('Error fetching availability:', err);
+            savedAvailability = {};
+            renderAll();
+        });
 
     document.getElementById('prev-month').addEventListener('click', () => {
         today.setMonth(today.getMonth() - 1);
         renderCalendar(today.getFullYear(), today.getMonth());
+        renderTimeSlots();
     });
     document.getElementById('next-month').addEventListener('click', () => {
         today.setMonth(today.getMonth() + 1);
         renderCalendar(today.getFullYear(), today.getMonth());
+        renderTimeSlots();
+    });
+
+    document.getElementById('save-btn').addEventListener('click', () => {
+        // Prepare array of {date, times}
+        const availabilityArr = Object.entries(selectedAvailability)
+            .filter(([date, times]) => times.length > 0)
+            .map(([date, times]) => ({ date, times }));
+        if (availabilityArr.length === 0) {
+            alert('Please select at least one date and time.');
+            return;
+        }
+        fetch('save_availability.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ availability: availabilityArr })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Availability saved successfully!');
+                selectedAvailability = {};
+                // Refresh saved availability from backend
+                fetch('get_availability.php')
+                    .then(res => res.json())
+                    .then(data => {
+                        savedAvailability = (data && data.success && data.availability) ? data.availability : {};
+                        renderAll();
+                    })
+                    .catch(err => {
+                        console.error('Error fetching availability after save:', err);
+                        renderAll();
+                    });
+            } else {
+                alert('Error saving availability. ' + (data.error || ''));
+            }
+        })
+        .catch(() => alert('Error saving availability.'));
     });
 });
+
+/* Highlight saved (DB) times in time slots */
+
+
+
+// --- Saved Availability Section ---
+function renderSavedAvailability() {
+    fetch('get_availability.php')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('saved-availability-list');
+            container.innerHTML = '';
+            if (!data.success || !data.availability || Object.keys(data.availability).length === 0) {
+                container.innerHTML = '<em>No saved availability.</em>';
+                return;
+            }
+            Object.entries(data.availability).forEach(([date, times]) => {
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'saved-date';
+                dateDiv.textContent = date;
+                times.forEach(time => {
+                    const timeDiv = document.createElement('span');
+                    timeDiv.className = 'saved-time';
+                    timeDiv.textContent = time;
+                    // Add delete button
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'delete-time-btn';
+                    delBtn.textContent = '×';
+                    delBtn.title = 'Delete this time';
+                    delBtn.onclick = function() {
+                        if (confirm(`Delete ${date} ${time}?`)) {
+                            deleteAvailability(date, time);
+                        }
+                    };
+                    timeDiv.appendChild(delBtn);
+                    dateDiv.appendChild(timeDiv);
+                });
+                container.appendChild(dateDiv);
+            });
+        });
+}
+
+function deleteAvailability(date, time) {
+    fetch('delete_availability.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date, time })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            renderSavedAvailability();
+        } else {
+            alert('Error deleting: ' + (data.error || ''));
+        }
+    })
+    .catch(() => alert('Error deleting availability.'));
+}
 </script>
+
+<div class="saved-availability-section">
+    <h3>Saved Availability</h3>
+    <div id="saved-availability-list"></div>
+</div>
+
+<!-- removed duplicate <style> tag -->
+
+<!-- removed duplicate </style> tag -->
 
 <?php require_once 'provider_footer.php'; ?>

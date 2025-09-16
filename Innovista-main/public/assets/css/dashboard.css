@@ -1,477 +1,731 @@
-/* Modern calendar navigation styles */
-.calendar-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin-bottom: 20px;
-    background: #f6fbf6;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    padding: 16px 24px;
-}
-.calendar-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin: 0 12px;
-    color: #222;
-    letter-spacing: 0.5px;
-}
-.calendar-arrow {
-    background: #e6f9d7;
-    border: 1.5px solid #bbf7d0;
-    border-radius: 8px;
-    font-size: 1.15rem;
-    padding: 6px 16px;
-    cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-    color: #059669;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(34,197,94,0.08);
-}
-.calendar-arrow:hover {
-    background: #bbf7d0;
-    box-shadow: 0 2px 8px rgba(34,197,94,0.18);
-    color: #065f46;
-}
-/* Selected dates (including weekends) always red */
-.calendar-day.calendar-range, .calendar-day.calendar-range-edge {
-    background: #fee2e2 !important;
-    color: #b91c1c !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 16px rgba(239,68,68,0.12), 0 0 0 2px #fecaca;
-    border: 2px solid #ef4444 !important;
-    font-weight: bold;
-}
-.calendar-selected {
-    background: #2563eb !important;
-    color: #fff !important;
-    border: 3px solid #1e40af !important;
-    font-weight: bold;
-    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-}
-/* Available date highlight */
-/* Range selection highlight */
-/* Google Calendar unified styles */
-.calendar-day {
-    aspect-ratio: 1 / 1;
-    min-width: 56px;
-    min-height: 56px;
-    max-width: 72px;
-    max-height: 72px;
-    background: #f6fbf6;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.15rem;
-    color: #222;
-    cursor: pointer;
-    margin: 2px;
-    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
-    border: 1px solid #e0e7e0;
-}
-.calendar-available {
-    background: #34d399 !important;
-    color: #fff !important;
-    border: 2px solid #059669 !important;
-    font-weight: bold;
-    box-shadow: 0 4px 16px rgba(52,211,153,0.15);
-}
-
-.calendar-day:hover {
-    background: #e0f7e9;
-    color: #059669;
-    box-shadow: 0 2px 8px rgba(34,197,94,0.10);
-    border: 1.5px solid #059669;
-}
-.calendar-today {
-    background: #2563eb !important;
-    color: #fff !important;
-    font-weight: bold;
-    border: 2px solid #2563eb;
-    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-}
-.calendar-weekend {
-    background: #fff7e6;
-    color: #b45309;
-    font-weight: 600;
-    /* Remove !important to allow .not-current-month and other states to override */
-}
-.calendar-available {
-    background: #34d399 !important;
-    color: #fff !important;
-    border: 2px solid #059669 !important;
-    font-weight: bold;
-    box-shadow: 0 4px 16px rgba(52,211,153,0.15);
-}
-.calendar-day.not-current-month {
-    color: #ccc;
-    background: #f8fafc;
-
-    transition: background 0.2s;
-}
-.calendar-arrow:hover {
-    background: #e3e7f7;
-}
-/* Calendar Container */
-#calendar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 40px auto;
-    width: 500px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    padding: 32px 24px;
-}
-/* Calendar Header (Days of Week) */
-.calendar-header {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    font-weight: bold;
-    margin-bottom: 12px;
-    text-align: center;
-    width: 100%;
-    font-size: 1rem;
-    color: #333;
-    background: none;
-}
-
-.calendar-day.not-current-month {
-    color: #ccc !important;
-    background: #f8fafc !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-.calendar-header {
-    font-weight: 600;
-    color: var(--text-light);
-    text-align: center;
-    padding-bottom: 0.5rem;
-    font-size: 1rem;
-}
-/* Calendar Days Grid */
-/* Calendar Days Grid */
-/* Calendar Days Grid - FORCE GRID AND DEBUG BORDER */
-#calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 12px;
-    width: 100%;
-}
-
-/* Calendar Day Cell */
-/* Calendar Day Cell */
-/* Calendar Day Cell - Google Calendar Style */
-.calendar-day {
-    aspect-ratio: 1 / 1;
-    min-width: 60px;
-    min-height: 60px;
-    max-width: 70px;
-    max-height: 70px;
-    background: #f7f8fa;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: #333;
-    cursor: pointer;
-    margin: 2px;
-    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
-}
-.calendar-day:hover {
-    background: #e3e7f7;
-    color: #0d9488;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
-.calendar-today {
-    background: #2563eb !important;
-    color: #fff !important;
-    font-weight: bold;
-    border: 2px solid #2563eb;
-    box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-}
-.calendar-weekend {
-    background: #fff7e6 !important;
-    color: #b45309 !important;
-    font-weight: 600;
-}
-.calendar-day.not-current-month {
-    color: #ccc;
-    background: #f8fafc;
-}
-.calendar-day:hover {
-    background: #e3e7f7;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
 /* ===================================================================
-   Innovista UNIFIED Dashboard Stylesheet (Admin, Customer, Provider)
+   Innovista UNIFIED Dashboard Stylesheet (Customer & Provider)
    =================================================================== */
 
-/* --- ROOT VARIABLES (Copied from newer designs for consistency) --- */
+/* --- ROOT VARIABLES (Ensure these are defined in your main.css as well or here if exclusive) --- */
+/* These values provide a consistent color palette across your dashboard */
 :root {
-    --dashboard-bg: #f0f2f5;
-    --sidebar-bg: #1e293b;
-    --sidebar-text: #cbd5e1;
-    --sidebar-text-hover: #ffffff;
-    --sidebar-active-bg: #334155;
-    --sidebar-active-border: #5eead4;
-    --card-bg: #ffffff;
-    --text-dark: #1e293b;
-    --text-light: #64748b;
-    --border-color: #e2e8f0;
-    --primary-color: #0d9488;
-    --status-approved: #27ae60;
-    --status-pending: #f39c12;
-    --status-rejected: #e74c3c;
+    /* Base UI Colors */
+    --dashboard-bg: #f0f2f5; /* Light background for main content area */
+    --card-bg: #ffffff; /* White background for cards */
+    --text-dark: #1e293b; /* Dark text for headings and primary info */
+    --text-light: #64748b; /* Lighter text for descriptions and secondary info */
+    --border-color: #e2e8f0; /* Subtle border color for separation */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
+
+    /* Innovista Brand Colors */
+    --primary-color: #0d9488; /* Main brand teal */
+    --primary-dark-hover: #0a756b; /* Darker teal for hover */
+    --primary-color-rgb: 13, 148, 136; /* RGB for rgba() usage */
+
+    /* Sidebar Specific Colors */
+    --sidebar-bg-user: #2c3e50; /* Dark blue-grey for user dashboards */
+    --sidebar-text-user: #ecf0f1;
+    --sidebar-text-hover-user: #ffffff;
+    --sidebar-active-bg-user: #34495e;
+    --sidebar-active-border-user: #1abc9c; /* A distinct accent color for active links */
+
+    /* Status Colors (Unified) */
+    --status-active: #27ae60;      /* Green */
+    --status-approved: #27ae60;    /* Green */
+    --status-pending: #f39c12;     /* Orange/Yellow */
+    --status-yellow: #f39c12;      /* Orange/Yellow */
+    --status-rejected: #e74c3c;    /* Red */
+    --status-inactive: #e74c3c;    /* Red */
+    --status-verified: #3498db;    /* Blue */
+    --status-blue: #3498db;        /* Blue */
+    --status-info: #64748b;        /* Grey/Info */
+    --status-purple: #8e44ad;      /* Purple */
+
+    /* Calendar Specific Colors */
+    --calendar-bg: #f6fbf6;
+    --calendar-border: #e0e7e0;
+    --calendar-today-bg: #2563eb; /* Strong blue for today */
+    --calendar-weekend-bg: #fff7e6; /* Light orange for weekend */
+    --calendar-weekend-text: #b45309;
+    --calendar-available-bg: #34d399; /* Green for available */
+    --calendar-available-border: #059669;
+    --calendar-selected-bg: #059669; /* Innovista Green for selected */
 }
 
-/* --- Base Layout & Sidebar --- */
-body.dashboard-body { font-family: 'Poppins', sans-serif; background-color: var(--dashboard-bg); }
-.dashboard-container { display: flex; position: relative; }
-.dashboard-sidebar { width: 260px; min-width: 260px; height: 100vh; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 1000; transition: transform 0.3s ease-in-out; }
-.sidebar-header { padding: 1.5rem; border-bottom: 1px solid #334155; }
-.sidebar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--sidebar-text-hover); }
-.sidebar-logo img { height: 35px; }
-.sidebar-logo span { font-size: 1.4rem; font-weight: 600; }
-.sidebar-nav { flex-grow: 1; padding: 1rem 0; }
-.nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.5rem; color: var(--sidebar-text); text-decoration: none; transition: all 0.2s; font-size: 0.95rem; font-weight: 500; border-left: 4px solid transparent; }
-.nav-link:hover { background-color: var(--sidebar-active-bg); color: var(--sidebar-text-hover); }
-.nav-link.active { background-color: var(--sidebar-active-bg); color: var(--sidebar-text-hover); font-weight: 600; border-left-color: var(--sidebar-active-border); }
-.nav-link i { width: 20px; text-align: center; font-size: 1.1rem; }
-.sidebar-footer { padding: 1rem 0; margin-top: auto; border-top: 1px solid #334155; }
-
-/* --- Main Content Area --- */
-.content-wrapper { flex-grow: 1; margin-left: 260px; transition: margin-left 0.3s ease-in-out; }
-.main-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 999; }
-.menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-dark); }
-.user-profile-widget { display: flex; align-items: center; gap: 10px; font-weight: 500; }
-.user-profile-widget i { font-size: 1.8rem; color: var(--primary-color); }
-.main-content { padding: 2rem; }
-.main-content h2 { font-size: 2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.5rem; }
-.main-content > p { color: var(--text-light); margin-bottom: 2rem; font-size: 1rem; }
-
-/* 
-==================================================
---- YOUR ORIGINAL .dashboard.css CODE STARTS HERE ---
-==================================================
-*/
-
-/* --- General Layout (FROM YOUR CODE) --- */
-.dashboard-content {
-    padding: 2rem;
+/* --- Base Body & Container --- */
+body.user-dashboard-body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--dashboard-bg);
+    color: var(--text-dark);
+    line-height: 1.6;
 }
 
-.dashboard-content h2 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+.user-dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
 }
 
-.dashboard-content > p {
-    color: #6B7280;
-    margin-bottom: 2rem;
+/* --- Dashboard Sidebar --- */
+.dashboard-sidebar {
+    width: 260px;
+    min-width: 260px;
+    height: 100vh;
+    background-color: var(--sidebar-bg-user);
+    color: var(--sidebar-text-user);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: var(--shadow-md); /* Consistent shadow */
+}
+
+.dashboard-sidebar .sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #3e536e; /* Darker border for contrast */
+}
+.dashboard-sidebar .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--sidebar-text-hover-user);
+}
+.dashboard-sidebar .sidebar-logo img {
+    height: 35px;
+}
+.dashboard-sidebar .sidebar-logo span {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.dashboard-sidebar .sidebar-nav {
+    flex-grow: 1;
+    padding: 1rem 0;
+}
+
+.dashboard-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.5rem;
+    color: var(--sidebar-text-user);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-left: 4px solid transparent;
+}
+.dashboard-sidebar .nav-link:hover {
+    background-color: var(--sidebar-active-bg-user);
+    color: var(--sidebar-text-hover-user);
+}
+.dashboard-sidebar .nav-link.active {
+    background-color: var(--sidebar-active-bg-user);
+    color: var(--sidebar-text-hover-user);
+    font-weight: 600;
+    border-left-color: var(--sidebar-active-border-user);
+}
+.dashboard-sidebar .nav-link i {
+    width: 20px;
+    text-align: center;
     font-size: 1.1rem;
 }
 
-/* --- OLD Stat Cards (FROM YOUR CODE) --- */
-/* Note: The new design uses different classes, but this is kept as requested */
-.stats-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+.dashboard-sidebar .sidebar-footer {
+    padding: 1rem 0;
+    margin-top: auto;
+    border-top: 1px solid #3e536e;
+}
+.dashboard-sidebar .sidebar-footer .nav-link {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
 }
 
-.stat-card {
-    background: #ffffff;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+/* --- Dashboard Main Content Area --- */
+.dashboard-content-wrapper {
+    flex-grow: 1;
+    margin-left: 260px; /* Offset for sidebar width */
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.dashboard-main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-left: 5px solid var(--primary-color);
+    padding: 1rem 2rem;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    box-shadow: var(--shadow-sm);
 }
 
-.stat-card-info h4 {
-    font-size: 1rem;
-    color: var(--text-light);
+.dashboard-main-header .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.dashboard-menu-toggle {
+    display: none; /* Hidden by default, shown on smaller screens */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-dark);
+    transition: transform 0.2s ease;
+}
+.dashboard-menu-toggle:hover {
+    transform: scale(1.1);
+}
+
+.dashboard-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    position: relative;
+}
+.dashboard-user-profile span {
+    font-size: 1rem;
+}
+.dashboard-avatar-sm {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.stat-card-info p {
+/* --- Notification Bell Styling --- */
+.notification-bell-wrapper {
+    position: relative;
+}
+#notificationBell {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+}
+#notificationBell i {
+    font-size: 1.7rem;
+    color: var(--primary-color, #0d9488);
+}
+#notificationCount {
+    display:none;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #e11d48; /* Red for notifications */
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    font-weight: 700;
+}
+#notificationDropdown {
+    display:none;
+    position: absolute;
+    right: 0;
+    top: 2.2rem;
+    background: var(--card-bg);
+    box-shadow: var(--shadow-md);
+    border-radius: 10px;
+    min-width: 320px;
+    max-width: 400px;
+    z-index: 1001;
+    overflow: hidden;
+    transform-origin: top right;
+    animation: fadeInScale 0.2s ease-out forwards;
+}
+#notificationDropdown > div:first-child { /* Header */
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+#notificationList {
+    max-height: 320px;
+    overflow-y: auto;
+}
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+.notification-item.unread {
+    background-color: #e0f2fe; /* Light blue background for unread */
+}
+.notification-item.unread:hover {
+    background-color: #bfdbfe;
+}
+.notification-item:last-child {
+    border-bottom: none;
+}
+.notification-icon {
+    flex-shrink: 0;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    width: 25px;
+    text-align: center;
+    margin-top: 2px;
+}
+.notification-content {
+    flex-grow: 1;
+}
+.notification-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    line-height: 1.3;
+}
+.notification-content .notification-time {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+/* --- Main Content Area Headings --- */
+.dashboard-main-content {
+    padding: 2rem;
+}
+.dashboard-main-content h2 {
     font-size: 2rem;
     font-weight: 700;
     color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+.dashboard-main-content > p {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    font-size: 1rem;
 }
 
-.stat-card-icon {
-    font-size: 2.5rem;
-    opacity: 0.7;
+/* --- General Dashboard Section Headers --- */
+.dashboard-section {
+    margin-top: 2.5rem;
 }
-
-/* --- OLD Quick Actions Grid (FROM YOUR CODE) --- */
-.quick-actions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-}
-
-.action-card {
-    background: #ffffff;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    text-decoration: none;
+.dashboard-section h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
     color: var(--text-dark);
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
 }
 
-.action-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    border-color: var(--primary-color);
-}
-
-.action-card .icon {
-    font-size: 2rem;
-    color: var(--primary-color);
-    background-color: #f0f2f5;
-    height: 60px;
-    width: 60px;
-    min-width: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.action-card h4 {
-    margin-bottom: 0.25rem;
-    font-size: 1.1rem;
-}
-
-.action-card p {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    line-height: 1.4;
-}
-
-/* --- Content Cards & Tables (FROM YOUR CODE, slightly enhanced) --- */
-.content-card {
-    background: #ffffff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    margin-bottom: 2.5rem;
-}
-
-.content-card h3 {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-table thead th {
-    text-align: left;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    color: var(--text-light);
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid var(--border-color);
-}
-
-table tbody td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color);
-    vertical-align: middle;
-}
-
-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* --- Charts (FROM YOUR CODE) --- */
-.charts-container {
+/* --- Stat Cards (Unified Style) --- */
+.stats-container-customer { /* Renamed from .stats-container-customer to be more general if reused for provider */
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
+    margin-bottom: 2rem;
 }
-
-/* 
-==================================================
---- MY SUGGESTED NEW CODE STARTS HERE ---
-==================================================
-*/
-
-/* --- UNIVERSAL MODERN Stat Cards --- */
-/* Use these classes for the new look: .stats-container-modern & .stat-card-modern */
-.stats-container-modern {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-}
-.stat-card-modern {
+.stat-card-customer { /* Renamed to .stat-card-dashboard */
     background: var(--card-bg);
     padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
     gap: 1.5rem;
     border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.stat-icon-modern { font-size: 1.8rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.stat-info-modern h4 { font-size: 0.85rem; color: var(--text-light); font-weight: 500; margin-bottom: 0.1rem; text-transform: uppercase; letter-spacing: 0.5px; }
-.stat-info-modern p { font-size: 2rem; font-weight: 600; color: var(--text-dark); }
-.stat-icon-modern.yellow { background-color: rgba(243, 156, 18, 0.1); color: #f39c12; }
-.stat-icon-modern.blue { background-color: rgba(52, 152, 219, 0.1); color: #3498db; }
-.stat-icon-modern.red { background-color: rgba(231, 76, 60, 0.1); color: #e74c3c; }
-.stat-icon-modern.green { background-color: rgba(39, 174, 96, 0.1); color: #27ae60; }
-.stat-icon-modern.purple { background-color: rgba(142, 68, 173, 0.1); color: #8e44ad; }
+.stat-card-customer:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--shadow-lg);
+}
+.stat-icon-customer { /* Renamed to .stat-icon-dashboard */
+    font-size: 1.8rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+}
+/* Stat Icon Colors (Unified Gradients) */
+.stat-icon-customer.blue { background: linear-gradient(45deg, var(--status-blue), #5dade2); }
+.stat-icon-customer.yellow { background: linear-gradient(45deg, var(--status-yellow), #f5b041); }
+.stat-icon-customer.purple { background: linear-gradient(45deg, var(--status-purple), #af7ac5); }
+.stat-icon-customer.green { background: linear-gradient(45deg, var(--status-green), #2ecc71); }
+.stat-icon-customer.primary-color-bg { background: linear-gradient(45deg, var(--primary-color), var(--primary-dark-hover)); }
+.stat-info-customer h4 { font-size: 0.95rem; color: var(--text-light); font-weight: 500; margin-bottom: 0.1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-info-customer p { font-size: 2.2rem; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
 
-/* --- UNIVERSAL MODERN Quick Access Grid --- */
-/* Use these classes for the new look: .quick-access-grid & .access-card */
-.dashboard-section { margin-top: 2.5rem; }
-.dashboard-section h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-dark); }
-.quick-access-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
-.access-card { background: var(--card-bg); padding: 2rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-decoration: none; color: var(--text-dark); text-align: center; transition: all 0.3s ease; border: 1px solid var(--border-color); }
-.access-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--primary-color); color: var(--primary-color); }
-.access-card i { font-size: 2.5rem; margin-bottom: 1rem; display: block; color: var(--primary-color); }
-.access-card span { font-size: 1rem; font-weight: 600; }
 
-/* --- Additional Component Styles --- */
-.table-wrapper { overflow-x: auto; }
-.btn-view { text-decoration: none; color: var(--primary-color); font-weight: 600; padding: 0.3rem 0.8rem; border: 1px solid var(--border-color); border-radius: 6px; white-space: nowrap; transition: all 0.2s; }
-.btn-view:hover { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+/* --- Quick Access Grid (Unified Style) --- */
+.quick-access-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+}
+.access-card {
+    background: var(--card-bg);
+    padding: 2rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: var(--text-dark);
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+.access-card::before { 
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(var(--primary-color-rgb), 0.05), transparent 60%);
+    transform: scale(0);
+    opacity: 0;
+    border-radius: 10px;
+    transition: all 0.4s ease-out;
+    z-index: 0;
+}
+.access-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--primary-color); color: var(--primary-color); }
+.access-card:hover::before { transform: scale(1); opacity: 1; }
+.access-card i { font-size: 2.5rem; margin-bottom: 1rem; display: block; color: var(--primary-color); position: relative; z-index: 1; }
+.access-card span { font-size: 1rem; font-weight: 600; position: relative; z-index: 1; }
 
-/* --- RESPONSIVE DESIGN --- */
+
+/* --- General Table Styles (Unified) --- */
+.content-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.content-card:hover { box-shadow: var(--shadow-lg); }
+.content-card h3 {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-dark);
+}
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+table { width: 100%; border-collapse: collapse; min-width: 600px; }
+table thead th { text-align: left; padding: 1.2rem 1rem; background-color: #f8f9fa; color: var(--text-light); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 2px solid var(--border-color); }
+table tbody td { padding: 1rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+table tbody tr:last-child td { border-bottom: none; }
+table tbody tr:hover { background-color: #f0f2f5; }
+
+
+/* --- Status Badges (Unified) --- */
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+.status-active, .status-approved, .status-success { background-color: rgba(39, 174, 96, 0.15); color: var(--status-active); }
+.status-pending, .status-awaiting, .status-yellow { background-color: rgba(243, 156, 18, 0.15); color: var(--status-pending); }
+.status-inactive, .status-rejected, .status-declined { background-color: rgba(231, 76, 60, 0.15); color: var(--status-rejected); }
+.status-verified { background-color: rgba(52, 152, 219, 0.15); color: var(--status-verified); }
+.status-info { background-color: rgba(100, 116, 139, 0.15); color: var(--status-info); }
+.status-purple { background-color: rgba(142, 68, 173, 0.15); color: var(--status-purple); }
+
+
+/* --- Buttons (Unified Style) --- */
+.btn-submit, .btn-secondary-outline { /* Base for main buttons */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+    line-height: 1;
+    min-width: 120px;
+    transition: all 0.3s ease;
+}
+.btn-submit { background-color: var(--primary-color); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-submit:hover { background-color: var(--primary-dark-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-submit:active { transform: translateY(0); box-shadow: var(--shadow-sm); }
+.btn-secondary-outline { background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color); }
+.btn-secondary-outline:hover { background-color: rgba(var(--primary-color-rgb), 0.1); }
+
+.btn-link { text-decoration: none; color: var(--primary-color); font-weight: 500; padding: 0.6rem 1rem; border-radius: 6px; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; }
+.btn-link:hover { background-color: rgba(var(--primary-color-rgb), 0.08); color: var(--primary-dark-hover); text-decoration: none; transform: translateY(-1px); }
+
+.btn-view { /* Specific for table view buttons */
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background-color: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.btn-view:hover { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+.action-buttons { display: flex; gap: 1rem; align-items: center; } /* General grouping for buttons */
+
+/* --- Form Styling (Unified) --- */
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 0.6rem; color: var(--text-dark); font-size: 0.95rem; }
+.form-group input[type="text"], .form-group input[type="email"], .form-group input[type="password"], .form-group input[type="url"], .form-group input[type="number"], .form-group input[type="date"], .form-group input[type="tel"], .form-group textarea, .form-group select {
+    width: 100%; padding: 0.9rem 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 1rem; color: var(--text-dark); background-color: var(--card-bg); transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2); }
+.form-group textarea { resize: vertical; min-height: 140px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+
+/* --- Profile Specific Styles --- */
+.profile-header-edit, .profile-header-view { text-align: center; margin-bottom: 2rem; }
+.profile-avatar-lg { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color); box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+.profile-header-edit .btn { margin-top: 0.5rem; }
+
+/* --- Project Timeline Styles --- */
+.project-details-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+.progress-timeline { list-style: none; padding-left: 0; margin: 0; position: relative; }
+.progress-timeline:before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background-color: var(--border-color); }
+.timeline-item { position: relative; padding: 1rem 1rem 1rem 3.5rem; margin-bottom: 1.5rem; background-color: var(--card-bg); border-radius: 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.timeline-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-item:before { content: ''; position: absolute; left: 0; top: 1.5rem; transform: translateX(-50%); width: 18px; height: 18px; border-radius: 50%; background-color: var(--border-color); border: 4px solid var(--dashboard-bg); z-index: 1; }
+.timeline-item.completed:before { background-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.5); }
+.timeline-item h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--text-dark); }
+.timeline-item p { font-size: 0.95rem; color: var(--text-light); margin-bottom: 0.5rem; }
+.timeline-date { display: block; font-size: 0.8rem; color: #999; text-align: right; margin-top: 0.8rem; font-style: italic; }
+.timeline-image img { max-width: 100%; height: auto; border-radius: 6px; box-shadow: var(--shadow-sm); }
+.details-list p { margin-bottom: 0.5rem; font-size: 1rem; color: var(--text-dark); }
+.details-list strong { color: var(--text-dark); }
+.details-list a { color: var(--primary-color); text-decoration: none; font-weight: 500; }
+.details-list a:hover { text-decoration: underline; }
+
+/* --- Calendar Specific Styles (For book_consultation_calendar.php) --- */
+#customer-calendar-container {
+    max-width: 400px;
+    margin: 32px auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    box-shadow: var(--shadow-md);
+}
+#customer-calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+#customer-calendar-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+#customer-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+.calendar-day {
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    color: #4b5563;
+    transition: all 0.2s ease;
+}
+.calendar-day.calendar-weekday {
+    font-weight: bold;
+    background-color: #f2f2f2;
+    border-color: #d0d0d0;
+    color: #333;
+}
+.calendar-day:hover:not(.not-current-month):not(.calendar-past):not(.calendar-available) {
+    background-color: #e5e7eb;
+}
+.calendar-day.not-current-month,
+.calendar-day.calendar-past {
+    color: #cbd5e1;
+    cursor: not-allowed;
+    background-color: #f0f2f5;
+    border-color: #e2e8f0;
+}
+.calendar-available {
+    background: #e0f2fe;
+    color: #2563eb;
+    border: 1px solid #2563eb;
+    font-weight: 600;
+}
+.calendar-available:hover {
+    background: #bfdbfe;
+    color: #1d4ed8;
+    border-color: #1d4ed8;
+}
+.calendar-selected {
+    background: var(--calendar-selected-bg, #059669) !important; /* Innovista primary green */
+    color: #fff !important;
+    border: 1px solid var(--calendar-selected-bg, #059669) !important;
+    box-shadow: 0 2px 5px rgba(5, 150, 105, 0.3);
+}
+#customer-calendar-info {
+    margin-top: 16px;
+    color: var(--primary-color, #0d9488);
+    font-weight: 500;
+    text-align: center;
+}
+
+/* --- Star Rating Styles (For leave_review.php) --- */
+.rating-stars {
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+    font-size: 1.8rem;
+    color: #ccc; /* Default grey for unselected stars */
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+.rating-stars .fa-star {
+    transition: color 0.2s ease;
+}
+.rating-stars .fa-star.selected,
+.rating-stars .fa-star.hovered {
+    color: var(--status-yellow, #f1c40f); /* Yellow for selected/hovered stars */
+}
+
+
+/* --- Responsive Adjustments for User Dashboard --- */
 @media (max-width: 992px) {
-    .dashboard-sidebar { transform: translateX(-260px); }
-    .dashboard-sidebar.active { transform: translateX(0); }
-    .content-wrapper { margin-left: 0; }
-    .menu-toggle { display: block; }
-    .charts-container { grid-template-columns: 1fr; }
+    .dashboard-sidebar {
+        transform: translateX(-260px); /* Hide sidebar by default */
+        box-shadow: 4px 0 10px rgba(0,0,0,0.2);
+    }
+    .dashboard-sidebar.active {
+        transform: translateX(0); /* Show sidebar when active */
+    }
+    .dashboard-content-wrapper {
+        margin-left: 0; /* No offset when sidebar is hidden */
+    }
+    .dashboard-main-header .header-left {
+        gap: 1rem;
+    }
+    .dashboard-menu-toggle {
+        display: block; /* Show hamburger icon */
+    }
+    /* Overlay for content when sidebar is open on smaller screens */
+    .user-dashboard-container.sidebar-active .dashboard-content-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 900; /* Below sidebar, above content */
+        display: block;
+        cursor: pointer;
+    }
+    .dashboard-user-profile span {
+        display: none; /* Hide name, only show avatar */
+    }
+    .stats-container-customer {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 2 columns on tablets */
+    }
+    .quick-access-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+    .project-details-grid {
+        grid-template-columns: 1fr; /* Stack vertically on smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-main-header {
+        padding: 0.8rem 1rem;
+    }
+    .dashboard-main-content {
+        padding: 1rem;
+    }
+    .dashboard-user-profile {
+        gap: 5px;
+    }
+    .dashboard-avatar-sm {
+        width: 32px;
+        height: 32px;
+    }
+    .notification-bell-wrapper {
+        margin-right: 0.5rem;
+    }
+    .stats-container-customer,
+    .quick-access-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+    }
+    .stat-card-customer {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.8rem;
+    }
+    .stat-icon-customer {
+        margin-bottom: 0.5rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    .stat-info-customer p {
+        font-size: 1.8rem;
+    }
+    table {
+        min-width: 450px; /* Ensure table remains scrollable */
+    }
+    .btn-submit, .btn-secondary-outline, .btn-view {
+        width: 100%;
+        min-width: unset;
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+    }
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
 }

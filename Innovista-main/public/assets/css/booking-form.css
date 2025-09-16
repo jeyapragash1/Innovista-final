@@ -1,36 +1,68 @@
-/* Booking Form Modal Styles */
+/* ===================================================================
+   Booking Form Modal Styles - Integrated & Enhanced
+   =================================================================== */
+
+/* Root variables are assumed to be defined in main.css or similar global stylesheet */
+/* For reference (ensure these are available in your global scope):
+:root {
+    --primary-color: #0d9488;
+    --primary-dark-hover: #0a756b;
+    --primary-color-rgb: 13, 148, 136; // For rgba usage
+    --text-dark: #1e293b;
+    --text-light: #64748b;
+    --border-color: #e2e8f0;
+    --card-bg: #ffffff;
+    --status-active: #27ae60;
+    --status-pending: #f39c12;
+    --status-rejected: #e74c3c;
+    --status-verified: #3498db;
+    --status-info: #64748b;
+}
+*/
+
+/* --- Booking Modal Container --- */
 .booking-modal {
-    display: none;
     position: fixed;
-    z-index: 2000;
+    z-index: 10000; /* High z-index to appear on top */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.6);
+    overflow: auto; /* Allows scrolling if content is too tall */
+    background-color: rgba(0,0,0,0.7); /* Dark semi-transparent overlay */
+    display: flex; /* Use flexbox for centering content */
     justify-content: center;
     align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for showing/hiding */
 }
+
 .booking-modal.active {
-    display: flex;
+    opacity: 1;
+    visibility: visible;
 }
+
+/* --- Modal Content Box --- */
 .booking-modal-content {
-    background-color: #fff;
+    background-color: var(--card-bg, #fff);
     margin: auto;
     padding: 40px 32px 32px 32px;
-    border-radius: 24px;
+    border-radius: 24px; /* Softly rounded corners */
     width: 400px;
-    max-width: 400px;
+    max-width: 95vw; /* Ensure responsiveness for smaller screens */
     min-width: 340px;
     position: relative;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12); /* Subtle shadow for depth */
     text-align: center;
-    overflow: hidden;
+    overflow: hidden; /* Ensures content stays within rounded corners */
     display: flex;
     flex-direction: column;
     align-items: center;
+    animation: slideInUp 0.4s ease-out forwards; /* Entry animation */
 }
+
+/* --- Close Button --- */
 .close-modal-btn {
     position: absolute;
     top: 1rem;
@@ -40,34 +72,34 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f3f4f6;
+    background: #f3f4f6; /* Light background */
     border-radius: 8px;
-    color: #888;
+    color: var(--text-light, #888); /* Light grey text */
     font-size: 1.8rem;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    transition: background 0.2s, color 0.2s;
-    z-index: 10001;
+    transition: background 0.2s ease, color 0.2s ease;
+    z-index: 10001; /* Above modal content */
 }
 .close-modal-btn:hover {
-    background: #059669;
+    background: var(--primary-color, #0d9488);
     color: #fff;
 }
+
+/* --- Form Titles --- */
 .form-title {
     font-size: 1.6rem;
     font-weight: 700;
-    color: #059669;
+    color: var(--primary-color, #0d9488); /* Innovista primary color */
     margin-bottom: 1rem;
 }
+
+/* --- Booking Form Structure --- */
 .booking-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    padding: 24px 18px;
     width: 100%;
     margin-bottom: 0;
 }
@@ -75,96 +107,249 @@
     margin-bottom: 1.2rem;
     text-align: left;
     width: 100%;
-    padding: 0 4px;
+    padding: 0 4px; /* Small horizontal padding */
+    border-bottom: 1px solid var(--border-color, #e2e8f0); /* Separator line */
+    padding-bottom: 1.2rem;
 }
+.form-section:last-of-type {
+    border-bottom: none; /* No separator for the last section */
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
 .section-label {
     font-size: 1rem;
     font-weight: 600;
-    color: #059669;
+    color: var(--text-dark, #1e293b);
     margin-bottom: 0.5rem;
     display: block;
 }
+.section-label-inline {
+    display: inline-block;
+    font-weight: 600;
+    color: var(--text-dark, #1e293b);
+    margin-right: 10px;
+    font-size: 1rem;
+}
+
 .form-row {
     display: flex;
-    gap: 12px;
+    gap: 12px; /* Spacing between inputs in a row */
     width: 100%;
     margin-bottom: 0.5rem;
 }
-.input-icon {
-    display: flex;
-    align-items: center;
-    background: #f3f4f6;
-    border-radius: 8px;
-    padding: 0 10px;
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+/* --- Input Field Styling --- */
+.input-group { /* For inputs with icons */
+    position: relative;
     flex: 1;
 }
-.input-icon span {
-    font-size: 1.2rem;
-    color: #059669;
-    margin-right: 6px;
-}
-.input-icon input {
-    border: none;
-    background: transparent;
-    padding: 10px 0;
-    font-size: 1rem;
+.input-group input {
     width: 100%;
-    outline: none;
+    padding-left: 40px !important; /* Space for icon */
 }
+.input-group .input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light, #64748b);
+    font-size: 0.9rem;
+    pointer-events: none; /* Icon should not interfere with input click */
+}
+
 .booking-form input[type="text"],
-.booking-form input[type="email"] {
+.booking-form input[type="email"],
+.booking-form select { /* Generic input styles */
+    flex: 1; /* Makes inputs take equal width by default */
     background: #f3f4f6;
     border-radius: 8px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-color, #e5e7eb);
     font-size: 1rem;
-    padding: 10px 12px;
-    margin-top: 2px;
-    box-sizing: border-box;
+    padding: 12px 15px;
+    color: var(--text-dark, #1e293b);
+    box-sizing: border-box; /* Include padding/border in element's total width/height */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.gender-btn {
-    background: #059669;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 8px;
-    transition: background 0.2s;
+.booking-form input:focus,
+.booking-form select:focus {
+    outline: none;
+    border-color: var(--primary-color, #0d9488);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 13, 148, 136), 0.2); /* Soft focus glow */
 }
-.gender-btn.selected {
-    background: #047857;
+
+/* Specific input adjustments */
+.full-width-select { width: 100%; }
+.card-details-row input:first-child { flex: 2; } /* Card number wider */
+.short-input { flex: none; width: 100px; } /* CVC and Expiry */
+.otp-input { /* Specific width for OTP field */
+    width: 120px;
+    text-align: center;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
 }
-.btn-book {
-    margin-top: 16px;
-    padding: 12px 0;
+
+/* --- Button Styles --- */
+.btn-book, .btn-secondary-outline {
+    display: block;
+    width: 100%;
+    padding: 14px 20px;
     border-radius: 8px;
     font-size: 1.1rem;
     font-weight: 600;
-    background: #059669;
-    color: #fff;
-    border: none;
     cursor: pointer;
-    width: 100%;
-}
-.otp-section {
-    margin-top: 16px;
-    display: none;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-}
-.otp-section input {
-    width: 120px;
+    border: none;
+    transition: all 0.2s ease;
     text-align: center;
 }
-.booking-confirmed {
-    color: #059669;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-top: 24px;
+
+.btn-book { /* Primary action button for booking */
+    background-color: var(--primary-color, #0d9488);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(var(--primary-color-rgb, 13, 148, 136), 0.3);
 }
-/* Simple icons for demo */
-.icon-user::before { content: '\1F464'; }
-.icon-email::before { content: '\2709'; }
+.btn-book:hover {
+    background-color: var(--primary-dark-hover, #0a756b);
+    box-shadow: 0 6px 15px rgba(var(--primary-color-rgb, 13, 148, 136), 0.4);
+    transform: translateY(-1px);
+}
+.btn-book:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-secondary-outline { /* For actions like resending OTP */
+    background-color: transparent;
+    color: var(--primary-color, #0d9488);
+    border: 1px solid var(--primary-color, #0d9488);
+    margin-top: 15px;
+}
+.btn-secondary-outline:hover {
+    background-color: rgba(var(--primary-color-rgb, 13, 148, 136), 0.1);
+}
+
+/* --- OTP Section --- */
+.otp-section {
+    text-align: center;
+    padding: 20px 0;
+    display: none; /* Hidden by default, shown by JS */
+}
+.otp-section p {
+    color: var(--text-light, #64748b);
+    margin-bottom: 20px;
+}
+/* OTP input already styled above */
+
+/* --- Booking Confirmed Message --- */
+.booking-confirmed {
+    text-align: center;
+    padding: 30px 0;
+    display: none; /* Hidden by default, shown by JS */
+}
+.booking-confirmed .success-icon {
+    font-size: 4rem;
+    color: var(--status-active, #27ae60); /* Green for success */
+    margin-bottom: 20px;
+    animation: popIn 0.5s ease-out;
+}
+
+/* --- Flash Messages within Modal --- */
+#modalFlashMessage {
+    /* Override fixed positioning of global flash message container */
+    position: static; 
+    transform: none;
+    width: auto;
+    max-width: none;
+    margin-bottom: 20px; /* Space below message */
+}
+#modalFlashMessage .flash-message {
+    font-size: 0.9rem; /* Smaller text for modal context */
+    padding: 0.8rem 1rem;
+    box-shadow: none; /* Remove heavy shadow */
+    border-radius: 8px;
+    animation: none; /* No animation for messages inside modal */
+    position: relative;
+    /* Ensure colors match flash_message.php output */
+    background: #e6f9ed;
+    color: #1a7f4f;
+    border: 1.5px solid #1a7f4f;
+}
+#modalFlashMessage .flash-message.error {
+    background: #ffeaea;
+    color: #c0392b;
+    border: 1.5px solid #c0392b;
+}
+#modalFlashMessage .flash-message.info {
+    background: #e0f2fe;
+    color: #2563eb;
+    border: 1.5px solid #2563eb;
+}
+#modalFlashMessage .flash-close-btn {
+    top: 5px;
+    right: 5px;
+    font-size: 1rem;
+    color: #888;
+}
+#modalFlashMessage .flash-close-btn:hover {
+    color: #333;
+}
+
+
+/* --- Animations --- */
+@keyframes slideInUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 500px) {
+    .booking-modal-content {
+        padding: 20px;
+        border-radius: 12px; /* Slightly less rounded on small screens */
+    }
+    .close-modal-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1.5rem;
+    }
+    .form-title {
+        font-size: 1.4rem;
+    }
+    .form-row {
+        flex-direction: column; /* Stack inputs vertically */
+        gap: 10px;
+    }
+    .form-row input, .full-width-select {
+        width: 100% !important; /* Force full width for inputs in rows */
+        flex: none !important;
+    }
+    .card-details-row input:first-child { flex: none !important; }
+    .short-input { width: 100px !important; } /* Maintain specific width for short inputs */
+    .btn-book, .btn-secondary-outline {
+        font-size: 1rem;
+        padding: 12px 15px;
+    }
+    .otp-input {
+        width: 100px;
+        font-size: 1rem;
+    }
+    .booking-confirmed .success-icon {
+        font-size: 3rem;
+    }
+}
